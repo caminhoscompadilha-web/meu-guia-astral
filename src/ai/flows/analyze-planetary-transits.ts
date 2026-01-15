@@ -49,6 +49,7 @@ export async function analyzePlanetaryTransits(
 
 const prompt = ai.definePrompt({
   name: 'analyzePlanetaryTransitsPrompt',
+  model: 'googleai/gemini-1.5-flash',
   input: {schema: AnalyzePlanetaryTransitsInputSchema},
   output: {schema: AnalyzePlanetaryTransitsOutputSchema},
   prompt: `Você é um astrólogo especialista analisando trânsitos planetários em relação a um mapa natal.

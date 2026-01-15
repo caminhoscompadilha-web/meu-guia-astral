@@ -1,5 +1,5 @@
 import {genkit} from 'genkit';
-import {googleAI, gemini15Flash} from '@genkit-ai/google-genai';
+import {googleAI} from '@genkit-ai/google-genai';
 
 // ATENÇÃO: A chave da API foi inserida diretamente aqui como último recurso
 // para superar um problema de carregamento de ambiente no Firebase Studio.
@@ -19,6 +19,4 @@ export const ai = genkit({
   plugins: [
     googleAI({ apiKey: apiKey }),
   ],
-  // O model default será usado se não for especificado em outro lugar.
-  model: gemini15Flash,
 });

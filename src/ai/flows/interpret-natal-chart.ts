@@ -33,6 +33,7 @@ export async function interpretNatalChart(input: InterpretNatalChartInput): Prom
 
 const prompt = ai.definePrompt({
   name: 'interpretNatalChartPrompt',
+  model: 'googleai/gemini-1.5-flash',
   input: {schema: InterpretNatalChartInputSchema},
   output: {schema: InterpretNatalChartOutputSchema},
   prompt: `Você é um astrólogo especialista em interpretações de mapa natal.
