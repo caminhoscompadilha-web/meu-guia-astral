@@ -1,3 +1,4 @@
+
 /**
  * @fileOverview Systemic Oracle AI Agent.
  *
@@ -43,6 +44,13 @@ SIGA ESTE ROTEIRO DE RESPOSTA ESTRITAMENTE:
 1. RESUMO FILOSÓFICO: Comece com uma síntese poética e curta da tríade Sol, Lua e Ascendente do usuário.
 2. ALMA E PERSONALIDADE: Faça uma descrição detalhada de Mercúrio, Vênus e Marte do mapa natal. Aborde explicitamente os pontos de LUZ (potenciais) e SOMBRA (desafios) para cada um.
 3. EIXO DO DESTINO (NODOS LUNARES): Interprete o significado do Nodo Norte e Sul de nascimento. Em seguida, compare com a posição do Nodo Norte em trânsito hoje, explicando a 'missão de vida' do usuário e como o momento atual a influencia.
+    INSTRUÇÃO ESPECÍFICA PARA OS NODOS LUNARE:
+    - ANALISE O NODO SUL (Cauda do Dragão): Identifique as 'Sombras' - comportamentos repetitivos, zona de conforto e vícios emocionais que o usuário traz.
+    - ANALISE O NODO NORTE (Cabeça do Dragão): Identifique a 'Luz' - o propósito de evolução, as virtudes a serem desenvolvidas e o chamado do destino.
+    - CORRELAÇÃO DE TRANSITO: Compare o signo do Nodo Norte de nascimento com a posição do Nodo Norte HOJE.
+        * Se estiverem no mesmo signo (Retorno de Nodos), enfatize um momento de destino crucial.
+        * Se estiverem em signos opostos (Inversão), enfatize uma fase de revisão total de valores.
+    - TOM DE VOZ: Use uma linguagem filosófica e arquetípica, focada em 'Individuação' (Jung).
 4. CICLOS EXTERNOS: Analise como os planetas lentos em trânsito (Urano, Netuno e Plutão) estão aspectando o mapa natal do usuário HOJE. Seja direto sobre quais áreas da vida estão sendo tensionadas ou favorecidas.
 5. CALENDÁRIO LUNAR: Informe a fase da lua de HOJE. Explique qual casa do mapa natal do usuário ela está ativando e o que isso significa (ex: "A Lua Crescente em seu setor financeiro sugere...").
 6. TAROT DO DIA: Apresente o arcano do dia sorteado. Descreva seu arquétipo e, o mais importante, correlacione-o com os trânsitos astrológicos mais impactantes que você citou nos pontos 4 e 5.
@@ -51,6 +59,30 @@ SIGA ESTE ROTEIRO DE RESPOSTA ESTRITAMENTE:
 Formate a resposta usando markdown para melhor legibilidade (títulos, negrito, listas).
 `;
 
+export async function getOracleAnalysis(input: InterpretNatalChartInput): Promise<InterpretNatalChartOutput> {
+  const response = await ai.generate({
+    model: 'googleai/gemini-1.5-flash',
+    system: SYSTEM_PROMPT,
+    prompt: `Analise os seguintes dados para ${input.userName}:
+- Mapa Natal: ${JSON.stringify(input.natalChart)}
+- Trânsitos de Hoje: ${JSON.stringify(input.transits)}
+- Tarot do Dia: ${input.tarotCard}
+
+Forneça uma análise detalhada e estruturada seguindo o roteiro de 7 passos no formato JSON solicitado.`,
+    output: {
+      format: 'json',
+      schema: InterpretNatalChartOutputSchema,
+    },
+  });
+  
+  const output = response.output();
+  if (!output) {
+    throw new Error("A resposta da IA não contém o output esperado.");
+  }
+  return output;
+}
+
+
 export const interpretNatalChart = ai.defineFlow(
   {
     name: 'interpretNatalChart',
@@ -58,25 +90,6 @@ export const interpretNatalChart = ai.defineFlow(
     outputSchema: InterpretNatalChartOutputSchema,
   },
   async (input) => {
-    const response = await ai.generate({
-      model: 'googleai/gemini-1.5-flash',
-      system: SYSTEM_PROMPT,
-      prompt: `Analise os seguintes dados para ${input.userName}:
-- Mapa Natal: ${JSON.stringify(input.natalChart)}
-- Trânsitos de Hoje: ${JSON.stringify(input.transits)}
-- Tarot do Dia: ${input.tarotCard}
-
-Forneça uma análise detalhada e estruturada seguindo o roteiro de 7 passos no formato JSON solicitado.`,
-      output: {
-        format: 'json',
-        schema: InterpretNatalChartOutputSchema,
-      },
-    });
-    
-    const output = response.output();
-    if (!output) {
-      throw new Error("A resposta da IA não contém o output esperado.");
-    }
-    return output;
+    return await getOracleAnalysis(input);
   }
 );

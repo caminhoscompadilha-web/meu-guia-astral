@@ -1,6 +1,6 @@
+
 import { swisseph } from 'swisseph';
 
-// Adicionado o Nodo Norte Verdadeiro
 const CELESTIAL_BODIES = [
     { id: swisseph.SE_SUN, name: 'Sol' },
     { id: swisseph.SE_MOON, name: 'Lua' },
@@ -48,7 +48,6 @@ export function getPlanetaryPositions(date: Date, lat: number, lon: number) {
         const bodyData = swisseph.calc_ut(julianDay, body.id, swisseph.SEFLG_SPEED);
         let longitude = bodyData.longitude;
 
-        // O Nodo Sul é sempre 180 graus oposto ao Nodo Norte
         if (body.name === 'Nodo Norte') {
             positions['nodo norte'] = { grau: longitude, signo: getSign(longitude) };
             const southNodeLongitude = (longitude + 180) % 360;
@@ -87,10 +86,17 @@ export function getCurrentTransits() {
     const positions: { [key: string]: { grau: number; signo: string } } = {};
     let sunLon = 0, moonLon = 0;
 
+    // Calcula a posição de todos os corpos, incluindo os Nodos
     CELESTIAL_BODIES.forEach(body => {
         const bodyData = swisseph.calc_ut(julianDay, body.id, swisseph.SEFLG_SPEED);
         const longitude = bodyData.longitude;
-        positions[body.name.toLowerCase()] = { grau: longitude, signo: getSign(longitude) };
+         if (body.name === 'Nodo Norte') {
+            positions['nodo norte'] = { grau: longitude, signo: getSign(longitude) };
+            const southNodeLongitude = (longitude + 180) % 360;
+            positions['nodo sul'] = { grau: southNodeLongitude, signo: getSign(southNodeLongitude) };
+        } else {
+            positions[body.name.toLowerCase()] = { grau: longitude, signo: getSign(longitude) };
+        }
         if (body.id === swisseph.SE_SUN) sunLon = longitude;
         if (body.id === swisseph.SE_MOON) moonLon = longitude;
     });
@@ -104,14 +110,14 @@ export function getCurrentTransits() {
  * Encontra a casa astrológica para um determinado grau no zodíaco.
  */
 export const getHouseForPlanet = (degree: number, houseCusps: number[]): number => {
-    for (let i = 0; i < 12; i++) {
-        const cuspStart = houseCusps[i];
-        const cuspEnd = houseCusps[(i + 1) % 12];
-        if (cuspStart > cuspEnd) { // Lida com a passagem por Áries (0/360 graus)
-            if (degree >= cuspStart || degree < cuspEnd) return i + 1;
-        } else {
-            if (degree >= cuspStart && degree < cuspEnd) return i + 1;
-        }
-    }
-    return 1; // Fallback
+    // A primeira cúspide (Ascendente) é a casa 1.
+    const ascendant = houseCusps[0];
+    
+    // Normaliza os graus para lidar com a passagem por Áries (0/360)
+    const normalizedDegree = (degree - ascendant + 360) % 360;
+
+    // Cada casa tem 30 graus
+    const house = Math.floor(normalizedDegree / 30) + 1;
+    
+    return house;
 };

@@ -1,3 +1,4 @@
+
 "use server";
 
 import { interpretNatalChart } from '@/ai/flows/interpret-natal-chart';
@@ -18,7 +19,6 @@ export async function generateAstrologicalChart(
   console.log('Iniciando a geração do mapa para:', data.name || 'usuário');
   try {
     const birthDateObj = new Date(`${data.birthDate}T${data.birthTime}:00`);
-    const today = new Date();
     
     // 1. Cálculos Astrológicos (Natais e Trânsitos)
     const { planetaryPositions: natalPositions, houseSystem } = getPlanetaryPositions(birthDateObj, data.lat, data.lon);
@@ -26,10 +26,16 @@ export async function generateAstrologicalChart(
 
     // Mapeia cada planeta natal para sua casa
     const natalChartWithHouses = Object.fromEntries(
-        Object.entries(natalPositions).map(([planet, planetData]) => [
-            planet,
-            { ...planetData, casa: getHouseForPlanet(planetData.grau, houseSystem.houseCusps) }
-        ])
+        Object.entries(natalPositions).map(([planet, planetData]) => {
+            // Os nodos não ficam em casas, então os excluímos deste cálculo específico
+            if (planet === 'nodo norte' || planet === 'nodo sul') {
+                return [planet, { ...planetData, casa: null }];
+            }
+            return [
+                planet,
+                { ...planetData, casa: getHouseForPlanet(planetData.grau, houseSystem.houseCusps) }
+            ];
+        })
     );
     
     // Adiciona o ascendente aos dados para a IA
@@ -60,19 +66,18 @@ export async function generateAstrologicalChart(
     const interpretation = await interpretNatalChart(oracleInput);
 
     // 5. Monta a estrutura de posições para a UI
-    const positionsForUI = Object.entries(fullNatalChart).map(([planet, planetData]) => ({
-      planet: planet.charAt(0).toUpperCase() + planet.slice(1),
-      sign: planetData.signo,
-      house: planetData.casa,
-    }));
+    const positionsForUI = Object.entries(fullNatalChart)
+        .filter(([planet, planetData]) => planetData.casa !== null) // Filtra planetas que têm casa
+        .map(([planet, planetData]) => ({
+            planet: planet.charAt(0).toUpperCase() + planet.slice(1),
+            sign: planetData.signo,
+            house: planetData.casa,
+        }));
 
     const finalOutput = {
       interpretation,
-      // O objeto de trânsitos agora é mais rico, mas a análise detalhada vem da IA
-      transits: {
-        summary: `Fase da Lua: ${transits.lunarPhase}. Tarot do Dia: ${tarotCard.name}.`,
-        detailedAnalysis: interpretation.externalCycles + "\n\n" + interpretation.lunarCalendar + "\n\n" + interpretation.tarotOfTheDay,
-      },
+      // O objeto de trânsitos para a UI agora é a própria interpretação
+      transits: interpretation, 
       chartData: {
         name: data.name || 'Viajante Cósmico',
         positions: positionsForUI

@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { generateAstrologicalChart, type ChartGenerationInput } from '@/app/actions';
 import { NatalChartDisplay } from '@/components/cosmic/natal-chart-display';
 import { PlanetaryPositions } from '@/components/cosmic/planetary-positions';
@@ -15,12 +16,11 @@ import { ArrowLeft } from 'lucide-react';
 import type { NatalChartData } from '@/lib/types';
 import { Sparkles } from 'lucide-react';
 import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
-import type { AnalyzePlanetaryTransitsOutput } from '@/ai/flows/analyze-planetary-transits';
 
 
 type Results = {
   interpretation: InterpretNatalChartOutput;
-  transits: AnalyzePlanetaryTransitsOutput;
+  transits: InterpretNatalChartOutput; // Agora transits também contém a interpretação completa
   chartData: NatalChartData;
 };
 
@@ -87,8 +87,8 @@ export default function Home() {
             <div className="lg:col-span-2">
               <Tabs defaultValue="interpretation" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                  <TabsTrigger value="interpretation">Interpretação do Mapa Natal</TabsTrigger>
-                  <TabsTrigger value="transits">Trânsitos Planetários</TabsTrigger>
+                  <TabsTrigger value="interpretation">Análise Pessoal (Natal)</TabsTrigger>
+                  <TabsTrigger value="transits">Oráculo do Dia (Trânsitos e Tarot)</TabsTrigger>
                 </TabsList>
                 <TabsContent value="interpretation" className="mt-6">
                   <InterpretationDisplay interpretation={results.interpretation} />

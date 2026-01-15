@@ -1,9 +1,9 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, Telescope, Wand2 } from 'lucide-react';
+import { Moon, Telescope, Wand2, Star } from 'lucide-react';
 import type { InterpretNatalChartOutput } from "@/ai/flows/interpret-natal-chart";
 
 interface TransitAnalysisDisplayProps {
-  // The transits prop is now the full interpretation object
   transits: InterpretNatalChartOutput; 
 }
 
@@ -50,6 +50,20 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
           {transits.tarotOfTheDay}
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6 bg-muted/30 border-primary/30">
+        <CardHeader>
+        <CardTitle className="font-headline text-lg flex items-center">
+            <Star className="mr-2 h-5 w-5 text-primary" />
+            Reflexão Arquetípica do Dia
+        </CardTitle>
+        </CardHeader>
+        <CardContent>
+        <p className="text-base text-center font-headline italic text-foreground/90">
+            "{transits.archetypalReflection}"
+        </p>
         </CardContent>
       </Card>
     </div>
