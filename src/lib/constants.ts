@@ -17,4 +17,6 @@ export const PLANETS: Planet[] = [
     'Netuno', 
     'Plutão', 
     'Ascendente',
+    'Nodo Norte',
+    'Nodo Sul'
 ];

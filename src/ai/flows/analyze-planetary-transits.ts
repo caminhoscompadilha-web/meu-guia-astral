@@ -1,10 +1,10 @@
 /**
- * @fileOverview Analyzes current planetary transits in relation to a natal chart.
- *
- * - analyzePlanetaryTransits - A function that analyzes planetary transits.
- * - AnalyzePlanetaryTransitsInput - The input type for the analyzePlanetaryTransits function.
- * - AnalyzePlanetaryTransitsOutput - The return type for the analyzePlanetaryTransits function.
+ * @fileOverview This flow is now integrated into interpret-natal-chart.ts to provide a single, unified analysis.
+ * This file can be removed or kept for future, more specific transit analyses.
+ * For now, it remains as a placeholder.
  */
+
+'use server';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
@@ -17,27 +17,14 @@ export type AnalyzePlanetaryTransitsInput = z.infer<
   typeof AnalyzePlanetaryTransitsInputSchema
 >;
 
-const SYSTEM_PROMPT = `
-Use como base as seguintes tradições astrológicas:
-1. Sistema de Casas: Placidus.
-2. Aspectos: Conjunção (0°), Oposição (180°), Quadratura (90°), Trígono (120°) e Sêxtil (60°).
-3. Orbes: Máximo de 5 graus para trânsitos.
-
-Sua interpretação deve focar em oportunidades de crescimento e desafios atuais, 
-evitando previsões fatalistas. Analise como os planetas em trânsito estão aspectando os planetas natais.
-`;
-
+// This flow is temporarily simplified as its logic has been merged
+// into the main interpretNatalChart flow to create the "Systemic Oracle".
 export const analyzePlanetaryTransits = ai.defineFlow(
   {
     name: 'analyzePlanetaryTransits',
     inputSchema: AnalyzePlanetaryTransitsInputSchema,
   },
   async (input) => {
-    const response = await ai.generate({
-        model: 'googleai/gemini-1.5-flash',
-        system: SYSTEM_PROMPT,
-        prompt: `Aja como um astrólogo especialista em trânsitos. Analise como os trânsitos planetários atuais impactam o mapa natal de ${input.userName}. Dados do mapa natal: ${JSON.stringify(input.natalChartData)}. Foque em oportunidades e desafios importantes para as próximas semanas.`,
-    });
-    return response.text();
+    return "Esta funcionalidade foi integrada à análise principal. Use a interpretação completa para ver os insights sobre os trânsitos.";
   }
 );

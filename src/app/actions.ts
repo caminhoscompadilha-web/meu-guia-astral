@@ -1,8 +1,8 @@
 "use server";
 
 import { interpretNatalChart } from '@/ai/flows/interpret-natal-chart';
-import { analyzePlanetaryTransits } from '@/ai/flows/analyze-planetary-transits';
-import { getPlanetaryPositions, calculateHousesAndAscendant } from '@/lib/astrology-engine';
+import { getPlanetaryPositions, getCurrentTransits, getHouseForPlanet } from '@/lib/astrology-engine';
+import { drawTarotCard } from '@/lib/tarot';
 
 export interface ChartGenerationInput {
   name: string;
@@ -18,43 +18,23 @@ export async function generateAstrologicalChart(
   console.log('Iniciando a geração do mapa para:', data.name || 'usuário');
   try {
     const birthDateObj = new Date(`${data.birthDate}T${data.birthTime}:00`);
+    const today = new Date();
     
-    // Calcula posições planetárias e casas
-    const planetaryPositions = getPlanetaryPositions(birthDateObj);
-    const houseSystem = calculateHousesAndAscendant(birthDateObj, data.lat, data.lon);
+    // 1. Cálculos Astrológicos (Natais e Trânsitos)
+    const { planetaryPositions: natalPositions, houseSystem } = getPlanetaryPositions(birthDateObj, data.lat, data.lon);
+    const transits = getCurrentTransits();
 
-    // Mapeia cada planeta para sua casa
-    const getHouseForPlanet = (degree: number): number => {
-        // As cúspides começam da casa 1 na posição 0 do array
-        for (let i = 0; i < 12; i++) {
-            const cuspStart = houseSystem.houseCusps[i];
-            // A casa 12 é a última, então a próxima cúspide é a da casa 1
-            const cuspEnd = houseSystem.houseCusps[(i + 1) % 12];
-
-            // Lógica para lidar com a passagem por Áries (0/360 graus)
-            if (cuspStart > cuspEnd) { // ex: Cúspide 12 a 330°, Cúspide 1 a 20°
-                if (degree >= cuspStart || degree < cuspEnd) {
-                    return i + 1;
-                }
-            } else {
-                if (degree >= cuspStart && degree < cuspEnd) {
-                    return i + 1;
-                }
-            }
-        }
-        return 1; // Fallback, caso algo dê errado
-    };
-
-    const chartWithHouses = Object.fromEntries(
-        Object.entries(planetaryPositions).map(([planet, data]) => [
+    // Mapeia cada planeta natal para sua casa
+    const natalChartWithHouses = Object.fromEntries(
+        Object.entries(natalPositions).map(([planet, planetData]) => [
             planet,
-            { ...data, casa: getHouseForPlanet(data.grau) }
+            { ...planetData, casa: getHouseForPlanet(planetData.grau, houseSystem.houseCusps) }
         ])
     );
     
     // Adiciona o ascendente aos dados para a IA
-    const fullChartDataForAI = {
-        ...chartWithHouses,
+    const fullNatalChart = {
+        ...natalChartWithHouses,
         ascendente: {
             grau: houseSystem.ascendant.degree,
             signo: houseSystem.ascendant.sign,
@@ -62,20 +42,25 @@ export async function generateAstrologicalChart(
         }
     };
     
-    // Chama as IAs em paralelo para mais performance
-    const [interpretation, transitAnalysis] = await Promise.all([
-      interpretNatalChart({
-        userName: data.name || 'Viajante Cósmico',
-        planets: fullChartDataForAI
-      }),
-      analyzePlanetaryTransits({
-        userName: data.name || 'Viajante Cósmico',
-        natalChartData: fullChartDataForAI
-      })
-    ]);
+    // 2. Sorteio do Tarot
+    const tarotCard = drawTarotCard();
 
-    // Monta a estrutura de posições para a UI
-    const positionsForUI = Object.entries(fullChartDataForAI).map(([planet, planetData]) => ({
+    // 3. Monta o input para o "Oráculo Sistêmico"
+    const oracleInput = {
+      userName: data.name || 'Viajante Cósmico',
+      natalChart: fullNatalChart,
+      transits: {
+        ...transits.planetaryPositions,
+        faseDaLua: transits.lunarPhase,
+      },
+      tarotCard: tarotCard.name,
+    };
+
+    // 4. Chama a IA com o contexto completo
+    const interpretation = await interpretNatalChart(oracleInput);
+
+    // 5. Monta a estrutura de posições para a UI
+    const positionsForUI = Object.entries(fullNatalChart).map(([planet, planetData]) => ({
       planet: planet.charAt(0).toUpperCase() + planet.slice(1),
       sign: planetData.signo,
       house: planetData.casa,
@@ -83,11 +68,13 @@ export async function generateAstrologicalChart(
 
     const finalOutput = {
       interpretation,
+      // O objeto de trânsitos agora é mais rico, mas a análise detalhada vem da IA
       transits: {
-        summary: transitAnalysis,
-        detailedAnalysis: "A análise detalhada dos trânsitos aparecerá aqui em futuras atualizações, quando o fluxo for aprimorado."
+        summary: `Fase da Lua: ${transits.lunarPhase}. Tarot do Dia: ${tarotCard.name}.`,
+        detailedAnalysis: interpretation.externalCycles + "\n\n" + interpretation.lunarCalendar + "\n\n" + interpretation.tarotOfTheDay,
       },
       chartData: {
+        name: data.name || 'Viajante Cósmico',
         positions: positionsForUI
       }
     };

@@ -4,7 +4,7 @@ export type ZodiacSign =
 
 export type Planet = 
   | 'Sol' | 'Lua' | 'Mercúrio' | 'Vênus' | 'Marte' | 'Júpiter' | 'Saturno'
-  | 'Urano' | 'Netuno' | 'Plutão' | 'Ascendente';
+  | 'Urano' | 'Netuno' | 'Plutão' | 'Ascendente' | 'Nodo Norte' | 'Nodo Sul';
 
 export type PlanetPosition = {
   planet: Planet;

@@ -1,42 +1,54 @@
 /**
- * @fileOverview Natal chart interpretation AI agent.
+ * @fileOverview Systemic Oracle AI Agent.
  *
- * - interpretNatalChart - A function that handles the natal chart interpretation process.
- * - InterpretNatalChartInput - The input type for the interpretNatalChart function.
- * - InterpretNatalChartOutput - The return type for the interpretNatalChart function.
+ * Combines Psychological Astrology, Tarot, and Jungian Archetypes to provide a deep,
+ * multi-layered analysis based on both natal data and current transits.
+ *
+ * - interpretNatalChart - The main function that orchestrates the oracle's wisdom.
+ * - InterpretNatalChartInput - The input type for the function.
+ * - InterpretNatalChartOutput - The return type for the function.
  */
+
+'use server';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const InterpretNatalChartInputSchema = z.object({
   userName: z.string(),
-  planets: z.any(),
+  natalChart: z.any().describe("The user's natal chart data, including planets and nodes."),
+  transits: z.any().describe("The current planetary positions and lunar phase."),
+  tarotCard: z.string().describe("The randomly drawn Tarot card for the day."),
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
 const InterpretNatalChartOutputSchema = z.object({
-    personalityTraits: z.string().describe("Análise da tríade Sol, Lua e Ascendente, focando na personalidade, motivações e como a pessoa se apresenta ao mundo."),
-    lifePathAspects: z.string().describe("Análise sobre carreira, vocação e propósito de vida, com base em planetas relevantes como Meio do Céu, Júpiter e Saturno."),
-    potential: z.string().describe("Análise sobre as forças, talentos e potenciais inatos indicados no mapa."),
-    planetaryInterpretations: z.string().describe("Uma análise textual e fluida de cada planeta (Sol, Lua, Mercúrio, etc.) em seu respectivo signo e casa, explicando o que cada posição significa.")
+    philosophicalSummary: z.string().describe("Uma síntese poética da tríade Sol, Lua e Ascendente."),
+    soulAndPersonality: z.string().describe("Descrição detalhada de Mercúrio, Vênus e Marte, abordando explicitamente LUZ (potenciais) e SOMBRA (desafios)."),
+    destinyAxis: z.string().describe("Interpretação do Eixo do Destino (Nodos Lunares Norte/Sul) de nascimento vs. o trânsito atual, focando na Missão de Vida."),
+    externalCycles: z.string().describe("Análise de como os planetas geracionais (Urano, Netuno, Plutão) estão tensionando ou favorecendo o usuário HOJE, com base nos trânsitos."),
+    lunarCalendar: z.string().describe("Qual fase da lua estamos hoje e o que ela ativa no mapa do usuário (se é um momento favorável ou desafiador para alguma área)."),
+    tarotOfTheDay: z.string().describe("Sorteio e descrição do arquétipo do arcano do dia, correlacionando-o com os trânsitos astrológicos mais relevantes citados."),
+    archetypalReflection: z.string().describe("Uma frase final, inspiradora e para meditação, baseada no arquétipo dominante do dia (Tarot + trânsitos).")
 });
 export type InterpretNatalChartOutput = z.infer<typeof InterpretNatalChartOutputSchema>;
 
 
 const SYSTEM_PROMPT = `
-Use como base as seguintes tradições astrológicas:
-1. Sistema de Casas: Placidus.
-2. Dignidades Planetárias: Domicílio, Exílio, Exaltação e Queda.
-3. Aspectos: Conjunção (0°), Oposição (180°), Quadratura (90°), Trígono (120°) e Sêxtil (60°).
-4. Orbes: Máximo de 8 graus para planetas pessoais e 5 graus para os demais.
+Você é um Oráculo Sistêmico que combina Astrologia Psicológica, Astronomia Técnica, Tarot e Arquétipos de Jung.
+Sua missão é fornecer uma análise profunda que equilibre Autoconhecimento (Natal) e Probabilidades Diárias (Trânsitos).
+Sua linguagem é poética, mas precisa, inspiradora, mas realista.
 
-Sua interpretação deve seguir o estilo 'Astrologia Psicológica Modernista': 
-focada em autoconhecimento, potencial de carreira e desafios emocionais, 
-evitando previsões fatalistas.
+SIGA ESTE ROTEIRO DE RESPOSTA ESTRITAMENTE:
+1. RESUMO FILOSÓFICO: Comece com uma síntese poética e curta da tríade Sol, Lua e Ascendente do usuário.
+2. ALMA E PERSONALIDADE: Faça uma descrição detalhada de Mercúrio, Vênus e Marte do mapa natal. Aborde explicitamente os pontos de LUZ (potenciais) e SOMBRA (desafios) para cada um.
+3. EIXO DO DESTINO (NODOS LUNARES): Interprete o significado do Nodo Norte e Sul de nascimento. Em seguida, compare com a posição do Nodo Norte em trânsito hoje, explicando a 'missão de vida' do usuário e como o momento atual a influencia.
+4. CICLOS EXTERNOS: Analise como os planetas lentos em trânsito (Urano, Netuno e Plutão) estão aspectando o mapa natal do usuário HOJE. Seja direto sobre quais áreas da vida estão sendo tensionadas ou favorecidas.
+5. CALENDÁRIO LUNAR: Informe a fase da lua de HOJE. Explique qual casa do mapa natal do usuário ela está ativando e o que isso significa (ex: "A Lua Crescente em seu setor financeiro sugere...").
+6. TAROT DO DIA: Apresente o arcano do dia sorteado. Descreva seu arquétipo e, o mais importante, correlacione-o com os trânsitos astrológicos mais impactantes que você citou nos pontos 4 e 5.
+7. REFLEXÃO ARQUETÍPICA: Conclua com uma frase final curta, poderosa e para meditação, baseada no arquétipo dominante do dia (junção do Tarot e dos trânsitos).
 
-Seja empático, inspirador, mas realista, com um tom semelhante ao do site Astrolink.
-Estruture sua resposta EXATAMENTE no formato JSON solicitado.
+Formate a resposta usando markdown para melhor legibilidade (títulos, negrito, listas).
 `;
 
 export const interpretNatalChart = ai.defineFlow(
@@ -49,7 +61,12 @@ export const interpretNatalChart = ai.defineFlow(
     const response = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       system: SYSTEM_PROMPT,
-      prompt: `Aja como um astrólogo profissional e empático. Analise o seguinte mapa natal para ${input.userName}: ${JSON.stringify(input.planets)}. Forneça uma análise detalhada e estruturada de acordo com o schema de saída.`,
+      prompt: `Analise os seguintes dados para ${input.userName}:
+- Mapa Natal: ${JSON.stringify(input.natalChart)}
+- Trânsitos de Hoje: ${JSON.stringify(input.transits)}
+- Tarot do Dia: ${input.tarotCard}
+
+Forneça uma análise detalhada e estruturada seguindo o roteiro de 7 passos no formato JSON solicitado.`,
       output: {
         format: 'json',
         schema: InterpretNatalChartOutputSchema,

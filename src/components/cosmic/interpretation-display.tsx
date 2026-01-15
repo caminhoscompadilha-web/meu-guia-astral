@@ -6,11 +6,24 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, Users, Telescope, Sparkles } from "lucide-react";
+import { Star, Users, Telescope, Sparkles, Wand2, GitCommit, Moon, Dna } from "lucide-react";
 
 interface InterpretationDisplayProps {
   interpretation: InterpretNatalChartOutput;
 }
+
+const Section = ({ icon, title, content, value }: { icon: React.ReactNode, title: string, content: string, value: string }) => (
+    <AccordionItem value={value}>
+        <AccordionTrigger className="font-headline text-lg">
+            {icon}
+            {title}
+        </AccordionTrigger>
+        <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
+            {content}
+        </AccordionContent>
+    </AccordionItem>
+);
+
 
 export function InterpretationDisplay({ interpretation }: InterpretationDisplayProps) {
   if (!interpretation) {
@@ -30,47 +43,68 @@ export function InterpretationDisplay({ interpretation }: InterpretationDisplayP
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Seu DNA Cósmico</CardTitle>
-        <CardDescription>Uma interpretação do seu mapa natal único, feita por IA.</CardDescription>
+        <CardTitle className="font-headline text-2xl">Seu Oráculo Sistêmico</CardTitle>
+        <CardDescription>Uma análise profunda do seu ser e do momento presente.</CardDescription>
       </CardHeader>
       <CardContent>
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="font-headline text-lg">
-              <Star className="mr-2 h-5 w-5 text-primary" />
-              Traços de Personalidade
-            </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-              {interpretation.personalityTraits}
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="font-headline text-lg">
-              <Users className="mr-2 h-5 w-5 text-primary" />
-              Caminho de Vida e Oportunidades
-            </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-              {interpretation.lifePathAspects}
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="font-headline text-lg">
-              <Telescope className="mr-2 h-5 w-5 text-primary" />
-              Forças e Potencial
-            </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-              {interpretation.potential}
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-4">
-            <AccordionTrigger className="font-headline text-lg">
-              <Sparkles className="mr-2 h-5 w-5 text-primary" />
-              Análise Planetária Detalhada
-            </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-              {interpretation.planetaryInterpretations}
-            </AccordionContent>
-          </AccordionItem>
+          
+          <Section 
+            value="item-1"
+            icon={<Dna className="mr-2 h-5 w-5 text-primary" />}
+            title="Resumo Filosófico"
+            content={interpretation.philosophicalSummary}
+          />
+          
+          <Section 
+            value="item-2"
+            icon={<Sparkles className="mr-2 h-5 w-5 text-primary" />}
+            title="Alma e Personalidade (Luz & Sombra)"
+            content={interpretation.soulAndPersonality}
+          />
+
+          <Section 
+            value="item-3"
+            icon={<GitCommit className="mr-2 h-5 w-5 text-primary" />}
+            title="Eixo do Destino (Nodos Lunares)"
+            content={interpretation.destinyAxis}
+          />
+
+          <Section 
+            value="item-4"
+            icon={<Telescope className="mr-2 h-5 w-5 text-primary" />}
+            title="Ciclos Externos (Trânsitos Atuais)"
+            content={interpretation.externalCycles}
+          />
+
+          <Section 
+            value="item-5"
+            icon={<Moon className="mr-2 h-5 w-5 text-primary" />}
+            title="Calendário Lunar"
+            content={interpretation.lunarCalendar}
+          />
+
+          <Section 
+            value="item-6"
+            icon={<Wand2 className="mr-2 h-5 w-5 text-primary" />}
+            title="Tarot do Dia"
+            content={interpretation.tarotOfTheDay}
+          />
+
+           <Card className="mt-6 bg-muted/30 border-primary/30">
+             <CardHeader>
+                <CardTitle className="font-headline text-lg flex items-center">
+                    <Star className="mr-2 h-5 w-5 text-primary" />
+                    Reflexão Arquetípica do Dia
+                </CardTitle>
+             </CardHeader>
+             <CardContent>
+                <p className="text-base text-center font-headline italic text-foreground/90">
+                    "{interpretation.archetypalReflection}"
+                </p>
+             </CardContent>
+           </Card>
+
         </Accordion>
       </CardContent>
     </Card>

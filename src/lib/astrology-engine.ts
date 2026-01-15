@@ -1,6 +1,7 @@
-import { swisseph } from 'swiss-ephemeris';
+import { swisseph } from 'swisseph';
 
-const PLANETS_TO_CALCULATE = [
+// Adicionado o Nodo Norte Verdadeiro
+const CELESTIAL_BODIES = [
     { id: swisseph.SE_SUN, name: 'Sol' },
     { id: swisseph.SE_MOON, name: 'Lua' },
     { id: swisseph.SE_MERCURY, name: 'Mercúrio' },
@@ -11,6 +12,7 @@ const PLANETS_TO_CALCULATE = [
     { id: swisseph.SE_URANUS, name: 'Urano' },
     { id: swisseph.SE_NEPTUNE, name: 'Netuno' },
     { id: swisseph.SE_PLUTO, name: 'Plutão' },
+    { id: swisseph.SE_TRUE_NODE, name: 'Nodo Norte' },
 ];
 
 /**
@@ -23,54 +25,93 @@ const getSign = (degrees: number): string => {
 };
 
 /**
- * Calcula as posições longitudinais dos planetas para uma data e hora específicas.
+ * Calcula a data juliana para um determinado objeto Date.
  */
-export function getPlanetaryPositions(date: Date) {
-    const julianDay = swisseph.julday(
+const getJulianDay = (date: Date): number => {
+    return swisseph.julday(
         date.getUTCFullYear(),
         date.getUTCMonth() + 1, // swisseph usa meses 1-12
         date.getUTCDate(),
         date.getUTCHours() + date.getUTCMinutes() / 60,
         swisseph.SE_GREG_CAL
     );
+};
 
+/**
+ * Calcula as posições planetárias (natais) e o sistema de casas.
+ */
+export function getPlanetaryPositions(date: Date, lat: number, lon: number) {
+    const julianDay = getJulianDay(date);
     const positions: { [key: string]: { grau: number; signo: string } } = {};
 
-    PLANETS_TO_CALCULATE.forEach(planetInfo => {
-        const planetData = swisseph.calc_ut(julianDay, planetInfo.id, swisseph.SEFLG_SPEED);
-        positions[planetInfo.name.toLowerCase()] = {
-            grau: planetData.longitude,
-            signo: getSign(planetData.longitude)
-        };
-    });
+    CELESTIAL_BODIES.forEach(body => {
+        const bodyData = swisseph.calc_ut(julianDay, body.id, swisseph.SEFLG_SPEED);
+        let longitude = bodyData.longitude;
 
-    return positions;
+        // O Nodo Sul é sempre 180 graus oposto ao Nodo Norte
+        if (body.name === 'Nodo Norte') {
+            positions['nodo norte'] = { grau: longitude, signo: getSign(longitude) };
+            const southNodeLongitude = (longitude + 180) % 360;
+            positions['nodo sul'] = { grau: southNodeLongitude, signo: getSign(southNodeLongitude) };
+        } else {
+            positions[body.name.toLowerCase()] = { grau: longitude, signo: getSign(longitude) };
+        }
+    });
+    
+    // 'P' refere-se ao sistema Placidus para casas
+    const houseSystem = swisseph.houses(julianDay, lat, lon, 'P');
+
+    return { planetaryPositions: positions, houseSystem };
 }
 
 /**
- * Calcula as cúspides das casas e as posições do Ascendente e Meio do Céu.
+ * Determina a fase da lua com base na elongação entre Sol e Lua.
  */
-export function calculateHousesAndAscendant(date: Date, lat: number, lng: number) {
-    const julianDay = swisseph.julday(
-        date.getUTCFullYear(),
-        date.getUTCMonth() + 1,
-        date.getUTCDate(),
-        date.getUTCHours() + date.getUTCMinutes() / 60,
-        swisseph.SE_GREG_CAL
-    );
+const getLunarPhase = (sunLon: number, moonLon: number): string => {
+    let diff = (moonLon - sunLon + 360) % 360;
+    if (diff < 45) return 'Nova';
+    if (diff < 90) return 'Crescente Emergente';
+    if (diff < 135) return 'Quarto Crescente';
+    if (diff < 180) return 'Crescente Gibosa';
+    if (diff < 225) return 'Cheia';
+    if (diff < 270) return 'Minguante Gibosa';
+    if (diff < 315) return 'Quarto Minguante';
+    return 'Minguante Balsâmica';
+};
 
-    // 'P' refere-se ao sistema Placidus
-    const housesData = swisseph.houses(julianDay, lat, lng, 'P');
+/**
+ * Calcula os trânsitos planetários atuais e a fase da lua.
+ */
+export function getCurrentTransits() {
+    const julianDay = getJulianDay(new Date());
+    const positions: { [key: string]: { grau: number; signo: string } } = {};
+    let sunLon = 0, moonLon = 0;
 
-    return {
-        ascendant: {
-            degree: housesData.ascendant,
-            sign: getSign(housesData.ascendant)
-        },
-        mc: {
-            degree: housesData.mc,
-            sign: getSign(housesData.mc)
-        },
-        houseCusps: housesData.house // Array com o início de cada uma das 12 casas
-    };
+    CELESTIAL_BODIES.forEach(body => {
+        const bodyData = swisseph.calc_ut(julianDay, body.id, swisseph.SEFLG_SPEED);
+        const longitude = bodyData.longitude;
+        positions[body.name.toLowerCase()] = { grau: longitude, signo: getSign(longitude) };
+        if (body.id === swisseph.SE_SUN) sunLon = longitude;
+        if (body.id === swisseph.SE_MOON) moonLon = longitude;
+    });
+
+    const lunarPhase = getLunarPhase(sunLon, moonLon);
+
+    return { planetaryPositions: positions, lunarPhase };
 }
+
+/**
+ * Encontra a casa astrológica para um determinado grau no zodíaco.
+ */
+export const getHouseForPlanet = (degree: number, houseCusps: number[]): number => {
+    for (let i = 0; i < 12; i++) {
+        const cuspStart = houseCusps[i];
+        const cuspEnd = houseCusps[(i + 1) % 12];
+        if (cuspStart > cuspEnd) { // Lida com a passagem por Áries (0/360 graus)
+            if (degree >= cuspStart || degree < cuspEnd) return i + 1;
+        } else {
+            if (degree >= cuspStart && degree < cuspEnd) return i + 1;
+        }
+    }
+    return 1; // Fallback
+};
