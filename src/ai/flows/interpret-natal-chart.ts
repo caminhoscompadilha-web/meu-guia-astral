@@ -27,7 +27,7 @@ const InterpretNatalChartOutputSchema = z.object({
     philosophicalSummary: z.string().describe("Uma síntese poética da tríade Sol, Lua e Ascendente."),
     soulAndPersonality: z.string().describe("Descrição detalhada de Mercúrio, Vênus e Marte, abordando explicitamente LUZ (potenciais) e SOMBRA (desafios)."),
     destinyAxis: z.string().describe("Interpretação do Eixo do Destino (Nodos Lunares Norte/Sul) de nascimento vs. o trânsito atual, focando na Missão de Vida."),
-    externalCycles: z.string().describe("Análise de como os planetas geracionais (Urano, Netuno, Plutão) estão tensionando ou favorecendo o usuário HOJE, com base nos trânsitos."),
+    externalCycles: z.string().describe("Análise de como os planetas geracionais (Júpiter, Saturno, Urano, Netuno, Plutão) estão tensionando ou favorecendo o usuário HOJE, com base nos trânsitos."),
     lunarCalendar: z.string().describe("Qual fase da lua estamos hoje e o que ela ativa no mapa do usuário (se é um momento favorável ou desafiador para alguma área)."),
     tarotOfTheDay: z.string().describe("Sorteio e descrição do arquétipo do arcano do dia, correlacionando-o com os trânsitos astrológicos mais relevantes citados."),
     archetypalReflection: z.string().describe("Uma frase final, inspiradora e para meditação, baseada no arquétipo dominante do dia (Tarot + trânsitos).")
@@ -51,7 +51,15 @@ SIGA ESTE ROTEIRO DE RESPOSTA ESTRITAMENTE:
         * Se estiverem no mesmo signo (Retorno de Nodos), enfatize um momento de destino crucial.
         * Se estiverem em signos opostos (Inversão), enfatize uma fase de revisão total de valores.
     - TOM DE VOZ: Use uma linguagem filosófica e arquetípica, focada em 'Individuação' (Jung).
-4. CICLOS EXTERNOS: Analise como os planetas lentos em trânsito (Urano, Netuno e Plutão) estão aspectando o mapa natal do usuário HOJE. Seja direto sobre quais áreas da vida estão sendo tensionadas ou favorecidas.
+4. CICLOS EXTERNOS (PLANETAS SOCIAIS E GERACIONAIS): Analise como os planetas lentos em trânsito (Júpiter, Saturno, Urano, Netuno e Plutão) estão aspectando o mapa natal do usuário HOJE. Seja direto sobre quais áreas da vida estão sendo tensionadas ou favorecidas.
+    INSTRUÇÃO TÉCNICA PARA CICLOS EXTERNOS:
+    - JÚPITER (O Expansor): Onde a sorte e o crescimento se encontram. Luz: Otimismo, fé. Sombra: Excesso, dogmatismo. Responda: "Onde você tem permissão para crescer hoje?"
+    - SATURNO (O Mestre): Onde a disciplina constrói a realidade. Luz: Maturidade, resiliência. Sombra: Medo, rigidez. Responda: "Que estrutura de longo prazo você está sendo chamado a construir?"
+    - URANO (O Despertar): Revolução súbita e libertação. Ação: "Como você está sendo convidado a revolucionar sua rotina hoje?"
+    - NETUNO (O Visionário): Sonhos, espiritualidade e ilusão. Ação: "Onde você precisa se entregar ao fluxo e onde precisa de limites para não se perder?"
+    - PLUTÃO (O Transformador): Morte e renascimento, poder profundo. Ação: "Qual processo de transformação profunda e irreversível você está atravessando?"
+    - NÃO DIGA APENAS 'Saturno está em Peixes'. Diga: 'Saturno em Peixes hoje está estruturando suas águas emocionais, pedindo que você dê forma aos seus sonhos mais abstratos'.
+    - CONECTE o planeta geracional mais forte do dia com a Carta do Tarot sorteada para criar uma síntese de 'Destino vs. Ação'.
 5. CALENDÁRIO LUNAR: Informe a fase da lua de HOJE. Explique qual casa do mapa natal do usuário ela está ativando e o que isso significa (ex: "A Lua Crescente em seu setor financeiro sugere...").
 6. TAROT DO DIA: Apresente o arcano do dia sorteado. Descreva seu arquétipo e, o mais importante, correlacione-o com os trânsitos astrológicos mais impactantes que você citou nos pontos 4 e 5.
 7. REFLEXÃO ARQUETÍPICA: Conclua com uma frase final curta, poderosa e para meditação, baseada no arquétipo dominante do dia (junção do Tarot e dos trânsitos).
