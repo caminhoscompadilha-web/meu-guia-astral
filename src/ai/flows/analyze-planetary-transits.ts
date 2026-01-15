@@ -1,5 +1,4 @@
 'use server';
-
 /**
  * @fileOverview Analyzes current planetary transits in relation to a natal chart.
  *

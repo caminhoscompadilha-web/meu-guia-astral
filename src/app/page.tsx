@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { NatalChartForm, type FormData } from '@/components/cosmic/natal-chart-form';
 import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
-import { interpretNatalChart } from '@/ai/flows/interpret-natal-chart';
 import type { AnalyzePlanetaryTransitsOutput } from '@/ai/flows/analyze-planetary-transits';
-import { analyzePlanetaryTransits } from '@/ai/flows/analyze-planetary-transits';
+import { generateAstrologicalChart } from '@/app/actions';
 import { NatalChartDisplay } from '@/components/cosmic/natal-chart-display';
 import { PlanetaryPositions, type PlanetPosition } from '@/components/cosmic/planetary-positions';
 import { InterpretationDisplay } from '@/components/cosmic/interpretation-display';
@@ -51,25 +50,23 @@ export default function Home() {
     try {
       const birthDate = `${data.birthYear}-${data.birthMonth.padStart(2, '0')}-${data.birthDay.padStart(2, '0')}`;
       const birthDateObj = new Date(`${birthDate}T${data.birthTime}`);
-      const birthLocation = `${data.birthCity}, ${data.birthState}, ${data.birthCountry}`;
       
-      const [interpretation, transits] = await Promise.all([
-        interpretNatalChart({
-          birthDate: birthDate,
-          birthTime: data.birthTime,
-          birthLocation: birthLocation,
-        }),
-        analyzePlanetaryTransits({
-          natalChartData: JSON.stringify({ ...data, birthDate, birthLocation }),
-          currentDate: new Date().toISOString().split('T')[0],
-        })
-      ]);
+      const chartResults = await generateAstrologicalChart({
+        birthDate: birthDate,
+        birthTime: data.birthTime,
+        birthLocation: `${data.birthCity}, ${data.birthState}, ${data.birthCountry}`,
+        name: data.name || 'Viajante Cósmico',
+      });
+
+      if (!chartResults.interpretation || !chartResults.transits) {
+        throw new Error("A resposta da IA está incompleta.");
+      }
 
       const positions = mockPlanetaryPositions(birthDateObj);
 
       setResults({ 
-        interpretation, 
-        transits,
+        interpretation: chartResults.interpretation, 
+        transits: chartResults.transits,
         chartData: {
           name: data.name,
           positions,
