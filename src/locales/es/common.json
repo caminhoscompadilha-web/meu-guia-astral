@@ -1,0 +1,62 @@
+
+{
+  "form": {
+    "title": "Comienza tu viaje gratis",
+    "description": "Para generar su carta, necesitamos algunos datos. La ubicación se fijará en São Paulo, Brasil, para esta demostración.",
+    "nameLabel": "Nombre (Opcional)",
+    "namePlaceholder": "¿Cómo debemos llamarte?",
+    "dateLabel": "Fecha de Nacimiento",
+    "dayPlaceholder": "Día",
+    "monthPlaceholder": "Mes",
+    "yearPlaceholder": "Año",
+    "timeLabel": "Hora de Nacimiento",
+    "submitButton": "Generar Mi Guía Ahora",
+    "generatingButton": "Generando tu guía...",
+    "dayRequired": "El día es obligatorio",
+    "monthRequired": "El mes es obligatorio",
+    "yearRequired": "El año es obligatorio",
+    "timeRequired": "La hora de nacimiento es obligatoria.",
+    "invalidDate": "Fecha de nacimiento inválida."
+  },
+  "ui": {
+    "mainTitle": "Percepciones Cósmicas",
+    "subTitle": "Desvela los secretos de tu mapa celestial. Introduce tus datos de nacimiento para generar una carta astrológica personalizada y descubrir tu potencial cósmico.",
+    "loadingMessage": "Generando tu mapa cósmico...",
+    "backToForm": "Volver al formulario",
+    "personalAnalysis": "Análisis Personal (Natal)",
+    "dayOracle": "Oráculo del Día (Tránsitos y Tarot)",
+    "cosmicTraveler": "Viajero Cósmico",
+    "natalChartOf": "Carta Natal de",
+    "yourNatalChart": "Tu Carta Natal",
+    "chartDescription": "Un retrato del cosmos en tu nacimiento.",
+    "planetaryPositions": "Posiciones Planetarias",
+    "planetaryPositionsDescription": "Los cuerpos celestes y sus posiciones.",
+    "planet": "Planeta",
+    "sign": "Signo",
+    "house": "Casa",
+    "waitingForAnalysis": "Esperando el análisis de tránsitos...",
+    "waitingForData": "Esperando datos de interpretación..."
+  },
+  "analysis": {
+    "personalAnalysisTitle": "Tu Ser Cósmico",
+    "personalAnalysisDescription": "Un análisis profundo de tu carta de nacimiento.",
+    "philosophicalSummary": "Resumen Filosófico",
+    "soulAndPersonality": "Alma y Personalidad (Luz y Sombra)",
+    "destinyAxis": "Eje del Destino (Nodos Lunares)",
+    "astrocartography": "Astrocartografía Mundial",
+    "externalCycles": "Ciclos Externos",
+    "externalCyclesDescription": "Cómo los grandes planetas mueven tu energía hoy.",
+    "lunarCalendar": "Calendario Lunar",
+    "lunarCalendarDescription": "La influencia de la fase lunar actual en tu carta.",
+    "tarotOfTheDay": "Tarot del Día",
+    "tarotOfTheDayDescription": "El arquetipo que guía tu día, en sintonía con los astros.",
+    "archetypalReflection": "Reflexión Arquetípica del Día"
+  },
+  "errors": {
+    "chartGenerationTitle": "Error al Generar el Mapa",
+    "unexpectedError": "Ocurrió un error inesperado. Verifique los datos e inténtelo de nuevo.",
+    "incompleteResponse": "La respuesta del servidor está incompleta o es inválida.",
+    "interpretationErrorTitle": "Error de Interpretación",
+    "interpretationErrorDescription": "No se pudo cargar el análisis de la IA."
+  }
+}

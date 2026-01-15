@@ -9,7 +9,7 @@ import { PlanetaryPositions } from '@/components/cosmic/planetary-positions';
 import { InterpretationDisplay } from '@/components/cosmic/interpretation-display';
 import { TransitAnalysisDisplay } from '@/components/cosmic/transit-analysis-display';
 import { LoadingAnimation } from '@/components/cosmic/loading-animation';
-import { NatalChartForm, type FormData } from '@/components/cosmic/natal-chart-form';
+import { NatalChartForm } from '@/components/cosmic/natal-chart-form';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
@@ -17,8 +17,8 @@ import type { NatalChartData } from '@/lib/types';
 import { Sparkles, Globe } from 'lucide-react';
 import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
 import { getTranslations, type Translations } from '@/lib/i18n';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Header } from '@/components/Header';
+import type { FormData } from '@/components/cosmic/natal-chart-form';
 
 type Results = {
   interpretation: InterpretNatalChartOutput;
@@ -48,15 +48,14 @@ export default function Home() {
     setIsLoading(true);
     setResults(null);
     try {
-      const birthDate = `${data.birthYear}-${data.birthMonth.padStart(2, '0')}-${data.birthDay.padStart(2, '0')}`;
       
       const inputData: ChartGenerationInput = {
-        birthDate: birthDate,
+        birthDate: data.birthDate,
         birthTime: data.birthTime,
         lat: -23.5505,
         lon: -46.6333,
         name: data.name || translations.ui.cosmicTraveler,
-        lang: lang,
+        lang: data.lang,
       };
       
       const chartResults = await generateAstrologicalChart(inputData);
@@ -65,6 +64,9 @@ export default function Home() {
         throw new Error(chartResults.error || translations.errors.incompleteResponse);
       }
       
+      // Salva os dados no localStorage para "lembrar" o usuário
+      localStorage.setItem('meu-guia-user-data', JSON.stringify(inputData));
+
       setResults(chartResults.data);
 
     } catch (error: any) {
@@ -83,6 +85,16 @@ export default function Home() {
     setResults(null);
   };
   
+  useEffect(() => {
+    // Tenta carregar dados do usuário do localStorage ao iniciar
+    const savedData = localStorage.getItem('meu-guia-user-data');
+    if (savedData) {
+      // Futuramente, poderíamos usar esses dados para preencher o form
+      // ou mostrar um resumo do último mapa gerado.
+      console.log("Usuário já tem dados salvos:", JSON.parse(savedData));
+    }
+  }, []);
+
   if (!translations) {
       return <LoadingAnimation message="Carregando..." />;
   }
@@ -159,7 +171,7 @@ export default function Home() {
         </p>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto">
-            <NatalChartForm onSubmit={handleChartRequest} disabled={isLoading} translations={translations} />
+            <NatalChartForm onSubmit={handleChartRequest} disabled={isLoading} translations={translations} setLang={setLang} />
         </div>
       </main>
     </div>

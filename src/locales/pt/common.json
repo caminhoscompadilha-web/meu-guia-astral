@@ -1,17 +1,17 @@
 
 {
   "form": {
-    "title": "Insira Seus Dados de Nascimento",
+    "title": "Comece sua jornada grátis",
     "description": "Para gerar seu mapa, precisamos de alguns dados. A localização será fixada em São Paulo, Brasil, para esta demonstração.",
     "nameLabel": "Nome (Opcional)",
-    "namePlaceholder": "ex: Maria Silva",
+    "namePlaceholder": "Como devemos te chamar?",
     "dateLabel": "Data de Nascimento",
     "dayPlaceholder": "Dia",
     "monthPlaceholder": "Mês",
     "yearPlaceholder": "Ano",
     "timeLabel": "Hora de Nascimento",
     "submitButton": "Gerar Meu Guia Agora",
-    "generatingButton": "Gerando...",
+    "generatingButton": "Gerando seu guia...",
     "dayRequired": "Dia é obrigatório",
     "monthRequired": "Mês é obrigatório",
     "yearRequired": "Ano é obrigatório",

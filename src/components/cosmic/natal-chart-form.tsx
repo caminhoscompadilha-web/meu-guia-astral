@@ -15,59 +15,45 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import type { Translations } from "@/lib/i18n";
 
+export type FormData = z.infer<ReturnType<typeof getFormSchema>>;
 
 interface NatalChartFormProps {
   onSubmit: (data: FormData) => void;
   disabled: boolean;
   translations: Translations;
+  setLang: (lang: 'pt' | 'en' | 'es' | 'it' | 'fr') => void;
 }
 
-export function NatalChartForm({ onSubmit, disabled, translations }: NatalChartFormProps) {
+const getFormSchema = (t: Translations['form']) => z.object({
+  name: z.string().optional(),
+  birthDate: z.string().min(1, t.invalidDate),
+  birthTime: z.string({ required_error: t.timeRequired }).min(1, t.timeRequired),
+  lang: z.enum(['pt', 'en', 'es', 'it', 'fr']),
+});
+
+
+export function NatalChartForm({ onSubmit, disabled, translations, setLang }: NatalChartFormProps) {
   
   const t = translations.form;
-
-  const formSchema = z.object({
-    name: z.string().optional(),
-    birthDay: z.string().min(1, t.dayRequired).max(2),
-    birthMonth: z.string().min(1, t.monthRequired).max(2),
-    birthYear: z.string().min(4, t.yearRequired).max(4),
-    birthTime: z.string({ required_error: t.timeRequired }).min(1, t.timeRequired),
-  }).refine(data => {
-      const day = parseInt(data.birthDay, 10);
-      const month = parseInt(data.birthMonth, 10);
-      const year = parseInt(data.birthYear, 10);
-      if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
-      
-      if (year < 1900 || year > new Date().getUTCFullYear()) return false;
-      if (month < 1 || month > 12) return false;
-      if (day < 1 || day > 31) return false;
-
-      const date = new Date(Date.UTC(year, month - 1, day));
-      return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-  }, {
-      message: t.invalidDate,
-      path: ["birthDay"], 
-  });
-
-  type FormData = z.infer<typeof formSchema>;
+  const formSchema = getFormSchema(t);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      birthDay: "15",
-      birthMonth: "06",
-      birthYear: "1995",
+      birthDate: "1995-06-15",
       birthTime: "14:30",
+      lang: "pt",
     },
   });
 
   return (
      <div className="max-w-md mx-auto bg-slate-900/50 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-2xl">
-        <h3 className="text-xl font-semibold mb-6 text-center text-white">Comece sua jornada grátis</h3>
+        <h3 className="text-xl font-semibold mb-6 text-center text-white">{t.title}</h3>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-left">
               <FormField
@@ -122,22 +108,48 @@ export function NatalChartForm({ onSubmit, disabled, translations }: NatalChartF
                     )}
                   />
               </div>
-              <FormMessage>{form.formState.errors.birthDay?.message}</FormMessage>
+              <FormMessage>{form.formState.errors.birthDate?.message}</FormMessage>
+              
+              <FormField
+                control={form.control}
+                name="lang"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase text-slate-500 font-bold ml-1">Idioma do Guia</FormLabel>
+                    <Select onValueChange={(value: 'pt' | 'en' | 'es' | 'it' | 'fr') => {
+                      field.onChange(value);
+                      setLang(value);
+                    }} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all">
+                          <SelectValue placeholder="Selecione o idioma" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-slate-900 text-white border-slate-700">
+                        <SelectItem value="pt">Português 🇧🇷</SelectItem>
+                        <SelectItem value="en">English 🇺🇸</SelectItem>
+                        <SelectItem value="es">Español 🇪🇸</SelectItem>
+                        <SelectItem value="it">Italiano 🇮🇹</SelectItem>
+                        <SelectItem value="fr">Français 🇫🇷</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <button type="submit" disabled={disabled} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all transform hover:scale-[1.02]">
+            <Button type="submit" disabled={disabled} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all transform hover:scale-[1.02] flex items-center justify-center">
               {disabled ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t.generatingButton}
                 </>
               ) : (
-                "Gerar Meu Guia Agora"
+                t.submitButton
               )}
-            </button>
+            </Button>
           </form>
         </Form>
     </div>
   );
 }
-
-export type { FormData } from './natal-chart-form';

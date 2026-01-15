@@ -1,0 +1,62 @@
+
+{
+  "form": {
+    "title": "Inizia il tuo viaggio gratuito",
+    "description": "Per generare il tuo tema, abbiamo bisogno di alcuni dati. La località sarà fissata a San Paolo, Brasile, per questa dimostrazione.",
+    "nameLabel": "Nome (Opzionale)",
+    "namePlaceholder": "Come dovremmo chiamarti?",
+    "dateLabel": "Data di Nascita",
+    "dayPlaceholder": "Giorno",
+    "monthPlaceholder": "Mese",
+    "yearPlaceholder": "Anno",
+    "timeLabel": "Ora di Nascita",
+    "submitButton": "Genera la Mia Guida Ora",
+    "generatingButton": "Generazione della tua guida...",
+    "dayRequired": "Il giorno è obbligatorio",
+    "monthRequired": "Il mese è obbligatorio",
+    "yearRequired": "L'anno è obbligatorio",
+    "timeRequired": "L'ora di nascita è obbligatoria.",
+    "invalidDate": "Data di nascita non valida."
+  },
+  "ui": {
+    "mainTitle": "Percezioni Cosmiche",
+    "subTitle": "Svela i segreti della tua mappa celeste. Inserisci i tuoi dati di nascita per generare un tema astrologico personalizzato e scoprire il tuo potenziale cosmico.",
+    "loadingMessage": "Generazione della tua mappa cosmica...",
+    "backToForm": "Torna al modulo",
+    "personalAnalysis": "Analisi Personale (Natale)",
+    "dayOracle": "Oracolo del Giorno (Transiti & Tarocchi)",
+    "cosmicTraveler": "Viaggiatore Cosmico",
+    "natalChartOf": "Tema Natale di",
+    "yourNatalChart": "Il Tuo Tema Natale",
+    "chartDescription": "Un ritratto del cosmo alla tua nascita.",
+    "planetaryPositions": "Posizioni Planetarie",
+    "planetaryPositionsDescription": "I corpi celesti e le loro posizioni.",
+    "planet": "Pianeta",
+    "sign": "Segno",
+    "house": "Casa",
+    "waitingForAnalysis": "In attesa dell'analisi dei transiti...",
+    "waitingForData": "In attesa dei dati di interpretazione..."
+  },
+  "analysis": {
+    "personalAnalysisTitle": "Il Tuo Essere Cosmico",
+    "personalAnalysisDescription": "Un'analisi approfondita del tuo tema natale.",
+    "philosophicalSummary": "Sintesi Filosofica",
+    "soulAndPersonality": "Anima e Personalità (Luce & Ombra)",
+    "destinyAxis": "Asse del Destino (Nodi Lunari)",
+    "astrocartography": "Astrocartografia Mondiale",
+    "externalCycles": "Cicli Esterni",
+    "externalCyclesDescription": "Come i grandi pianeti muovono la tua energia oggi.",
+    "lunarCalendar": "Calendario Lunare",
+    "lunarCalendarDescription": "L'influenza della fase lunare attuale sul tuo tema.",
+    "tarotOfTheDay": "Tarocchi del Giorno",
+    "tarotOfTheDayDescription": "L'archetipo che guida la tua giornata, in sintonia con le stelle.",
+    "archetypalReflection": "Riflessione Archetipica del Giorno"
+  },
+  "errors": {
+    "chartGenerationTitle": "Errore nella Generazione del Tema",
+    "unexpectedError": "Si è verificato un errore imprevisto. Controlla i dati e riprova.",
+    "incompleteResponse": "La risposta del server è incompleta o non valida.",
+    "interpretationErrorTitle": "Errore di Interpretazione",
+    "interpretationErrorDescription": "Impossibile caricare l'analisi dell'IA."
+  }
+}

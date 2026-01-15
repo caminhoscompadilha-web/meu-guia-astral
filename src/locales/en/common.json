@@ -1,0 +1,62 @@
+
+{
+  "form": {
+    "title": "Start your free journey",
+    "description": "To generate your chart, we need some data. The location will be fixed in São Paulo, Brazil, for this demonstration.",
+    "nameLabel": "Name (Optional)",
+    "namePlaceholder": "What should we call you?",
+    "dateLabel": "Date of Birth",
+    "dayPlaceholder": "Day",
+    "monthPlaceholder": "Month",
+    "yearPlaceholder": "Year",
+    "timeLabel": "Time of Birth",
+    "submitButton": "Generate My Guide Now",
+    "generatingButton": "Generating your guide...",
+    "dayRequired": "Day is required",
+    "monthRequired": "Month is required",
+    "yearRequired": "Year is required",
+    "timeRequired": "Time of birth is required.",
+    "invalidDate": "Invalid birth date."
+  },
+  "ui": {
+    "mainTitle": "Cosmic Perceptions",
+    "subTitle": "Unveil the secrets of your celestial map. Enter your birth data to generate a personalized astrological chart and discover your cosmic potential.",
+    "loadingMessage": "Generating your cosmic map...",
+    "backToForm": "Back to form",
+    "personalAnalysis": "Personal Analysis (Natal)",
+    "dayOracle": "Oracle of the Day (Transits & Tarot)",
+    "cosmicTraveler": "Cosmic Traveler",
+    "natalChartOf": "Natal Chart of",
+    "yourNatalChart": "Your Natal Chart",
+    "chartDescription": "A portrait of the cosmos at your birth.",
+    "planetaryPositions": "Planetary Positions",
+    "planetaryPositionsDescription": "The celestial bodies and their positions.",
+    "planet": "Planet",
+    "sign": "Sign",
+    "house": "House",
+    "waitingForAnalysis": "Waiting for transit analysis...",
+    "waitingForData": "Waiting for interpretation data..."
+  },
+  "analysis": {
+    "personalAnalysisTitle": "Your Cosmic Self",
+    "personalAnalysisDescription": "A deep analysis of your birth chart.",
+    "philosophicalSummary": "Philosophical Summary",
+    "soulAndPersonality": "Soul and Personality (Light & Shadow)",
+    "destinyAxis": "Destiny Axis (Lunar Nodes)",
+    "astrocartography": "World Astrocartography",
+    "externalCycles": "External Cycles",
+    "externalCyclesDescription": "How the great planets move your energy today.",
+    "lunarCalendar": "Lunar Calendar",
+    "lunarCalendarDescription": "The influence of the current moon phase on your chart.",
+    "tarotOfTheDay": "Tarot of the Day",
+    "tarotOfTheDayDescription": "The archetype that guides your day, in tune with the stars.",
+    "archetypalReflection": "Archetypal Reflection of the Day"
+  },
+  "errors": {
+    "chartGenerationTitle": "Error Generating Map",
+    "unexpectedError": "An unexpected error occurred. Check the data and try again.",
+    "incompleteResponse": "The server response is incomplete or invalid.",
+    "interpretationErrorTitle": "Interpretation Error",
+    "interpretationErrorDescription": "Could not load the AI analysis."
+  }
+}

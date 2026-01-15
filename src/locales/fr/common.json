@@ -1,0 +1,62 @@
+
+{
+  "form": {
+    "title": "Commencez votre voyage gratuit",
+    "description": "Pour générer votre thème, nous avons besoin de quelques données. Le lieu sera fixé à São Paulo, Brésil, pour cette démonstration.",
+    "nameLabel": "Nom (Optionnel)",
+    "namePlaceholder": "Comment devrions-nous vous appeler?",
+    "dateLabel": "Date de Naissance",
+    "dayPlaceholder": "Jour",
+    "monthPlaceholder": "Mois",
+    "yearPlaceholder": "Année",
+    "timeLabel": "Heure de Naissance",
+    "submitButton": "Générer Mon Guide Maintenant",
+    "generatingButton": "Génération de votre guide...",
+    "dayRequired": "Le jour est requis",
+    "monthRequired": "Le mois est requis",
+    "yearRequired": "L'année est requise",
+    "timeRequired": "L'heure de naissance est requise.",
+    "invalidDate": "Date de naissance invalide."
+  },
+  "ui": {
+    "mainTitle": "Perceptions Cosmiques",
+    "subTitle": "Dévoilez les secrets de votre carte céleste. Entrez vos données de naissance pour générer un thème astrologique personnalisé et découvrir votre potentiel cosmique.",
+    "loadingMessage": "Génération de votre carte cosmique...",
+    "backToForm": "Retour au formulaire",
+    "personalAnalysis": "Analyse Personnelle (Natal)",
+    "dayOracle": "Oracle du Jour (Transits & Tarot)",
+    "cosmicTraveler": "Voyageur Cosmique",
+    "natalChartOf": "Thème Natal de",
+    "yourNatalChart": "Votre Thème Natal",
+    "chartDescription": "Un portrait du cosmos à votre naissance.",
+    "planetaryPositions": "Positions Planétaires",
+    "planetaryPositionsDescription": "Les corps célestes et leurs positions.",
+    "planet": "Planète",
+    "sign": "Signe",
+    "house": "Maison",
+    "waitingForAnalysis": "En attente de l'analyse des transits...",
+    "waitingForData": "En attente des données d'interprétation..."
+  },
+  "analysis": {
+    "personalAnalysisTitle": "Votre Être Cosmique",
+    "personalAnalysisDescription": "Une analyse approfondie de votre thème de naissance.",
+    "philosophicalSummary": "Résumé Philosophique",
+    "soulAndPersonality": "Âme et Personnalité (Lumière & Ombre)",
+    "destinyAxis": "Axe du Destin (Nœuds Lunaires)",
+    "astrocartography": "Astrocartographie Mondiale",
+    "externalCycles": "Cycles Externes",
+    "externalCyclesDescription": "Comment les grandes planètes déplacent votre énergie aujourd'hui.",
+    "lunarCalendar": "Calendrier Lunaire",
+    "lunarCalendarDescription": "L'influence de la phase lunaire actuelle sur votre thème.",
+    "tarotOfTheDay": "Tarot du Jour",
+    "tarotOfTheDayDescription": "L'archétype qui guide votre journée, en harmonie avec les astres.",
+    "archetypalReflection": "Réflexion Archétypale du Jour"
+  },
+  "errors": {
+    "chartGenerationTitle": "Erreur lors de la Génération du Thème",
+    "unexpectedError": "Une erreur inattendue s'est produite. Vérifiez les données et réessayez.",
+    "incompleteResponse": "La réponse du serveur est incomplète ou invalide.",
+    "interpretationErrorTitle": "Erreur d'Interprétation",
+    "interpretationErrorDescription": "Impossible de charger l'analyse de l'IA."
+  }
+}
