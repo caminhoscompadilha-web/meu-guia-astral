@@ -5,9 +5,14 @@ import { Header } from '@/components/Header';
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<any>(null);
 
-  // Simulando o carregamento dos dados do banco/IA
   useEffect(() => {
+    const data = localStorage.getItem('user_astral_data');
+    if (data) {
+      setUserData(JSON.parse(data));
+    }
+    
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
@@ -28,7 +33,7 @@ export default function DashboardGuia() {
       <main className="max-w-6xl mx-auto px-6 py-10">
         {/* Saudação e Resumo do Dia */}
         <header className="mb-12">
-          <h2 className="text-3xl font-serif font-bold mb-2">Olá, Explorador Astral</h2>
+          <h2 className="text-3xl font-serif font-bold mb-2">Olá, {userData?.nome || 'Explorador Astral'}</h2>
           <p className="text-slate-400">Este é o seu guia personalizado para os próximos 30 dias.</p>
         </header>
 

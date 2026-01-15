@@ -1,153 +1,27 @@
 
-"use client";
-
-import { useState, useEffect } from 'react';
-import { useToast } from "@/components/ui/use-toast";
-import { generateAstrologicalChart, type ChartGenerationInput } from '@/app/actions';
-import { NatalChartDisplay } from '@/components/cosmic/natal-chart-display';
-import { PlanetaryPositions } from '@/components/cosmic/planetary-positions';
-import { InterpretationDisplay } from '@/components/cosmic/interpretation-display';
-import { TransitAnalysisDisplay } from '@/components/cosmic/transit-analysis-display';
-import { LoadingAnimation } from '@/components/cosmic/loading-animation';
-import { NatalChartForm } from '@/components/cosmic/natal-chart-form';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft } from 'lucide-react';
-import type { NatalChartData } from '@/lib/types';
-import { Sparkles, Globe } from 'lucide-react';
-import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
-import { getTranslations, type Translations } from '@/lib/i18n';
+'use client';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Header } from '@/components/Header';
-import type { FormData } from '@/components/cosmic/natal-chart-form';
 
-type Results = {
-  interpretation: InterpretNatalChartOutput;
-  transits: InterpretNatalChartOutput;
-  chartData: NatalChartData;
-};
+export default function LandingPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    nome: '',
+    data: '',
+    hora: '',
+    idioma: 'pt'
+  });
 
-type Lang = 'pt' | 'en' | 'es' | 'it' | 'fr';
-
-export default function Home() {
-  const [results, setResults] = useState<Results | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [translations, setTranslations] = useState<Translations | null>(null);
-  const [lang, setLang] = useState<Lang>('pt');
-  const { toast } = useToast();
-
-  useEffect(() => {
-    async function loadTranslations() {
-      const t = await getTranslations(lang);
-      setTranslations(t);
-    }
-    loadTranslations();
-  }, [lang]);
-
-  const handleChartRequest = async (data: FormData) => {
-    if (!translations) return;
-    setIsLoading(true);
-    setResults(null);
-    try {
-      
-      const inputData: ChartGenerationInput = {
-        birthDate: data.birthDate,
-        birthTime: data.birthTime,
-        lat: -23.5505,
-        lon: -46.6333,
-        name: data.name || translations.ui.cosmicTraveler,
-        lang: data.lang,
-      };
-      
-      const chartResults = await generateAstrologicalChart(inputData);
-
-      if (!chartResults.success || !chartResults.data) {
-        throw new Error(chartResults.error || translations.errors.incompleteResponse);
-      }
-      
-      // Salva os dados no localStorage para "lembrar" o usuário
-      localStorage.setItem('meu-guia-user-data', JSON.stringify(inputData));
-
-      setResults(chartResults.data);
-
-    } catch (error: any) {
-      console.error("Erro no cliente ao gerar mapa:", error);
-      toast({
-        variant: "destructive",
-        title: translations.errors.chartGenerationTitle,
-        description: error.message || translations.errors.unexpectedError,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Salva os dados na memória do navegador para o Dashboard ler
+    localStorage.setItem('user_astral_data', JSON.stringify(formData));
+    
+    // Redireciona para o Dashboard
+    router.push('/dashboard');
   };
-
-  const handleReset = () => {
-    setResults(null);
-  };
-  
-  useEffect(() => {
-    // Tenta carregar dados do usuário do localStorage ao iniciar
-    const savedData = localStorage.getItem('meu-guia-user-data');
-    if (savedData) {
-      // Futuramente, poderíamos usar esses dados para preencher o form
-      // ou mostrar um resumo do último mapa gerado.
-      console.log("Usuário já tem dados salvos:", JSON.parse(savedData));
-    }
-  }, []);
-
-  if (!translations) {
-      return <LoadingAnimation message="Carregando..." />;
-  }
-
-  if (isLoading) {
-    return <LoadingAnimation message={translations.ui.loadingMessage} />;
-  }
-
-  if (results) {
-    return (
-      <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
-        <Header />
-        <div className="max-w-7xl mx-auto">
-          <Button variant="ghost" onClick={handleReset} className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" /> {translations.ui.backToForm}
-          </Button>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-1 space-y-8">
-              <NatalChartDisplay 
-                chartData={{...results.chartData, name: results.chartData.name || translations.ui.cosmicTraveler }}
-                translations={translations}
-              />
-              <PlanetaryPositions 
-                positions={results.chartData.positions}
-                translations={translations}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <Tabs defaultValue="interpretation" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                  <TabsTrigger value="interpretation">{translations.ui.personalAnalysis}</TabsTrigger>
-                  <TabsTrigger value="transits">{translations.ui.dayOracle}</TabsTrigger>
-                </TabsList>
-                <TabsContent value="interpretation" className="mt-6">
-                  <InterpretationDisplay 
-                    interpretation={results.interpretation} 
-                    translations={translations}
-                  />
-                </TabsContent>
-                <TabsContent value="transits" className="mt-6">
-                   <TransitAnalysisDisplay 
-                    transits={results.transits} 
-                    translations={translations}
-                   />
-                </TabsContent>
-              </Tabs>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 selection:bg-purple-500/30">
@@ -171,7 +45,65 @@ export default function Home() {
         </p>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto">
-            <NatalChartForm onSubmit={handleChartRequest} disabled={isLoading} translations={translations} setLang={setLang} />
+             <div className="max-w-md mx-auto bg-slate-900/50 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-2xl">
+          <h3 className="text-xl font-semibold mb-6">Comece sua jornada grátis</h3>
+          
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <div>
+              <label className="text-xs uppercase text-slate-500 font-bold ml-1">Nome Completo</label>
+              <input 
+                required
+                type="text" 
+                value={formData.nome}
+                onChange={(e) => setFormData({...formData, nome: e.target.value})}
+                placeholder="Como devemos te chamar?" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all" 
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs uppercase text-slate-500 font-bold ml-1">Data</label>
+                <input 
+                  required
+                  type="date" 
+                  value={formData.data}
+                  onChange={(e) => setFormData({...formData, data: e.target.value})}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all" 
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase text-slate-500 font-bold ml-1">Hora</label>
+                <input 
+                  required
+                  type="time" 
+                  value={formData.hora}
+                  onChange={(e) => setFormData({...formData, hora: e.target.value})}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all" 
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs uppercase text-slate-500 font-bold ml-1">Idioma do Guia</label>
+              <select 
+                value={formData.idioma}
+                onChange={(e) => setFormData({...formData, idioma: e.target.value})}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all text-slate-300"
+              >
+                <option value="pt">Português 🇧🇷</option>
+                <option value="en">English 🇺🇸</option>
+                <option value="es">Español 🇪🇸</option>
+                <option value="it">Italiano 🇮🇹</option>
+                <option value="fr">Français 🇫🇷</option>
+              </select>
+            </div>
+
+            <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all transform hover:scale-[1.02]">
+              Gerar Meu Guia Agora
+            </button>
+          </form>
+        </div>
         </div>
       </main>
     </div>
