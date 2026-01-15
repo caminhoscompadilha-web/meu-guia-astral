@@ -95,14 +95,16 @@ Sempre retorne um JSON válido com a seguinte estrutura:
 
 export async function getOracleAnalysis(input: InterpretNatalChartInput): Promise<InterpretNatalChartOutput> {
   
-  let userPrompt = `Analise os seguintes dados para ${input.userName} no idioma '${input.language}':
+  let userPrompt = `INSTRUÇÃO DE IDIOMA: Toda a resposta, incluindo os títulos dos pilares (Trabalho, Amor, Saúde, etc.), deve ser obrigatoriamente escrita em '${input.language}'. Use termos culturais apropriados para este idioma.
+
+Analise os seguintes dados para ${input.userName}:
 - Dados Natais: ${JSON.stringify(input.natalChart)}
 - Trânsitos de Hoje: ${JSON.stringify(input.transits)}
 - Tarot do Dia: ${input.tarotCard}
 `;
 
   if (input.lastTarotCard) {
-    userPrompt += `- Tarot do Mês Passado: ${input.lastTarotCard}\nTAREFA EVOLUTIVA: Comece a análise do tarot reconhecendo a transição da energia da carta anterior para a atual.`;
+    userPrompt += `- Tarot da Consulta Anterior: ${input.lastTarotCard}\nTAREFA EVOLUTIVA: Comece a análise do tarot reconhecendo a transição da energia da carta anterior para a atual.`;
   }
 
   userPrompt += `\nForneça uma análise detalhada e estruturada seguindo as REGRAS e a ESTRUTURA DE RESPOSTA (JSON).`;

@@ -9,7 +9,7 @@ import { GradePremium } from '@/components/GradePremium';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-export function GerarDossiePDF({ dataIA }: { dataIA: any }) {
+export function GerarDossiePDF({ dataIA, idioma }: { dataIA: any, idioma: string }) {
   const exportarPDF = async () => {
     const elemento = document.getElementById('grade-premium-conteudo');
     if (!elemento) return;
@@ -20,19 +20,34 @@ export function GerarDossiePDF({ dataIA }: { dataIA: any }) {
     });
 
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: 'a4',
+      putOnlyUsedFonts: true
+    });
+    
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    // Adiciona o cabeçalho de prestígio no PDF
+    const labels: any = {
+      "pt": { titulo: "PORTAL MEU GUIA ASTRAL", sub: "DOSSIÊ EXCLUSIVO DO CICLO DE 30 DIAS" },
+      "en": { titulo: "MY ASTRAL GUIDE PORTAL", sub: "EXCLUSIVE 30-DAY CYCLE DOSSIER" },
+      "es": { titulo: "PORTAL MI GUÍA ASTRAL", sub: "DOSSIER EXCLUSIVO DEL CICLO DE 30 DÍAS" },
+      "it": { titulo: "PORTALE LA MIA GUIDA ASTRALE", sub: "DOSSIER ESCLUSIVO DEL CICLO DI 30 GIORNI" },
+      "fr": { titulo: "PORTAIL MON GUIDE ASTRAL", sub: "DOSSIER EXCLUSIF DU CYCLE DE 30 JOURS" }
+    };
+
+    const t = labels[idioma] || labels["pt"];
+
     pdf.setFillColor(5, 5, 5);
     pdf.rect(0, 0, 210, 297, 'F');
-    pdf.setTextColor(212, 175, 55); // Cor Dourada
+    pdf.setTextColor(212, 175, 55);
     pdf.setFont("times", "bold");
-    pdf.text("PORTAL MEU GUIA ASTRAL", 105, 15, { align: "center" });
+    pdf.text(t.titulo, 105, 15, { align: "center" });
     pdf.setFontSize(10);
-    pdf.text("DOSSIÊ EXCLUSIVO DO CICLO DE 30 DIAS", 105, 22, { align: "center" });
+    pdf.text(t.sub, 105, 22, { align: "center" });
 
     pdf.addImage(imgData, 'PNG', 0, 30, pdfWidth, pdfHeight);
     pdf.save(`Dossie_Astral_${dataIA.nome}_Ciclo.pdf`);
@@ -52,6 +67,7 @@ export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const [t, setT] = useState(translations.pt); 
+  const [lang, setLang] = useState('pt');
   const [ultimaConsulta, setUltimaConsulta] = useState<any>(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [pago] = useState(false); // Simulação de status de pagamento
@@ -61,6 +77,7 @@ export default function DashboardGuia() {
     if (data) {
       const parsedData = JSON.parse(data);
       setUserData(parsedData);
+      setLang(parsedData.idioma);
       
       if (translations[parsedData.idioma]) {
         setT(translations[parsedData.idioma]);
@@ -76,8 +93,7 @@ export default function DashboardGuia() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock de dados para a IA com a nova estrutura de 6 pilares
-  const mockIAData = {
+  const iaData = ultimaConsulta?.interpretation || {
       perfil_do_mes: "Este é um mês de profunda reavaliação interna, onde a sua estrutura capricorniana será desafiada a encontrar novas formas de expressão emocional, impulsionada pela sua Lua em Escorpião. O Ascendente em Leão pede que você lidere essa mudança com coragem.",
       pilares: {
           trabalho_e_financas: {
@@ -104,6 +120,8 @@ export default function DashboardGuia() {
       alerta_geografico_sombra: "Risco de perdas financeiras e atrasos em projetos na sua localização atual devido a uma linha de Saturno.",
       alerta_geografico_luz: "Oportunidades de networking e parcerias benéficas podem surgir em viagens para a Europa Ocidental (Linha de Vênus)."
   };
+  const nomeUsuario = ultimaConsulta?.chartData?.name || 'Viajante Cósmico';
+
 
   if (loading) {
     return (
@@ -113,8 +131,6 @@ export default function DashboardGuia() {
       </div>
     );
   }
-
-  const iaData = mockIAData;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-body">
@@ -129,7 +145,7 @@ export default function DashboardGuia() {
           <p className="text-lg text-slate-400 max-w-3xl mx-auto">{iaData.perfil_do_mes}</p>
         </header>
 
-        {ultimaConsulta && (
+        {ultimaConsulta && ultimaConsulta.dataConsulta && (
           <div className="mb-8 p-4 bg-purple-900/20 border border-purple-500/30 rounded-2xl animate-in slide-in-from-top-5 duration-700 max-w-3xl mx-auto">
             <p className="text-sm text-purple-300 text-center">
               ✨ <strong>Memória do Guia:</strong> Na tua última visita ({new Date(ultimaConsulta.dataConsulta).toLocaleDateString()}), 
@@ -139,11 +155,10 @@ export default function DashboardGuia() {
           </div>
         )}
 
-        {/* Componente da Grade Premium */}
         <GradePremium dataIA={iaData} pago={pago} aoClicar={() => setModalAberto(true)} />
 
         <div className="mt-12 flex justify-center">
-          <GerarDossiePDF dataIA={iaData} />
+          <GerarDossiePDF dataIA={{...iaData, nome: nomeUsuario}} idioma={lang} />
         </div>
 
       </main>
