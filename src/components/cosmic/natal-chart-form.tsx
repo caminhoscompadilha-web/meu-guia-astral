@@ -24,21 +24,20 @@ const formSchema = z.object({
   birthMonth: z.string().min(1, 'Mês é obrigatório').max(2),
   birthYear: z.string().min(4, 'Ano é obrigatório').max(4),
   birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }).min(1, "Hora de nascimento é obrigatória."),
-  birthCity: z.string().min(2, "Cidade é obrigatória."),
-  birthState: z.string().min(2, "Estado é obrigatório."),
-  birthCountry: z.string().min(2, "País é obrigatório."),
+  // Campos de localização removidos para simplificação inicial
+  // birthCity: z.string().min(2, "Cidade é obrigatória."),
+  // birthState: z.string().min(2, "Estado é obrigatório."),
+  // birthCountry: z.string().min(2, "País é obrigatório."),
 }).refine(data => {
     const day = parseInt(data.birthDay, 10);
     const month = parseInt(data.birthMonth, 10);
     const year = parseInt(data.birthYear, 10);
     if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
     
-    // Validação básica de intervalo
     if (year < 1900 || year > new Date().getUTCFullYear()) return false;
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
 
-    // Checagem de data válida usando UTC para evitar problemas de fuso horário
     const date = new Date(Date.UTC(year, month - 1, day));
     return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }, {
@@ -59,13 +58,10 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      birthDay: "",
-      birthMonth: "",
-      birthYear: "",
-      birthTime: "",
-      birthCity: "",
-      birthState: "",
-      birthCountry: "",
+      birthDay: "15",
+      birthMonth: "06",
+      birthYear: "1995",
+      birthTime: "14:30",
     },
   });
 
@@ -73,7 +69,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Insira Seus Dados de Nascimento</CardTitle>
-        <CardDescription>Forneça suas informações para gerar seu mapa natal.</CardDescription>
+        <CardDescription>Para gerar seu mapa, precisamos de alguns dados. A localização será fixada em São Paulo, Brasil, para esta demonstração.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -145,49 +141,6 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                 </FormItem>
               )}
             />
-            
-            <div className="space-y-2">
-              <FormLabel>Local de Nascimento</FormLabel>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="birthCity"
-                  render={({ field }) => (
-                    <FormItem className="sm:col-span-1">
-                      <FormControl>
-                        <Input placeholder="Cidade" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="birthState"
-                  render={({ field }) => (
-                    <FormItem className="sm:col-span-1">
-                      <FormControl>
-                        <Input placeholder="Estado" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="birthCountry"
-                  render={({ field }) => (
-                    <FormItem className="sm:col-span-1">
-                      <FormControl>
-                        <Input placeholder="País" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={disabled} className="w-full text-lg py-6">

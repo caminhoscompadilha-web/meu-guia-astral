@@ -2,16 +2,13 @@
 
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { NatalChartForm, type FormData } from '@/components/cosmic/natal-chart-form';
-import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
-import type { AnalyzePlanetaryTransitsOutput } from '@/ai/flows/analyze-planetary-transits';
-import { generateAstrologicalChart } from '@/app/actions';
+import { generateAstrologicalChart, type ChartGenerationInput } from '@/app/actions';
 import { NatalChartDisplay } from '@/components/cosmic/natal-chart-display';
-import { PlanetaryPositions, type PlanetPosition } from '@/components/cosmic/planetary-positions';
+import { PlanetaryPositions } from '@/components/cosmic/planetary-positions';
 import { InterpretationDisplay } from '@/components/cosmic/interpretation-display';
 import { TransitAnalysisDisplay } from '@/components/cosmic/transit-analysis-display';
 import { LoadingAnimation } from '@/components/cosmic/loading-animation';
-import { ZODIAC_SIGNS } from '@/lib/constants';
+import { NatalChartForm, type FormData } from '@/components/cosmic/natal-chart-form';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
@@ -19,8 +16,8 @@ import type { NatalChartData } from '@/lib/types';
 import { Sparkles } from 'lucide-react';
 
 type Results = {
-  interpretation: InterpretNatalChartOutput;
-  transits: AnalyzePlanetaryTransitsOutput;
+  interpretation: any;
+  transits: any;
   chartData: NatalChartData;
 };
 
@@ -29,55 +26,42 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const mockPlanetaryPositions = (birthDate: Date): PlanetPosition[] => {
-    const planets = ['Sol', 'Lua', 'Mercúrio', 'Vênus', 'Marte', 'Júpiter', 'Saturno', 'Urano', 'Netuno', 'Plutão', 'Ascendente'];
-    const dayOfYear = (Date.UTC(birthDate.getUTCFullYear(), birthDate.getUTCMonth(), birthDate.getUTCDate()) - Date.UTC(birthDate.getUTCFullYear(), 0, 0)) / 86400000;
-
-    return planets.map((planet, index) => {
-        const signIndex = (Math.floor(dayOfYear / 15) + index * 2) % 12;
-        const house = (parseInt(birthDate.toTimeString().substring(0,2)) + index * 3) % 12 + 1;
-        return {
-            planet: planet as PlanetPosition['planet'],
-            sign: ZODIAC_SIGNS[signIndex],
-            house: house,
-        };
-    });
-  };
-
   const handleChartRequest = async (data: FormData) => {
     setIsLoading(true);
     setResults(null);
     try {
       const birthDate = `${data.birthYear}-${data.birthMonth.padStart(2, '0')}-${data.birthDay.padStart(2, '0')}`;
-      const birthDateObj = new Date(`${birthDate}T${data.birthTime}`);
       
-      const chartResults = await generateAstrologicalChart({
+      // Usando coordenadas fixas para São Paulo, Brasil, como ponto de partida
+      const inputData: ChartGenerationInput = {
         birthDate: birthDate,
         birthTime: data.birthTime,
-        birthLocation: `${data.birthCity}, ${data.birthState}, ${data.birthCountry}`,
+        lat: -23.5505,
+        lon: -46.6333,
         name: data.name || 'Viajante Cósmico',
-      });
+      };
+      
+      const chartResults = await generateAstrologicalChart(inputData);
 
-      if (!chartResults.interpretation || !chartResults.transits) {
-        throw new Error("A resposta da IA está incompleta.");
+      if (!chartResults.success || !chartResults.data) {
+        throw new Error(chartResults.error || "A resposta da IA está incompleta.");
       }
 
-      const positions = mockPlanetaryPositions(birthDateObj);
-
       setResults({ 
-        interpretation: chartResults.interpretation, 
-        transits: chartResults.transits,
+        interpretation: chartResults.data.interpretation, 
+        transits: chartResults.data.transits,
         chartData: {
           name: data.name,
-          positions,
+          positions: chartResults.data.chartData.positions,
         }
       });
-    } catch (error) {
+
+    } catch (error: any) {
       console.error(error);
       toast({
         variant: "destructive",
         title: "Erro ao Gerar o Mapa",
-        description: "Ocorreu um erro inesperado. Verifique sua conexão e tente novamente.",
+        description: error.message || "Ocorreu um erro inesperado. Verifique os dados e tente novamente.",
       });
     } finally {
       setIsLoading(false);
@@ -115,7 +99,7 @@ export default function Home() {
                   <InterpretationDisplay interpretation={results.interpretation} />
                 </TabsContent>
                 <TabsContent value="transits" className="mt-6">
-                  <TransitAnalysisDisplay transits={results.transits} />
+                   <TransitAnalysisDisplay transits={results.transits} />
                 </TabsContent>
               </Tabs>
             </div>

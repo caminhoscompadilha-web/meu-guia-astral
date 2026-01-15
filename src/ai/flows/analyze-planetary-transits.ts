@@ -17,6 +17,16 @@ export type AnalyzePlanetaryTransitsInput = z.infer<
   typeof AnalyzePlanetaryTransitsInputSchema
 >;
 
+const SYSTEM_PROMPT = `
+Use como base as seguintes tradições astrológicas:
+1. Sistema de Casas: Placidus.
+2. Aspectos: Conjunção (0°), Oposição (180°), Quadratura (90°), Trígono (120°) e Sêxtil (60°).
+3. Orbes: Máximo de 5 graus para trânsitos.
+
+Sua interpretação deve focar em oportunidades de crescimento e desafios atuais, 
+evitando previsões fatalistas. Analise como os planetas em trânsito estão aspectando os planetas natais.
+`;
+
 export const analyzePlanetaryTransits = ai.defineFlow(
   {
     name: 'analyzePlanetaryTransits',
@@ -25,7 +35,8 @@ export const analyzePlanetaryTransits = ai.defineFlow(
   async (input) => {
     const response = await ai.generate({
         model: 'googleai/gemini-1.5-flash',
-        prompt: `Aja como um astrólogo especialista em trânsitos. Analise como os trânsitos planetários atuais impactam o mapa natal de ${input.userName}. Dados do mapa natal: ${JSON.stringify(input.natalChartData)}. Foque em oportunidades e desafios.`,
+        system: SYSTEM_PROMPT,
+        prompt: `Aja como um astrólogo especialista em trânsitos. Analise como os trânsitos planetários atuais impactam o mapa natal de ${input.userName}. Dados do mapa natal: ${JSON.stringify(input.natalChartData)}. Foque em oportunidades e desafios importantes para as próximas semanas.`,
     });
     return response.text();
   }
