@@ -26,6 +26,7 @@ interface ChartGenerationOutput {
 export async function generateAstrologicalChart(
   data: ChartGenerationInput
 ): Promise<ChartGenerationOutput> {
+  console.log('Iniciando a geração do mapa para:', data.name || 'usuário');
   try {
     const natalChartInput: InterpretNatalChartInput = {
       birthDate: data.birthDate,
@@ -45,13 +46,14 @@ export async function generateAstrologicalChart(
     ]);
 
     if (!interpretation || !transits) {
-      throw new Error('Falha ao gerar a análise astrológica completa.');
+      throw new Error('A resposta da IA está incompleta.');
     }
-
+    
+    console.log('Geração do mapa concluída com sucesso.');
     return { interpretation, transits };
-  } catch (error) {
-    console.error('Erro na Server Action `generateAstrologicalChart`:', error);
-    // Lança o erro para que a chamada no lado do cliente possa pegá-lo
-    throw new Error('Não foi possível gerar a análise astrológica.');
+  } catch (error: any) {
+    console.error('ERRO REAL NA SERVER ACTION:', error.message, error.stack);
+    // Lança o erro original para que o cliente possa vê-lo durante a depuração
+    throw new Error(`Erro Interno do Servidor: ${error.message}`);
   }
 }
