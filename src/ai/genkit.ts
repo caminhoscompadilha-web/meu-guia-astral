@@ -6,5 +6,7 @@ config();
 
 export const ai = genkit({
   plugins: [googleAI({ apiKey: process.env.GEMINI_API_KEY })],
-  model: 'googleai/gemini-2.5-flash',
+  // O model default será usado se não for especificado em outro lugar.
+  // Você pode remover esta linha se cada fluxo/prompt especificar seu próprio modelo.
+  model: 'googleai/gemini-pro',
 });
