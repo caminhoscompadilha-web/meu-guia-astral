@@ -1,7 +1,4 @@
-import swisseph from 'swisseph';
-
-// A biblioteca swisseph pode precisar de arquivos de efemérides.
-// swisseph.set_ephe_path(__dirname + '/../ephe');
+import { swisseph } from 'swiss-ephemeris';
 
 const PLANETS_TO_CALCULATE = [
     { id: swisseph.SE_SUN, name: 'Sol' },

@@ -1,14 +1,13 @@
 "use server";
 
 import { interpretNatalChart } from '@/ai/flows/interpret-natal-chart';
+import { analyzePlanetaryTransits } from '@/ai/flows/analyze-planetary-transits';
 import { getPlanetaryPositions, calculateHousesAndAscendant } from '@/lib/astrology-engine';
-import { ZODIAC_SIGNS } from '@/lib/constants';
 
 export interface ChartGenerationInput {
   name: string;
   birthDate: string; // YYYY-MM-DD
   birthTime: string; // HH:MM
-  // Coordenadas fixas para São Paulo, Brasil, para simplificação inicial
   lat: number;
   lon: number;
 }
@@ -18,31 +17,22 @@ export async function generateAstrologicalChart(
 ) {
   console.log('Iniciando a geração do mapa para:', data.name || 'usuário');
   try {
-    const birthDateObj = new Date(`${data.birthDate}T${data.birthTime}:00Z`);
+    const birthDateObj = new Date(`${data.birthDate}T${data.birthTime}:00`);
     
-    // CÁLCULO REAL
-    const realPlanets = getPlanetaryPositions(birthDateObj);
+    // Calcula posições planetárias e casas
+    const planetaryPositions = getPlanetaryPositions(birthDateObj);
     const houseSystem = calculateHousesAndAscendant(birthDateObj, data.lat, data.lon);
 
-    const fullChartData = {
-        ...realPlanets,
-        ascendente: {
-            grau: houseSystem.ascendant.degree,
-            signo: houseSystem.ascendant.sign
-        }
-    };
-    
-    const interpretationText = await interpretNatalChart({
-      userName: data.name || 'Viajante Cósmico',
-      planets: fullChartData
-    });
-
-    const getHouseForPlanet = (degree: number) => {
-        for (let i = 11; i >= 0; i--) {
+    // Mapeia cada planeta para sua casa
+    const getHouseForPlanet = (degree: number): number => {
+        // As cúspides começam da casa 1 na posição 0 do array
+        for (let i = 0; i < 12; i++) {
             const cuspStart = houseSystem.houseCusps[i];
+            // A casa 12 é a última, então a próxima cúspide é a da casa 1
             const cuspEnd = houseSystem.houseCusps[(i + 1) % 12];
-            // Lida com a passagem por Áries (0/360 graus)
-            if (cuspStart > cuspEnd) {
+
+            // Lógica para lidar com a passagem por Áries (0/360 graus)
+            if (cuspStart > cuspEnd) { // ex: Cúspide 12 a 330°, Cúspide 1 a 20°
                 if (degree >= cuspStart || degree < cuspEnd) {
                     return i + 1;
                 }
@@ -52,35 +42,60 @@ export async function generateAstrologicalChart(
                 }
             }
         }
-        return 1; // Fallback
+        return 1; // Fallback, caso algo dê errado
+    };
+
+    const chartWithHouses = Object.fromEntries(
+        Object.entries(planetaryPositions).map(([planet, data]) => [
+            planet,
+            { ...data, casa: getHouseForPlanet(data.grau) }
+        ])
+    );
+    
+    // Adiciona o ascendente aos dados para a IA
+    const fullChartDataForAI = {
+        ...chartWithHouses,
+        ascendente: {
+            grau: houseSystem.ascendant.degree,
+            signo: houseSystem.ascendant.sign,
+            casa: 1
+        }
     };
     
-    const positions = Object.entries(fullChartData).map(([planet, planetData]) => ({
+    // Chama as IAs em paralelo para mais performance
+    const [interpretation, transitAnalysis] = await Promise.all([
+      interpretNatalChart({
+        userName: data.name || 'Viajante Cósmico',
+        planets: fullChartDataForAI
+      }),
+      analyzePlanetaryTransits({
+        userName: data.name || 'Viajante Cósmico',
+        natalChartData: fullChartDataForAI
+      })
+    ]);
+
+    // Monta a estrutura de posições para a UI
+    const positionsForUI = Object.entries(fullChartDataForAI).map(([planet, planetData]) => ({
       planet: planet.charAt(0).toUpperCase() + planet.slice(1),
       sign: planetData.signo,
-      house: getHouseForPlanet(planetData.grau),
+      house: planetData.casa,
     }));
 
     const finalOutput = {
-      interpretation: {
-        personalityTraits: interpretationText,
-        lifePathAspects: "A análise detalhada do caminho de vida aparecerá aqui em futuras atualizações.",
-        potential: "A análise de potencial e forças aparecerá aqui em futuras atualizações.",
-        planetaryInterpretations: "A análise planetária completa aparecerá aqui em futuras atualizações."
-      },
+      interpretation,
       transits: {
-        summary: "O resumo dos trânsitos planetários atuais aparecerá aqui.",
-        detailedAnalysis: "A análise detalhada dos trânsitos aparecerá aqui."
+        summary: transitAnalysis,
+        detailedAnalysis: "A análise detalhada dos trânsitos aparecerá aqui em futuras atualizações, quando o fluxo for aprimorado."
       },
       chartData: {
-        positions
+        positions: positionsForUI
       }
     };
     
     return { success: true, data: finalOutput };
     
   } catch (error: any) {
-    console.error("ERRO REAL NA SERVER ACTION:", error.message, error.stack);
-    return { success: false, error: `Erro Interno do Servidor: ${error.message}` };
+    console.error("ERRO NA SERVER ACTION:", error.message, error.stack);
+    return { success: false, error: `Erro ao gerar análise astrológica: ${error.message}` };
   }
 }

@@ -14,10 +14,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
 import type { NatalChartData } from '@/lib/types';
 import { Sparkles } from 'lucide-react';
+import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
+import type { AnalyzePlanetaryTransitsOutput } from '@/ai/flows/analyze-planetary-transits';
+
 
 type Results = {
-  interpretation: any;
-  transits: any;
+  interpretation: InterpretNatalChartOutput;
+  transits: AnalyzePlanetaryTransitsOutput;
   chartData: NatalChartData;
 };
 
@@ -32,7 +35,6 @@ export default function Home() {
     try {
       const birthDate = `${data.birthYear}-${data.birthMonth.padStart(2, '0')}-${data.birthDay.padStart(2, '0')}`;
       
-      // Usando coordenadas fixas para São Paulo, Brasil, como ponto de partida
       const inputData: ChartGenerationInput = {
         birthDate: birthDate,
         birthTime: data.birthTime,
@@ -44,20 +46,13 @@ export default function Home() {
       const chartResults = await generateAstrologicalChart(inputData);
 
       if (!chartResults.success || !chartResults.data) {
-        throw new Error(chartResults.error || "A resposta da IA está incompleta.");
+        throw new Error(chartResults.error || "A resposta do servidor está incompleta ou inválida.");
       }
-
-      setResults({ 
-        interpretation: chartResults.data.interpretation, 
-        transits: chartResults.data.transits,
-        chartData: {
-          name: data.name,
-          positions: chartResults.data.chartData.positions,
-        }
-      });
+      
+      setResults(chartResults.data);
 
     } catch (error: any) {
-      console.error(error);
+      console.error("Erro no cliente ao gerar mapa:", error);
       toast({
         variant: "destructive",
         title: "Erro ao Gerar o Mapa",
@@ -86,7 +81,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-1 space-y-8">
-              <NatalChartDisplay chartData={results.chartData} />
+              <NatalChartDisplay chartData={{...results.chartData, name: results.chartData.name || 'Viajante Cósmico' }} />
               <PlanetaryPositions positions={results.chartData.positions} />
             </div>
             <div className="lg:col-span-2">

@@ -13,6 +13,20 @@ interface InterpretationDisplayProps {
 }
 
 export function InterpretationDisplay({ interpretation }: InterpretationDisplayProps) {
+  if (!interpretation) {
+    return (
+       <Card className="bg-card/80 backdrop-blur-sm border-destructive/50">
+        <CardHeader>
+          <CardTitle className="font-headline text-2xl text-destructive">Erro na Interpretação</CardTitle>
+          <CardDescription>Não foi possível carregar a análise da IA.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Aguardando dados da interpretação...</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
@@ -26,7 +40,7 @@ export function InterpretationDisplay({ interpretation }: InterpretationDisplayP
               <Star className="mr-2 h-5 w-5 text-primary" />
               Traços de Personalidade
             </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed">
+            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
               {interpretation.personalityTraits}
             </AccordionContent>
           </AccordionItem>
@@ -35,7 +49,7 @@ export function InterpretationDisplay({ interpretation }: InterpretationDisplayP
               <Users className="mr-2 h-5 w-5 text-primary" />
               Caminho de Vida e Oportunidades
             </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed">
+            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
               {interpretation.lifePathAspects}
             </AccordionContent>
           </AccordionItem>
@@ -44,14 +58,14 @@ export function InterpretationDisplay({ interpretation }: InterpretationDisplayP
               <Telescope className="mr-2 h-5 w-5 text-primary" />
               Forças e Potencial
             </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground leading-relaxed">
+            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
               {interpretation.potential}
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
             <AccordionTrigger className="font-headline text-lg">
               <Sparkles className="mr-2 h-5 w-5 text-primary" />
-              Análise Planetária
+              Análise Planetária Detalhada
             </AccordionTrigger>
             <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
               {interpretation.planetaryInterpretations}
