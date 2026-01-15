@@ -4,7 +4,6 @@
 import { getOracleAnalysis, type InterpretNatalChartInput } from '@/ai/flows/interpret-natal-chart';
 import { getPlanetaryPositions, getCurrentTransits, getHouseForPlanet } from '@/lib/astrology-engine';
 import { drawTarotCard } from '@/lib/tarot';
-import { salvarConsulta } from '@/lib/storage';
 
 export interface ChartGenerationInput {
   name: string;
@@ -88,9 +87,6 @@ export async function generateAstrologicalChart(
       tarot: tarotCard,
     };
     
-    // Salvando a consulta no histórico
-    salvarConsulta(finalOutput);
-
     return { success: true, data: finalOutput };
     
   } catch (error: any) {

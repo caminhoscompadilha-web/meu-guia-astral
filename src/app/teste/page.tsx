@@ -3,9 +3,16 @@ import React, { useState } from 'react';
 import { generateAstrologicalChart, type ChartGenerationInput } from '@/app/actions';
 import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
 import { LoadingAnimation } from '@/components/cosmic/loading-animation';
+import { salvarConsulta } from '@/lib/storage';
+import type { TarotCard } from '@/lib/tarot';
 
 type Results = {
   interpretation: InterpretNatalChartOutput;
+  chartData: {
+    name: string;
+    positions: any[];
+  };
+  tarot: TarotCard;
 };
 
 export default function PaginaDeTeste() {
@@ -35,6 +42,7 @@ export default function PaginaDeTeste() {
       }
       
       setResultado(chartResults.data);
+      salvarConsulta(chartResults.data);
 
     } catch (e: any) {
       console.error("Erro no painel de teste:", e);
