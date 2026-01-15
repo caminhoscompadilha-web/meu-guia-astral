@@ -20,5 +20,5 @@ export const ai = genkit({
     googleAI({ apiKey: apiKey }),
   ],
   // O model default será usado se não for especificado em outro lugar.
-  model: 'gemini-pro',
+  model: 'gemini-1.5-flash-latest',
 });
