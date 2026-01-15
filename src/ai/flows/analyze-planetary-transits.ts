@@ -34,7 +34,7 @@ const AnalyzePlanetaryTransitsOutputSchema = z.object({
   detailedAnalysis: z
     .string()
     .describe(
-      'Uma análise mais detalhada de cada trânsito significativo, incluindo os planetas envolvidos, as casas afetadas e os impactos potenciais.'
+      'Uma análise detalhada de cada trânsito significativo, incluindo os planetas envolvidos, as casas afetadas e os impactos potenciais.'
     ),
 });
 export type AnalyzePlanetaryTransitsOutput = z.infer<
