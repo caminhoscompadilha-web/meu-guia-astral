@@ -1,10 +1,10 @@
 
 
 /**
- * @fileOverview Systemic Oracle AI Agent.
+ * @fileOverview Systemic Oracle AI Agent - The "Astral Strategist".
  *
- * Combines Psychological Astrology, Tarot, and Jungian Archetypes to provide a deep,
- * multi-layered analysis based on both natal data and current transits.
+ * This flow generates a 30-day cycle plan based on 6 critical pillars,
+ * providing a premium astrological consultancy experience.
  *
  * - getOracleAnalysis - The main function that orchestrates the oracle's wisdom.
  * - InterpretNatalChartInput - The input type for the function.
@@ -27,41 +27,68 @@ const InterpretNatalChartInputSchema = z.object({
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
 const InterpretNatalChartOutputSchema = z.object({
-  analise_psicologica: z.string().describe("Resumo Sol/Lua/Ascendente"),
-  missao_vida: z.string().describe("Interpretação dos Nodos Lunares"),
-  alertas_astrocartografia: z.array(z.object({
-    tipo: z.enum(["Sombra/Perigo", "Luz/Prosperidade"]),
-    local: z.string(),
-    detalhe: z.string().describe("O que evitar ou o que buscar, incluindo o 'remédio astrológico'"),
-  })),
-  conselho_tarot: z.string().describe("Interpretação da carta sorteada aplicada ao mês"),
-  probabilidades_30_dias: z.string().describe("O que esperar nas próximas 4 semanas com base nos trânsitos"),
+  perfil_do_mes: z.string().describe("Uma síntese astrológica do clima geral para o utilizador"),
+  pilares: z.object({
+    trabalho_e_financas: z.object({
+      analise: z.string().describe("Análise dos trânsitos nas casas 2, 6 e 10."),
+      solucao: z.string().describe("Ação estratégica para aumentar a prosperidade.")
+    }),
+    amor_e_relacionamentos: z.object({
+      analise: z.string().describe("Análise de Vénus e da Casa 7."),
+      solucao: z.string().describe("Como lidar com parcerias e afetos este mês.")
+    }),
+    saude_e_vitalidade: z.object({
+      analise: z.string().describe("Análise de Marte e da Casa 6."),
+      solucao: z.string().describe("Recomendação física e energética (biohacking astral).")
+    }),
+    reflexao_e_espiritualidade: z.object({
+      analise: z.string().describe("Onde o utilizador deve silenciar (Casa 12/Neptuno)."),
+      solucao: z.string().describe("Tema de meditação ou estudo.")
+    })
+  }),
+  fases_de_execucao: z.object({
+    revisao: z.string().describe("O que o utilizador deve PAUSAR ou REAVALIAR agora."),
+    acao: z.string().describe("Onde ele deve colocar FORÇA TOTAL esta semana.")
+  }),
+  alerta_geografico_sombra: z.string().describe("Risco específico na localização atual."),
+  alerta_geografico_luz: z.string().describe("Ponto de sorte na localização atual.")
 });
 
 export type InterpretNatalChartOutput = z.infer<typeof InterpretNatalChartOutputSchema>;
 
 const SYSTEM_PROMPT = `
-PERSONA: Você é o 'Oráculo do Meu Guia Astrológico', um mestre em Astrologia Psicológica, Astrocartografia e Tarot.
-OBJETIVO: Analisar o mapa natal e os trânsitos atuais para fornecer um guia de 30 dias.
+PERSONA: És o "Estrategista Astral" do Portal Meu Guia Astral. O teu tom é profundo, sofisticado e prático.
 
-REGRAS DE INTERPRETAÇÃO:
-1.  FOCO EM SOMBRA E LUZ: Para cada planeta, identifique o potencial positivo (Luz) e o desafio psicológico ou evento adverso (Sombra/Perigo). Para cada Sombra, ofereça uma solução prática ou mudança de perspectiva (o "remédio astrológico").
-2.  ASTROCARTOGRAFIA: Se o usuário estiver sob uma linha de Saturno, Marte ou Plutão, emita um 'ALERTA DE PERIGO' geográfico no campo 'alertas_astrocartografia'. Se estiver sob Júpiter ou Vênus, emita um 'ALERTA DE PROSPERIDADE'.
-3.  EVOLUÇÃO DO TAROT: Se uma carta anterior ('lastTarotCard') for fornecida, inicie a análise do tarot reconhecendo a transição de energia da carta anterior para a atual. Explique como os temas evoluíram.
-4.  TOM DE VOZ: Místico, profundo, porém prático e acolhedor. Evite previsões deterministas negativas sem oferecer uma solução.
-5.  IDIOMA: Responda estritamente no idioma solicitado pelo usuário.
+OBJETIVO: Gerar um Plano de Ciclo de 30 dias dividido em 6 Pilares Críticos para quem adquiriu o Relatório Premium.
 
-ESTRUTURA DA RESPOSTA (JSON):
+ESTRUTURA DE RESPOSTA OBRIGATÓRIA (JSON):
 Sempre retorne um JSON válido com a seguinte estrutura:
 {
-  "analise_psicologica": "Resumo Sol/Lua/Ascendente",
-  "missao_vida": "Interpretação dos Nodos Lunares (Luz e Sombra)",
-  "alertas_astrocartografia": [
-    {"tipo": "Sombra/Perigo", "local": "Localização", "detalhe": "O que evitar e o remédio astrológico"},
-    {"tipo": "Luz/Prosperidade", "local": "Localização", "detalhe": "O que buscar"}
-  ],
-  "conselho_tarot": "Interpretação da carta sorteada aplicada ao mês, conectada com os trânsitos",
-  "probabilidades_30_dias": "Análise dos trânsitos dos planetas lentos para as próximas 4 semanas"
+  "perfil_do_mes": "Uma síntese astrológica do clima geral para o utilizador",
+  "pilares": {
+    "trabalho_e_financas": {
+      "analise": "Trânsitos em casas 2, 6 e 10",
+      "solucao": "Ação estratégica para aumentar a prosperidade"
+    },
+    "amor_e_relacionamentos": {
+      "analise": "Vénus e Casa 7",
+      "solucao": "Como lidar com parcerias e afetos este mês"
+    },
+    "saude_e_vitalidade": {
+      "analise": "Marte e Casa 6",
+      "solucao": "Recomendação física e energética (biohacking astral)"
+    },
+    "reflexao_e_espiritualidade": {
+      "analise": "Onde o utilizador deve silenciar (Casa 12/Neptuno)",
+      "solucao": "Tema de meditação ou estudo"
+    }
+  },
+  "fases_de_execucao": {
+    "revisao": "O que o utilizador deve PAUSAR ou REAVALIAR agora",
+    "acao": "Onde ele deve colocar FORÇA TOTAL esta semana"
+  },
+  "alerta_geografico_sombra": "Risco específico na localização atual",
+  "alerta_geografico_luz": "Ponto de sorte na localização atual"
 }
 `;
 
