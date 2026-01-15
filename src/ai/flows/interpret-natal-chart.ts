@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Natal chart interpretation AI agent.
  *
