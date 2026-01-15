@@ -3,8 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,22 +21,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 import { ZODIAC_SIGNS } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
 const formSchema = z.object({
   name: z.string().optional(),
-  birthDate: z.string({ required_error: "Data de nascimento é obrigatória." }),
+  birthDay: z.string().min(1, 'Dia é obrigatório').max(2),
+  birthMonth: z.string().min(1, 'Mês é obrigatório').max(2),
+  birthYear: z.string().min(4, 'Ano é obrigatório').max(4),
   birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }),
   birthLocation: z.string().min(2, "Local de nascimento é obrigatório."),
   sunSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo solar é obrigatório." }),
   moonSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo lunar é obrigatório." }),
   risingSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo ascendente é obrigatório." }),
+}).refine(data => {
+    const day = parseInt(data.birthDay, 10);
+    const month = parseInt(data.birthMonth, 10);
+    const year = parseInt(data.birthYear, 10);
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+    if (day < 1 || day > 31) return false;
+    if (month < 1 || month > 12) return false;
+    if (year < 1900 || year > new Date().getFullYear()) return false;
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+}, {
+    message: "Data de nascimento inválida.",
+    path: ["birthDay"], 
 });
+
 
 export type FormData = z.infer<typeof formSchema>;
 
@@ -53,6 +64,9 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
     defaultValues: {
       birthLocation: "",
       name: "",
+      birthDay: "",
+      birthMonth: "",
+      birthYear: "",
     },
   });
 
@@ -79,63 +93,59 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="birthDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Data de Nascimento</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(new Date(field.value), "PPP", { locale: ptBR })
-                            ) : (
-                              <span>Escolha uma data</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          locale={ptBR}
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString().split("T")[0])}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="birthTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hora de Nascimento</FormLabel>
-                    <FormControl>
-                      <Input type="time" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="space-y-2">
+              <FormLabel>Data de Nascimento</FormLabel>
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="birthDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Dia" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="birthMonth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Mês" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="birthYear"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Ano" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormMessage>{form.formState.errors.birthDay?.message}</FormMessage>
             </div>
+            
+            <FormField
+              control={form.control}
+              name="birthTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hora de Nascimento</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             
             <FormField
               control={form.control}
