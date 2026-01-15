@@ -15,11 +15,11 @@ const AnalyzePlanetaryTransitsInputSchema = z.object({
   natalChartData: z
     .string()
     .describe(
-      'Dados do mapa natal, incluindo data, hora e local de nascimento, formatados como JSON.'
+      'Os dados do mapa natal da pessoa, incluindo data, hora e local de nascimento, formatados como um objeto JSON.'
     ),
   currentDate: z
     .string()
-    .describe('A data atual para análise de trânsito, formatada como AAAA-MM-DD.'),
+    .describe('A data atual para a qual a análise de trânsito deve ser calculada, no formato AAAA-MM-DD.'),
 });
 export type AnalyzePlanetaryTransitsInput = z.infer<
   typeof AnalyzePlanetaryTransitsInputSchema
