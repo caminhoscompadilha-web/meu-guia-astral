@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Star, Users, Telescope, Sparkles } from "lucide-react";
 
 interface InterpretationDisplayProps {
   interpretation: InterpretNatalChartOutput;
@@ -21,21 +22,39 @@ export function InterpretationDisplay({ interpretation }: InterpretationDisplayP
       <CardContent>
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
           <AccordionItem value="item-1">
-            <AccordionTrigger className="font-headline text-lg">Traços de Personalidade</AccordionTrigger>
+            <AccordionTrigger className="font-headline text-lg">
+              <Star className="mr-2 h-5 w-5 text-primary" />
+              Traços de Personalidade
+            </AccordionTrigger>
             <AccordionContent className="text-base text-muted-foreground leading-relaxed">
               {interpretation.personalityTraits}
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger className="font-headline text-lg">Caminho de Vida e Oportunidades</AccordionTrigger>
+            <AccordionTrigger className="font-headline text-lg">
+              <Users className="mr-2 h-5 w-5 text-primary" />
+              Caminho de Vida e Oportunidades
+            </AccordionTrigger>
             <AccordionContent className="text-base text-muted-foreground leading-relaxed">
               {interpretation.lifePathAspects}
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger className="font-headline text-lg">Forças e Potencial</AccordionTrigger>
+            <AccordionTrigger className="font-headline text-lg">
+              <Telescope className="mr-2 h-5 w-5 text-primary" />
+              Forças e Potencial
+            </AccordionTrigger>
             <AccordionContent className="text-base text-muted-foreground leading-relaxed">
               {interpretation.potential}
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger className="font-headline text-lg">
+              <Sparkles className="mr-2 h-5 w-5 text-primary" />
+              Análise Planetária
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
+              {interpretation.planetaryInterpretations}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
