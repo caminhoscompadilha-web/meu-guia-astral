@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,11 +32,15 @@ const formSchema = z.object({
     const month = parseInt(data.birthMonth, 10);
     const year = parseInt(data.birthYear, 10);
     if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
-    if (day < 1 || day > 31) return false;
+    
+    // Validação básica de intervalo
+    if (year < 1900 || year > new Date().getUTCFullYear()) return false;
     if (month < 1 || month > 12) return false;
-    if (year < 1900 || year > new Date().getFullYear()) return false;
-    const date = new Date(year, month - 1, day);
-    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    if (day < 1 || day > 31) return false;
+
+    // Checagem de data válida usando UTC para evitar problemas de fuso horário
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }, {
     message: "Data de nascimento inválida.",
     path: ["birthDay"], 
