@@ -48,25 +48,18 @@
             </tr>
 
             <tr>
-                <td style="padding: 0 35px;">
-                    <div class="card">
-                        <span class="card-label">⚠️ Alerta de Sombra (Tensão)</span>
-                        <h3 class="card-title">Desafio Geográfico Detetado</h3>
-                        <p class="card-text">
-                            Identificámos uma linha de <b>Saturno</b> influenciando a sua região. Este posicionamento exige cautela com estruturas financeiras e contratos. O seu "Remédio Astrológico" específico está disponível no portal.
-                        </p>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="padding: 0 35px;">
-                    <div class="card" style="border-left-color: #7c3aed;">
-                        <span class="card-label" style="color: #7c3aed;">✨ Alerta de Luz (Oportunidade)</span>
-                        <h3 class="card-title">Ponto de Expansão e Sorte</h3>
-                        <p class="card-text">
-                            Uma janela de oportunidade abre-se sob a influência de <b>Júpiter</b>. Este é o momento ideal para projetos que envolvam comunicação e novos começos.
-                        </p>
+                <td style="padding: 20px 35px;">
+                    <h2 style="color: #D4AF37; font-family: serif; border-bottom: 1px solid #334155; padding-bottom: 10px;">Seu Plano Estratégico Mensal</h2>
+                    
+                    <p><b>💼 Trabalho & Finanças:</b> ${dataIA.pilares.trabalho_e_financas.solucao}</p>
+                    
+                    <p><b>❤️ Amor & Relações:</b> ${dataIA.pilares.amor_e_relacionamentos.solucao}</p>
+                    
+                    <p><b>🌱 Saúde & Vitalidade:</b> ${dataIA.pilares.saude_e_vitalidade.solucao}</p>
+                    
+                    <div style="background-color: #1e293b; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                        <p style="margin: 0; color: #fbbf24;"><b>🔄 Foco em Revisão:</b> ${dataIA.fases_de_execucao.revisao}</p>
+                        <p style="margin: 10px 0 0 0; color: #34d399;"><b>⚡ Foco em Ação:</b> ${dataIA.fases_de_execucao.acao}</p>
                     </div>
                 </td>
             </tr>

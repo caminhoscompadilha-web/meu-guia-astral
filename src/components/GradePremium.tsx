@@ -7,7 +7,7 @@ export function GradePremium({ dataIA, pago, aoClicar }: { dataIA: any, pago: bo
   if (!dataIA || !dataIA.pilares) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
+    <div id="grade-premium-conteudo" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
       
       {/* Bloco: Trabalho e Finanças */}
       <section className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-purple-500/50">
@@ -103,5 +103,3 @@ export function GradePremium({ dataIA, pago, aoClicar }: { dataIA: any, pago: bo
     </div>
   );
 }
-
-    

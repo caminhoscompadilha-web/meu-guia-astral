@@ -6,6 +6,47 @@ import { translations } from '@/lib/translations';
 import { obterUltimaConsulta } from '@/lib/storage';
 import { ModalPagamento } from '@/components/ModalPagamento';
 import { GradePremium } from '@/components/GradePremium';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+export function GerarDossiePDF({ dataIA }: { dataIA: any }) {
+  const exportarPDF = async () => {
+    const elemento = document.getElementById('grade-premium-conteudo');
+    if (!elemento) return;
+
+    const canvas = await html2canvas(elemento, {
+      scale: 2,
+      backgroundColor: '#050505', // Mantém o fundo Dark Mode no PDF
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    // Adiciona o cabeçalho de prestígio no PDF
+    pdf.setFillColor(5, 5, 5);
+    pdf.rect(0, 0, 210, 297, 'F');
+    pdf.setTextColor(212, 175, 55); // Cor Dourada
+    pdf.setFont("times", "bold");
+    pdf.text("PORTAL MEU GUIA ASTRAL", 105, 15, { align: "center" });
+    pdf.setFontSize(10);
+    pdf.text("DOSSIÊ EXCLUSIVO DO CICLO DE 30 DIAS", 105, 22, { align: "center" });
+
+    pdf.addImage(imgData, 'PNG', 0, 30, pdfWidth, pdfHeight);
+    pdf.save(`Dossie_Astral_${dataIA.nome}_Ciclo.pdf`);
+  };
+
+  return (
+    <button 
+      onClick={exportarPDF}
+      className="flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-400 text-black font-black px-6 py-3 rounded-full hover:scale-105 transition-all shadow-xl shadow-amber-500/20"
+    >
+      <span>📥</span> BAIXAR MEU DOSSIÊ DE CICLO (PDF)
+    </button>
+  );
+} 
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
@@ -101,9 +142,11 @@ export default function DashboardGuia() {
         {/* Componente da Grade Premium */}
         <GradePremium dataIA={iaData} pago={pago} aoClicar={() => setModalAberto(true)} />
 
+        <div className="mt-12 flex justify-center">
+          <GerarDossiePDF dataIA={iaData} />
+        </div>
+
       </main>
     </div>
   );
 }
-
-    
