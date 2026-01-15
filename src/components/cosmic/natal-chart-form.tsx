@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import type { Translations } from "@/lib/i18n";
 
 
@@ -67,99 +66,78 @@ export function NatalChartForm({ onSubmit, disabled, translations }: NatalChartF
   });
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">{t.title}</CardTitle>
-        <CardDescription>{t.description}</CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t.nameLabel}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t.namePlaceholder} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+     <div className="max-w-md mx-auto bg-slate-900/50 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm shadow-2xl">
+        <h3 className="text-xl font-semibold mb-6 text-center text-white">Comece sua jornada grátis</h3>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-left">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase text-slate-500 font-bold ml-1">{t.nameLabel}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder={t.namePlaceholder} 
+                        {...field} 
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-2">
-              <FormLabel>{t.dateLabel}</FormLabel>
-              <div className="grid grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="birthDay"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input placeholder={t.dayPlaceholder} {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="birthMonth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input placeholder={t.monthPlaceholder} {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="birthYear"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input placeholder={t.yearPlaceholder} {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="birthDate"
+                    render={({ field }) => (
+                      <FormItem>
+                         <FormLabel className="text-xs uppercase text-slate-500 font-bold ml-1">{t.dateLabel}</FormLabel>
+                         <FormControl>
+                            <Input 
+                              type="date"
+                              {...field}
+                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all"
+                             />
+                         </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="birthTime"
+                    render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs uppercase text-slate-500 font-bold ml-1">{t.timeLabel}</FormLabel>
+                         <FormControl>
+                            <Input 
+                              type="time"
+                              {...field}
+                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition-all"
+                             />
+                         </FormControl>
+                       </FormItem>
+                    )}
+                  />
               </div>
               <FormMessage>{form.formState.errors.birthDay?.message}</FormMessage>
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="birthTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t.timeLabel}</FormLabel>
-                  <FormControl>
-                    <Input type="time" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={disabled} className="w-full text-lg py-6">
+
+            <button type="submit" disabled={disabled} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all transform hover:scale-[1.02]">
               {disabled ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t.generatingButton}
                 </>
               ) : (
-                t.submitButton
+                "Gerar Meu Guia Agora"
               )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+            </button>
+          </form>
+        </Form>
+    </div>
   );
 }
 
-// Re-export FormData if it's used elsewhere
 export type { FormData } from './natal-chart-form';
