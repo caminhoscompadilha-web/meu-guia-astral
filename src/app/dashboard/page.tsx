@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { translations } from '@/lib/translations'; 
 import { obterUltimaConsulta } from '@/lib/storage';
+import MapaAstral from '@/components/MapaAstral';
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
@@ -103,26 +104,29 @@ export default function DashboardGuia() {
           <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
             <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">{t.astro}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {iaData.alertas_astrocartografia.map((alerta, index) => (
-                <div key={index} className={`p-4 rounded-2xl border ${
-                  alerta.tipo === 'Sombra/Perigo' 
-                    ? 'bg-red-900/20 border-red-500/40' 
-                    : 'bg-green-900/20 border-green-500/40'
-                }`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className={`text-2xl ${alerta.tipo === 'Sombra/Perigo' ? 'text-red-400' : 'text-green-400'}`}>
-                      {alerta.tipo === 'Sombra/Perigo' ? '⚠️' : '✨'}
-                    </span>
-                    <div>
-                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
-                        {alerta.tipo}
-                        </p>
-                        <p className="font-bold text-slate-200">{alerta.local}</p>
+              <div className="space-y-4">
+                {iaData.alertas_astrocartografia.map((alerta, index) => (
+                  <div key={index} className={`p-4 rounded-2xl border ${
+                    alerta.tipo === 'Sombra/Perigo' 
+                      ? 'bg-red-900/20 border-red-500/40' 
+                      : 'bg-green-900/20 border-green-500/40'
+                  }`}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className={`text-2xl ${alerta.tipo === 'Sombra/Perigo' ? 'text-red-400' : 'text-green-400'}`}>
+                        {alerta.tipo === 'Sombra/Perigo' ? '⚠️' : '✨'}
+                      </span>
+                      <div>
+                          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                          {alerta.tipo}
+                          </p>
+                          <p className="font-bold text-slate-200">{alerta.local}</p>
+                      </div>
                     </div>
+                    <p className="text-sm text-slate-300 pl-1">{alerta.detalhe}</p>
                   </div>
-                  <p className="text-sm text-slate-300 pl-1">{alerta.detalhe}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+              <MapaAstral linhas={[]} />
             </div>
           </section>
 
