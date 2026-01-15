@@ -57,9 +57,6 @@ export default function Home() {
           birthDate: birthDate,
           birthTime: data.birthTime,
           birthLocation: data.birthLocation,
-          sunSign: data.sunSign,
-          moonSign: data.moonSign,
-          risingSign: data.risingSign,
         }),
         analyzePlanetaryTransits({
           natalChartData: JSON.stringify({ ...data, birthDate }),

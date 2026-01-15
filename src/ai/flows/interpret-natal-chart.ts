@@ -16,9 +16,6 @@ const InterpretNatalChartInputSchema = z.object({
     .describe('A data de nascimento no formato ISO (AAAA-MM-DD).'),
   birthTime: z.string().describe('A hora de nascimento no formato HH:mm.'),
   birthLocation: z.string().describe('O local de nascimento (cidade, país).'),
-  sunSign: z.string().describe('O signo solar da pessoa.'),
-  moonSign: z.string().describe('O signo lunar da pessoa.'),
-  risingSign: z.string().describe('O signo ascendente da pessoa.'),
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
@@ -39,14 +36,11 @@ const prompt = ai.definePrompt({
   output: {schema: InterpretNatalChartOutputSchema},
   prompt: `Você é um astrólogo especialista em interpretações de mapa natal.
 
-Você usará os dados de nascimento (data, hora e local) juntamente com os signos Solar, Lunar e Ascendente para fornecer uma interpretação detalhada do mapa natal. Foque nos traços de personalidade, aspectos do caminho de vida e no potencial do indivíduo.
+Com base nos dados de nascimento (data, hora e local), determine os signos Solar, Lunar e Ascendente. Em seguida, use essa informação para fornecer uma interpretação detalhada do mapa natal. Foque nos traços de personalidade, aspectos do caminho de vida e no potencial do indivíduo.
 
 Data de Nascimento: {{{birthDate}}}
 Hora de Nascimento: {{{birthTime}}}
 Local de Nascimento: {{{birthLocation}}}
-Signo Solar: {{{sunSign}}}
-Signo Lunar: {{{moonSign}}}
-Signo Ascendente: {{{risingSign}}}
 
 Interprete o mapa natal com base nas informações fornecidas.`,
 });

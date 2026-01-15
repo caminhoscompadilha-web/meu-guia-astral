@@ -14,15 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import { ZODIAC_SIGNS } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
 const formSchema = z.object({
@@ -32,9 +24,6 @@ const formSchema = z.object({
   birthYear: z.string().min(4, 'Ano é obrigatório').max(4),
   birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }),
   birthLocation: z.string().min(2, "Local de nascimento é obrigatório."),
-  sunSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo solar é obrigatório." }),
-  moonSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo lunar é obrigatório." }),
-  risingSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo ascendente é obrigatório." }),
 }).refine(data => {
     const day = parseInt(data.birthDay, 10);
     const month = parseInt(data.birthMonth, 10);
@@ -160,84 +149,6 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                 </FormItem>
               )}
             />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <FormField
-                  key="sunSign"
-                  control={form.control}
-                  name="sunSign"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Signo Solar</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o Signo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {ZODIAC_SIGNS.map((zodiacSign) => (
-                            <SelectItem key={zodiacSign} value={zodiacSign}>
-                              {zodiacSign}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  key="moonSign"
-                  control={form.control}
-                  name="moonSign"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Signo Lunar</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o Signo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {ZODIAC_SIGNS.map((zodiacSign) => (
-                            <SelectItem key={zodiacSign} value={zodiacSign}>
-                              {zodiacSign}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  key="risingSign"
-                  control={form.control}
-                  name="risingSign"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Signo Ascendente</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o Signo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {ZODIAC_SIGNS.map((zodiacSign) => (
-                            <SelectItem key={zodiacSign} value={zodiacSign}>
-                              {zodiacSign}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-            </div>
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={disabled} className="w-full text-lg py-6">
