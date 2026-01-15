@@ -2,19 +2,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
-import { translations } from '@/lib/translations'; // Importa as traduções
+import { translations } from '@/lib/translations'; 
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
-  const [t, setT] = useState(translations.pt); // Estado inicial em PT
+  const [t, setT] = useState(translations.pt); 
 
   useEffect(() => {
     const data = localStorage.getItem('user_astral_data');
     if (data) {
       const parsedData = JSON.parse(data);
       setUserData(parsedData);
-      // Aqui acontece a mágica: seleciona o dicionário com base no idioma salvo
+      
       if (translations[parsedData.idioma]) {
         setT(translations[parsedData.idioma]);
       }
@@ -23,6 +23,18 @@ export default function DashboardGuia() {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Mock de dados para a IA enquanto a API não está conectada
+  const mockIAData = {
+      analise_psicologica: "Sua essência capricorniana busca estrutura e segurança, mas sua Lua em Escorpião anseia por profundidade emocional. O Ascendente em Leão te dá uma máscara de confiança e carisma, mas por dentro, a batalha entre o dever e o desejo é constante.",
+      missao_vida: "Seu Nodo Norte em Peixes te chama para transcender o perfeccionismo virginiano (Nodo Sul). Sua missão é aprender a fluir, a confiar na intuição e a desenvolver a compaixão universal, saindo da lógica estrita para abraçar o mistério.",
+      alertas_astrocartografia: [
+          { tipo: "Luz/Prosperidade", local: "Europa Meridional (Linha de Vênus)", detalhe: "Relacionamentos, parcerias e ganhos financeiros são favorecidos aqui. Ótimo para networking ou encontrar harmonia." },
+          { tipo: "Sombra/Perigo", local: "América do Norte (Linha de Saturno)", detalhe: "Espere desafios estruturais e a necessidade de disciplina. Remédio: Encare como uma chance de construir resiliência e não como punição." }
+      ],
+      conselho_tarot: "A carta do Eremita, combinada com o trânsito de Saturno, pede um retiro estratégico. As respostas que você busca para sua carreira não estão no barulho externo, mas no silêncio da sua própria sabedoria. Medite antes de agir.",
+      probabilidades_30_dias: "Plutão continua a transformar sua casa das parcerias, exigindo autenticidade total ou o fim de ciclos. A Lua Nova no seu setor financeiro no dia 15 trará uma oportunidade inesperada de ganho. Esteja atento."
+  };
 
   if (loading) {
     return (
@@ -33,12 +45,13 @@ export default function DashboardGuia() {
     );
   }
 
+  const iaData = mockIAData; // Em um cenário real, isso viria do estado após a chamada da API
+
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100">
       <Header />
       
       <main className="max-w-6xl mx-auto px-6 py-10">
-        {/* Saudação e Resumo do Dia */}
         <header className="mb-12">
           <h2 className="text-3xl font-serif font-bold mb-2">{t.welcome}, {userData?.nome || 'Explorador'}</h2>
           <p className="text-slate-400">{t.subtitle}</p>
@@ -46,96 +59,60 @@ export default function DashboardGuia() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* Card 1: A Trindade (Sol, Lua, Ascendente) */}
-          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm">
+          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm md:col-span-2">
             <h3 className="text-purple-400 uppercase text-xs font-bold tracking-widest mb-6">{t.essencia}</h3>
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">🌞</span>
-                <div>
-                  <p className="text-sm text-slate-500">{t.sol}</p>
-                  <p className="font-bold text-lg text-slate-200">Capricórnio ♑</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">🌙</span>
-                <div>
-                  <p className="text-sm text-slate-500">{t.lua}</p>
-                  <p className="font-bold text-lg text-slate-200">Escorpião ♏</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">⬆️</span>
-                <div>
-                  <p className="text-sm text-slate-500">{t.asc}</p>
-                  <p className="font-bold text-lg text-slate-200">Leão ♌</p>
-                </div>
-              </div>
-            </div>
+            <p className="text-lg leading-relaxed text-slate-300 font-serif">
+              {iaData.analise_psicologica}
+            </p>
           </section>
 
-          {/* Card 2: Tarot do Dia e Arquetipo */}
           <section className="bg-gradient-to-b from-indigo-900/20 to-slate-900/40 border border-indigo-500/20 p-6 rounded-3xl">
             <h3 className="text-indigo-400 uppercase text-xs font-bold tracking-widest mb-6">{t.tarot}</h3>
             <div className="text-center">
-              <div className="w-24 h-40 bg-indigo-950 border-2 border-indigo-400/50 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
+               <div className="w-24 h-40 bg-indigo-950 border-2 border-indigo-400/50 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
                  <span className="text-4xl">🔮</span>
               </div>
-              <h4 className="text-xl font-serif font-bold mb-2">O Eremita (IX)</h4>
-              <p className="text-sm text-slate-400 italic">"Um momento de introspecção para iluminar o próximo passo."</p>
+              <p className="text-sm text-slate-300 italic">"{iaData.conselho_tarot}"</p>
             </div>
           </section>
-
-          {/* Card 3: Nodos Lunares (Missão de Vida) */}
-          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl">
+          
+          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl md:col-span-3">
             <h3 className="text-amber-400 uppercase text-xs font-bold tracking-widest mb-6">{t.missao}</h3>
-            <div className="space-y-4">
-              <div className="p-3 bg-amber-900/10 border border-amber-900/30 rounded-xl">
-                <p className="text-xs text-amber-500 font-bold uppercase">{t.norte}</p>
-                <p className="text-slate-200">Peixes: Desenvolver a compaixão e a espiritualidade.</p>
-              </div>
-              <div className="p-3 bg-slate-950/50 border border-slate-800 rounded-xl">
-                <p className="text-xs text-slate-500 font-bold uppercase">{t.sul}</p>
-                <p className="text-slate-400">Virgem: Superar o perfeccionismo e a autocrítica.</p>
-              </div>
-            </div>
+            <p className="text-base leading-relaxed text-slate-300 font-serif">
+                {iaData.missao_vida}
+            </p>
           </section>
 
-          {/* Card 4: Astrocartografia Mundial (Full Width) */}
           <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
             <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">{t.astro}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="w-2 h-2 mt-2 bg-green-500 rounded-full shadow-[0_0_10px_green]"></div>
-                  <div>
-                    <p className="font-bold text-green-400">Linha de Vênus (Luz) - Europa Meridional</p>
-                    <p className="text-sm text-slate-400 italic">Probabilidades: Favorece parcerias, beleza e prosperidade material.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {iaData.alertas_astrocartografia.map((alerta, index) => (
+                <div key={index} className={`p-4 rounded-2xl border ${
+                  alerta.tipo === 'Sombra/Perigo' 
+                    ? 'bg-red-900/20 border-red-500/40' 
+                    : 'bg-green-900/20 border-green-500/40'
+                }`}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={`text-2xl ${alerta.tipo === 'Sombra/Perigo' ? 'text-red-400' : 'text-green-400'}`}>
+                      {alerta.tipo === 'Sombra/Perigo' ? '⚠️' : '✨'}
+                    </span>
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                        {alerta.tipo}
+                        </p>
+                        <p className="font-bold text-slate-200">{alerta.local}</p>
+                    </div>
                   </div>
+                  <p className="text-sm text-slate-300 pl-1">{alerta.detalhe}</p>
                 </div>
-                <div className="flex gap-4">
-                  <div className="w-2 h-2 mt-2 bg-red-500 rounded-full shadow-[0_0_10px_red]"></div>
-                  <div>
-                    <p className="font-bold text-red-400">Linha de Saturno (Sombra) - América do Norte</p>
-                    <p className="text-sm text-slate-400 italic">Alertas: Desafios estruturais, restrições e necessidade de disciplina rígida.</p>
-                  </div>
-                </div>
-              </div>
-              {/* Espaço para o Mapa Visual (Futuro) */}
-              <div className="bg-slate-950 h-48 rounded-2xl border border-slate-800 flex items-center justify-center text-slate-700 font-serif">
-                [Visualização do Mapa Mundi Ativado]
-              </div>
+              ))}
             </div>
           </section>
 
-          {/* Card 5: Análise Profunda da IA */}
           <section className="md:col-span-3 bg-gradient-to-r from-purple-900/10 to-blue-900/10 border border-purple-500/20 p-8 rounded-3xl">
-            <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">{t.oraculo}</h3>
+            <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">{t.oraculo} - Próximos 30 dias</h3>
             <p className="text-lg leading-relaxed text-slate-300 font-serif">
-               "Neste ciclo de 30 dias, sua essência capricorniana será desafiada pela fluidez do seu Nodo Norte em Peixes. 
-               A carta do Eremita sugere que a resposta que você busca não está no mundo exterior, mas no silêncio. 
-               Cuidado com a sombra da Lua em Escorpião, que pode trazer desconfianças infundadas. Use a luz de Vênus 
-               para reconectar-se com seu propósito criativo..."
+               {iaData.probabilidades_30_dias}
             </p>
           </section>
 
