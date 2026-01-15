@@ -7,62 +7,6 @@ import { obterUltimaConsulta } from '@/lib/storage';
 import { ModalPagamento } from '@/components/ModalPagamento';
 import { GradePremium } from '@/components/GradePremium';
 import { WidgetCicloLunar } from '@/components/WidgetCicloLunar';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-
-export function GerarDossiePDF({ dataIA, idioma }: { dataIA: any, idioma: string }) {
-  const exportarPDF = async () => {
-    const elemento = document.getElementById('grade-premium-conteudo');
-    if (!elemento) return;
-
-    const canvas = await html2canvas(elemento, {
-      scale: 2,
-      backgroundColor: '#050505', // Mantém o fundo Dark Mode no PDF
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: 'p',
-      unit: 'mm',
-      format: 'a4',
-      putOnlyUsedFonts: true
-    });
-    
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-    const labels: any = {
-      "pt": { titulo: "PORTAL MEU GUIA ASTRAL", sub: "DOSSIÊ EXCLUSIVO DO CICLO DE 30 DIAS" },
-      "en": { titulo: "MY ASTRAL GUIDE PORTAL", sub: "EXCLUSIVE 30-DAY CYCLE DOSSIER" },
-      "es": { titulo: "PORTAL MI GUÍA ASTRAL", sub: "DOSSIER EXCLUSIVO DEL CICLO DE 30 DÍAS" },
-      "it": { titulo: "PORTALE LA MIA GUIDA ASTRALE", sub: "DOSSIER ESCLUSIVO DEL CICLO DI 30 GIORNI" },
-      "fr": { titulo: "PORTAIL MON GUIDE ASTRAL", sub: "DOSSIER EXCLUSIF DU CYCLE DE 30 JOURS" }
-    };
-
-    const t = labels[idioma] || labels["pt"];
-
-    pdf.setFillColor(5, 5, 5);
-    pdf.rect(0, 0, 210, 297, 'F');
-    pdf.setTextColor(212, 175, 55);
-    pdf.setFont("times", "bold");
-    pdf.text(t.titulo, 105, 15, { align: "center" });
-    pdf.setFontSize(10);
-    pdf.text(t.sub, 105, 22, { align: "center" });
-
-    pdf.addImage(imgData, 'PNG', 0, 30, pdfWidth, pdfHeight);
-    pdf.save(`Dossie_Astral_${dataIA.nome}_Ciclo.pdf`);
-  };
-
-  return (
-    <button 
-      onClick={exportarPDF}
-      className="flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-400 text-black font-black px-6 py-3 rounded-full hover:scale-105 transition-all shadow-xl shadow-amber-500/20"
-    >
-      <span>📥</span> BAIXAR MEU DOSSIÊ DE CICLO (PDF)
-    </button>
-  );
-} 
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
@@ -170,10 +114,6 @@ export default function DashboardGuia() {
         </div>
 
         <GradePremium dataIA={iaData} pago={pago} aoClicar={() => setModalAberto(true)} />
-
-        <div className="mt-12 flex justify-center">
-          <GerarDossiePDF dataIA={{...iaData, nome: nomeUsuario}} idioma={lang} />
-        </div>
 
       </main>
     </div>
