@@ -13,7 +13,7 @@ export function LoadingAnimation() {
         </div>
       </div>
       <p className="font-headline text-2xl text-foreground mt-8 tracking-wider">
-        Generating your cosmic blueprint...
+        Gerando seu mapa cósmico...
       </p>
     </div>
   );

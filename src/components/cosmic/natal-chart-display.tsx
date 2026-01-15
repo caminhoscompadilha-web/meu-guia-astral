@@ -29,9 +29,9 @@ export function NatalChartDisplay({ chartData }: NatalChartDisplayProps) {
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20 overflow-hidden">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">
-          {chartData.name ? `${chartData.name}'s Chart` : "Your Natal Chart"}
+          {chartData.name ? `Mapa de ${chartData.name}` : "Seu Mapa Natal"}
         </CardTitle>
-        <CardDescription>A snapshot of the cosmos at your birth.</CardDescription>
+        <CardDescription>Um retrato do cosmos no seu nascimento.</CardDescription>
       </CardHeader>
       <CardContent className="flex items-center justify-center p-0 pb-6">
         <div className="relative w-full aspect-square max-w-[300px]">

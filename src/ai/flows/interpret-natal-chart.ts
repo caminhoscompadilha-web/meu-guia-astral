@@ -13,19 +13,19 @@ import {z} from 'genkit';
 const InterpretNatalChartInputSchema = z.object({
   birthDate: z
     .string()
-    .describe('The date of birth in ISO format (YYYY-MM-DD).'),
-  birthTime: z.string().describe('The time of birth in HH:mm format.'),
-  birthLocation: z.string().describe('The location of birth (city, country).'),
-  sunSign: z.string().describe('The sun sign of the person.'),
-  moonSign: z.string().describe('The moon sign of the person.'),
-  risingSign: z.string().describe('The rising sign of the person.'),
+    .describe('A data de nascimento no formato ISO (AAAA-MM-DD).'),
+  birthTime: z.string().describe('A hora de nascimento no formato HH:mm.'),
+  birthLocation: z.string().describe('O local de nascimento (cidade, país).'),
+  sunSign: z.string().describe('O signo solar da pessoa.'),
+  moonSign: z.string().describe('O signo lunar da pessoa.'),
+  risingSign: z.string().describe('O signo ascendente da pessoa.'),
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
 const InterpretNatalChartOutputSchema = z.object({
-  personalityTraits: z.string().describe('Interpretation of personality traits based on the natal chart.'),
-  lifePathAspects: z.string().describe('Insights into the life path and potential challenges/opportunities.'),
-  potential: z.string().describe('Description of the person potential based on the chart.'),
+  personalityTraits: z.string().describe('Interpretação de traços de personalidade com base no mapa natal.'),
+  lifePathAspects: z.string().describe('Insights sobre o caminho de vida e potenciais desafios/oportunidades.'),
+  potential: z.string().describe('Descrição do potencial da pessoa com base no mapa.'),
 });
 export type InterpretNatalChartOutput = z.infer<typeof InterpretNatalChartOutputSchema>;
 
@@ -37,18 +37,18 @@ const prompt = ai.definePrompt({
   name: 'interpretNatalChartPrompt',
   input: {schema: InterpretNatalChartInputSchema},
   output: {schema: InterpretNatalChartOutputSchema},
-  prompt: `You are an expert astrologer specializing in natal chart interpretations.
+  prompt: `Você é um astrólogo especialista em interpretações de mapa natal.
 
-You will use the birth data (date, time, and location) along with the Sun, Moon, and Rising signs to provide a detailed interpretation of the natal chart. Focus on personality traits, life path aspects, and the individual's potential.
+Você usará os dados de nascimento (data, hora e local) juntamente com os signos Solar, Lunar e Ascendente para fornecer uma interpretação detalhada do mapa natal. Foque nos traços de personalidade, aspectos do caminho de vida e no potencial do indivíduo.
 
-Birth Date: {{{birthDate}}}
-Birth Time: {{{birthTime}}}
-Birth Location: {{{birthLocation}}}
-Sun Sign: {{{sunSign}}}
-Moon Sign: {{{moonSign}}}
-Rising Sign: {{{risingSign}}}
+Data de Nascimento: {{{birthDate}}}
+Hora de Nascimento: {{{birthTime}}}
+Local de Nascimento: {{{birthLocation}}}
+Signo Solar: {{{sunSign}}}
+Signo Lunar: {{{moonSign}}}
+Signo Ascendente: {{{risingSign}}}
 
-Interpret the natal chart based on the provided information.`,
+Interprete o mapa natal com base nas informações fornecidas.`,
 });
 
 const interpretNatalChartFlow = ai.defineFlow(

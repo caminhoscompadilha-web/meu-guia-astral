@@ -1,20 +1,20 @@
 import type { Planet, ZodiacSign } from './types';
 
 export const ZODIAC_SIGNS: ZodiacSign[] = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra',
-  'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+  'Áries', 'Touro', 'Gêmeos', 'Câncer', 'Leão', 'Virgem', 'Libra',
+  'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes'
 ];
 
 export const PLANETS: Planet[] = [
-    'Sun', 
-    'Moon', 
-    'Mercury', 
-    'Venus', 
-    'Mars', 
-    'Jupiter', 
-    'Saturn', 
-    'Uranus', 
-    'Neptune', 
-    'Pluto', 
-    'Ascendant',
+    'Sol', 
+    'Lua', 
+    'Mercúrio', 
+    'Vênus', 
+    'Marte', 
+    'Júpiter', 
+    'Saturno', 
+    'Urano', 
+    'Netuno', 
+    'Plutão', 
+    'Ascendente',
 ];

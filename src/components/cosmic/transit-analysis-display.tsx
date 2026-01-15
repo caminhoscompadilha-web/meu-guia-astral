@@ -10,8 +10,8 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
     <div className="space-y-6">
       <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Current Cosmic Climate</CardTitle>
-          <CardDescription>An AI-powered summary of how current planetary movements affect you.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Clima Cósmico Atual</CardTitle>
+          <CardDescription>Um resumo de como os movimentos planetários atuais afetam você, via IA.</CardDescription>
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed">
           {transits.summary}
@@ -19,8 +19,8 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
       </Card>
       <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Detailed Transit Analysis</CardTitle>
-          <CardDescription>A deeper look into significant ongoing transits.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Análise Detalhada dos Trânsitos</CardTitle>
+          <CardDescription>Um olhar aprofundado sobre os trânsitos significativos em andamento.</CardDescription>
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
           {transits.detailedAnalysis}

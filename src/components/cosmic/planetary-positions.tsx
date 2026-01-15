@@ -19,16 +19,16 @@ export function PlanetaryPositions({ positions }: PlanetaryPositionsProps) {
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Planetary Positions</CardTitle>
-        <CardDescription>The celestial bodies and their placements.</CardDescription>
+        <CardTitle className="font-headline text-2xl">Posições Planetárias</CardTitle>
+        <CardDescription>Os corpos celestes e seus posicionamentos.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Planet</TableHead>
-              <TableHead>Sign</TableHead>
-              <TableHead className="text-right">House</TableHead>
+              <TableHead>Planeta</TableHead>
+              <TableHead>Signo</TableHead>
+              <TableHead className="text-right">Casa</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

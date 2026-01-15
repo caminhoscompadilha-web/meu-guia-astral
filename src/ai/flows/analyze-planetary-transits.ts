@@ -15,11 +15,11 @@ const AnalyzePlanetaryTransitsInputSchema = z.object({
   natalChartData: z
     .string()
     .describe(
-      'Natal chart data including date, time, and location of birth, formatted as JSON.'
+      'Dados do mapa natal, incluindo data, hora e local de nascimento, formatados como JSON.'
     ),
   currentDate: z
     .string()
-    .describe('The current date for transit analysis, formatted as YYYY-MM-DD.'),
+    .describe('A data atual para análise de trânsito, formatada como AAAA-MM-DD.'),
 });
 export type AnalyzePlanetaryTransitsInput = z.infer<
   typeof AnalyzePlanetaryTransitsInputSchema
@@ -29,12 +29,12 @@ const AnalyzePlanetaryTransitsOutputSchema = z.object({
   summary: z
     .string()
     .describe(
-      'A summary of the current planetary transits in relation to the natal chart, identifying key phases, cycles, opportunities, and challenges.'
+      'Um resumo dos trânsitos planetários atuais em relação ao mapa natal, identificando fases-chave, ciclos, oportunidades e desafios.'
     ),
   detailedAnalysis: z
     .string()
     .describe(
-      'A more detailed analysis of each significant transit, including the planets involved, the houses affected, and potential impacts.'
+      'Uma análise mais detalhada de cada trânsito significativo, incluindo os planetas envolvidos, as casas afetadas e os impactos potenciais.'
     ),
 });
 export type AnalyzePlanetaryTransitsOutput = z.infer<
@@ -51,18 +51,18 @@ const prompt = ai.definePrompt({
   name: 'analyzePlanetaryTransitsPrompt',
   input: {schema: AnalyzePlanetaryTransitsInputSchema},
   output: {schema: AnalyzePlanetaryTransitsOutputSchema},
-  prompt: `You are an expert astrologer analyzing planetary transits in relation to a natal chart.
+  prompt: `Você é um astrólogo especialista analisando trânsitos planetários em relação a um mapa natal.
 
-  Provide a summary and a detailed analysis of the current planetary transits, based on the current date, in relation to the provided natal chart data.
+  Forneça um resumo e uma análise detalhada dos trânsitos planetários atuais, com base na data atual, em relação aos dados do mapa natal fornecidos.
 
-  Natal Chart Data: {{{natalChartData}}}
-  Current Date: {{{currentDate}}}
+  Dados do Mapa Natal: {{{natalChartData}}}
+  Data Atual: {{{currentDate}}}
 
-  Summary:
-  - Briefly identify the key phases, cycles, opportunities, and challenges indicated by the transits.
+  Resumo:
+  - Identifique brevemente as fases-chave, ciclos, oportunidades e desafios indicados pelos trânsitos.
 
-  Detailed Analysis:
-  - Provide a more in-depth analysis of each significant transit, including the planets involved, the houses affected, and potential impacts.
+  Análise Detalhada:
+  - Forneça uma análise mais aprofundada de cada trânsito significativo, incluindo os planetas envolvidos, as casas afetadas e os impactos potenciais.
 `,
 });
 

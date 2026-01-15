@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,12 +32,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 const formSchema = z.object({
   name: z.string().optional(),
-  birthDate: z.string({ required_error: "Birth date is required." }),
-  birthTime: z.string({ required_error: "Birth time is required." }),
-  birthLocation: z.string().min(2, "Birth location is required."),
-  sunSign: z.enum(ZODIAC_SIGNS, { required_error: "Sun sign is required." }),
-  moonSign: z.enum(ZODIAC_SIGNS, { required_error: "Moon sign is required." }),
-  risingSign: z.enum(ZODIAC_SIGNS, { required_error: "Rising sign is required." }),
+  birthDate: z.string({ required_error: "Data de nascimento é obrigatória." }),
+  birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }),
+  birthLocation: z.string().min(2, "Local de nascimento é obrigatório."),
+  sunSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo solar é obrigatório." }),
+  moonSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo lunar é obrigatório." }),
+  risingSign: z.enum(ZODIAC_SIGNS, { required_error: "Signo ascendente é obrigatório." }),
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -58,8 +59,8 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Enter Your Birth Details</CardTitle>
-        <CardDescription>Provide your information to generate your natal chart.</CardDescription>
+        <CardTitle className="font-headline text-2xl">Insira Seus Dados de Nascimento</CardTitle>
+        <CardDescription>Forneça suas informações para gerar seu mapa natal.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -69,9 +70,9 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name (Optional)</FormLabel>
+                  <FormLabel>Nome (Opcional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} />
+                    <Input placeholder="ex: Maria Silva" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -84,7 +85,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                 name="birthDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel>Data de Nascimento</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -96,9 +97,9 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                             )}
                           >
                             {field.value ? (
-                              format(new Date(field.value), "PPP")
+                              format(new Date(field.value), "PPP", { locale: ptBR })
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Escolha uma data</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -106,6 +107,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
+                          locale={ptBR}
                           mode="single"
                           selected={field.value ? new Date(field.value) : undefined}
                           onSelect={(date) => field.onChange(date?.toISOString().split("T")[0])}
@@ -125,7 +127,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                 name="birthTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Time of Birth</FormLabel>
+                    <FormLabel>Hora de Nascimento</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -140,9 +142,9 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               name="birthLocation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Place of Birth</FormLabel>
+                  <FormLabel>Local de Nascimento</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., New York, USA" {...field} />
+                    <Input placeholder="ex: São Paulo, Brasil" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,18 +152,17 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {(['sunSign', 'moonSign', 'risingSign'] as const).map((sign) => (
-                <FormField
-                  key={sign}
+              <FormField
+                  key="sunSign"
                   control={form.control}
-                  name={sign}
+                  name="sunSign"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{sign.replace('Sign', ' Sign')}</FormLabel>
+                      <FormLabel>Signo Solar</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={`Select ${sign.replace('Sign', '')}`} />
+                            <SelectValue placeholder="Selecione o Signo" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -176,7 +177,56 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                     </FormItem>
                   )}
                 />
-              ))}
+                <FormField
+                  key="moonSign"
+                  control={form.control}
+                  name="moonSign"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Signo Lunar</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o Signo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {ZODIAC_SIGNS.map((zodiacSign) => (
+                            <SelectItem key={zodiacSign} value={zodiacSign}>
+                              {zodiacSign}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  key="risingSign"
+                  control={form.control}
+                  name="risingSign"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Signo Ascendente</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o Signo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {ZODIAC_SIGNS.map((zodiacSign) => (
+                            <SelectItem key={zodiacSign} value={zodiacSign}>
+                              {zodiacSign}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
           </CardContent>
           <CardFooter>
@@ -184,10 +234,10 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               {disabled ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
+                  Gerando...
                 </>
               ) : (
-                "Generate Natal Chart"
+                "Gerar Mapa Natal"
               )}
             </Button>
           </CardFooter>

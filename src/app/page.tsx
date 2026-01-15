@@ -31,7 +31,7 @@ export default function Home() {
   const { toast } = useToast();
 
   const mockPlanetaryPositions = (birthDate: Date): PlanetPosition[] => {
-    const planets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Ascendant'];
+    const planets = ['Sol', 'Lua', 'Mercúrio', 'Vênus', 'Marte', 'Júpiter', 'Saturno', 'Urano', 'Netuno', 'Plutão', 'Ascendente'];
     const dayOfYear = (Date.UTC(birthDate.getUTCFullYear(), birthDate.getUTCMonth(), birthDate.getUTCDate()) - Date.UTC(birthDate.getUTCFullYear(), 0, 0)) / 86400000;
 
     return planets.map((planet, index) => {
@@ -80,8 +80,8 @@ export default function Home() {
       console.error(error);
       toast({
         variant: "destructive",
-        title: "Error Generating Chart",
-        description: "An unexpected error occurred. Please check your connection and try again.",
+        title: "Erro ao Gerar o Mapa",
+        description: "Ocorreu um erro inesperado. Verifique sua conexão e tente novamente.",
       });
     } finally {
       setIsLoading(false);
@@ -101,7 +101,7 @@ export default function Home() {
       <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto">
           <Button variant="ghost" onClick={handleReset} className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to form
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar ao formulário
           </Button>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -112,8 +112,8 @@ export default function Home() {
             <div className="lg:col-span-2">
               <Tabs defaultValue="interpretation" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                  <TabsTrigger value="interpretation">Natal Chart Interpretation</TabsTrigger>
-                  <TabsTrigger value="transits">Planetary Transits</TabsTrigger>
+                  <TabsTrigger value="interpretation">Interpretação do Mapa Natal</TabsTrigger>
+                  <TabsTrigger value="transits">Trânsitos Planetários</TabsTrigger>
                 </TabsList>
                 <TabsContent value="interpretation" className="mt-6">
                   <InterpretationDisplay interpretation={results.interpretation} />
@@ -140,10 +140,10 @@ export default function Home() {
             <Sparkles className="w-10 h-10" />
         </div>
         <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-gray-200 to-gray-500 mb-4">
-          Cosmic Insights
+          Percepções Cósmicas
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
-          Unveil the secrets of your celestial blueprint. Enter your birth details to generate a personalized astrological map and discover your cosmic potential.
+          Desvende os segredos do seu mapa celestial. Insira seus dados de nascimento para gerar um mapa astrológico personalizado e descobrir seu potencial cósmico.
         </p>
       </div>
       <div className="relative z-10 w-full max-w-2xl mt-8">
