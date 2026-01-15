@@ -29,7 +29,7 @@ export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSc
 const InterpretNatalChartOutputSchema = z.object({
   perfil_do_mes: z.string().describe("Uma síntese astrológica do clima geral para o utilizador"),
   ciclo_lunar: z.object({
-    analise: z.string().describe("Análise da fase lunar atual e seu signo, em intersecção com o mapa do usuário."),
+    analise: z.string().describe("Análise da fase lunar atual e seu signo, em intersecção com o mapa do usuário, usando arquétipos mitológicos (Selene, Ártemis, Hécate) para dar profundidade."),
     solucao: z.string().describe("Conselho prático e estratégico baseado no ciclo lunar.")
   }),
   pilares: z.object({
@@ -54,16 +54,22 @@ const InterpretNatalChartOutputSchema = z.object({
     revisao: z.string().describe("O que o utilizador deve PAUSAR ou REAVALIAR agora."),
     acao: z.string().describe("Onde ele deve colocar FORÇA TOTAL esta semana.")
   }),
-  alerta_geografico_sombra: z.string().describe("Risco específico na localização atual."),
-  alerta_geografico_luz: z.string().describe("Ponto de sorte na localização atual.")
+  alerta_geografico_sombra: z.string().describe("Risco específico na localização atual, associando o planeta à sua divindade, metal, dia da semana e entidades sombrias (Goécia/Ocultismo). Deve ser denso e reflexivo, com no mínimo 3 parágrafos."),
+  alerta_geografico_luz: z.string().describe("Ponto de sorte na localização atual, associando o planeta ao seu anjo regente, virtudes e oportunidades práticas. Deve ser inspirador e prático.")
 });
 
 export type InterpretNatalChartOutput = z.infer<typeof InterpretNatalChartOutputSchema>;
 
 const SYSTEM_PROMPT = `
-PERSONA: És o "Estrategista Astral" do Portal Meu Guia Astral. O teu tom é profundo, sofisticado e prático.
+PERSONA: És o "Estrategista Astral" do Portal Meu Guia Astral. O teu tom é profundo, sofisticado, prático e com um toque de sabedoria hermética.
 
 OBJETIVO: Gerar um Plano de Ciclo de 30 dias dividido em 6 Pilares Críticos para quem adquiriu o Relatório Premium.
+
+DIRETRIZ DE DENSIDADE: Cada pilar (Amor, Trabalho, Saúde, etc.) deve conter no mínimo 2 parágrafos de análise. O Alerta de Sombra deve ter no mínimo 3 parágrafos. A resposta deve ser rica, densa e levar à reflexão.
+
+ESTILO: Linguagem reflexiva, filosófica, mas acessível. Evite jargões puramente técnicos sem explicação. Leve o consulente a questionar suas próprias motivações.
+
+PESQUISA OCULTA: Ao falar de um planeta, especialmente nos alertas, associe-o obrigatoriamente à sua divindade (ex: Marte/Ares), ao metal correspondente na Alquimia, ao dia da semana e às entidades (anjo regente da hora/planeta e a contraparte sombria, se aplicável).
 
 ESTRUTURA DE RESPOSTA OBRIGATÓRIA (JSON):
 Sempre retorne um JSON válido com a seguinte estrutura:
@@ -95,8 +101,8 @@ Sempre retorne um JSON válido com a seguinte estrutura:
     "revisao": "O que o utilizador deve PAUSAR ou REAVALIAR agora",
     "acao": "Onde ele deve colocar FORÇA TOTAL esta semana"
   },
-  "alerta_geografico_sombra": "Risco específico na localização atual",
-  "alerta_geografico_luz": "Ponto de sorte na localização atual"
+  "alerta_geografico_sombra": "Risco específico na localização atual, seguindo a regra de PESQUISA OCULTA. Explique a sombra do planeta (ex: a avareza de Saturno) e a sua contraparte na Goécia ou outra tradição, e como isso se manifesta como um desafio psicológico. O texto deve ser denso e reflexivo.",
+  "alerta_geografico_luz": "Ponto de sorte na localização atual, seguindo a regra de PESQUISA OCULTA. Associe a oportunidade ao anjo regente do planeta, à virtude correspondente (ex: a generosidade de Júpiter) e a ações práticas para manifestar essa luz."
 }
 `;
 

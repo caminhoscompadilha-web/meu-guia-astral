@@ -10,7 +10,7 @@ export default function LandingPage() {
     nome: '',
     data: '',
     hora: '',
-    idioma: 'pt'
+    idioma: 'pt' // Idioma padrão
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ export default function LandingPage() {
       
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-12 text-center">
         <div className="inline-block px-4 py-1.5 mb-6 text-sm font-medium tracking-wider text-purple-400 uppercase bg-purple-950/30 border border-purple-800/50 rounded-full">
-          Seu destino escrito nas estrelas
+          Sua bússola astral com inteligência artificial
         </div>
         
         <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8 leading-tight">
@@ -39,9 +39,9 @@ export default function LandingPage() {
           </span>
         </h1>
         
-        <p className="max-w-2xl mx-auto text-lg text-slate-400 mb-12">
+        <p className="max-w-3xl mx-auto text-lg text-slate-400 mb-12">
           Uma jornada profunda através da Astrologia Psicológica, Astrocartografia e Tarot. 
-          O <strong>Meu Guia Astrológico</strong> revela suas sombras, potencializa sua luz e orienta seus próximos 30 dias.
+          Gere seu mapa gratuitamente, mas adquira o <strong>Relatório Premium</strong> para desbloquear Alertas de Sombra e o envio detalhado para seu e-mail.
         </p>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto">
@@ -84,7 +84,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div>
+             <div>
               <label className="text-xs uppercase text-slate-500 font-bold ml-1">Idioma do Guia</label>
               <select 
                 value={formData.idioma}

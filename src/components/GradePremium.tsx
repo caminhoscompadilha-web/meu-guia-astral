@@ -66,27 +66,28 @@ export function GradePremium({ dataIA, pago, aoClicar }: { dataIA: any, pago: bo
         </div>
       </section>
 
-        {/* Alertas Geográficos */}
-       <section className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-red-500/50 md:col-span-2">
+      {/* Alertas de Ocultismo */}
+       <section className="bg-red-950/20 border border-red-500/20 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-red-500/50 md:col-span-2">
          <BloqueioPremium pago={pago} aoClicar={aoClicar} />
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-2xl">🌍</span>
-          <h3 className="font-bold text-white uppercase tracking-widest text-xs">Alertas Geográficos</h3>
+          <span className="text-2xl">🔥</span>
+          <h3 className="font-bold text-red-300 uppercase tracking-widest text-xs">Psicologia Oculta: A Sombra</h3>
         </div>
-        <div className="space-y-4">
-            <div className="bg-red-900/20 border border-red-500/30 p-3 rounded-xl">
-                 <p className="text-xs font-bold text-red-400 mb-1">Ponto de Sombra (Risco):</p>
-                 <p className="text-xs text-red-200">{dataIA.alerta_geografico_sombra}</p>
-            </div>
-             <div className="bg-green-900/20 border border-green-500/30 p-3 rounded-xl">
-                 <p className="text-xs font-bold text-green-400 mb-1">Ponto de Luz (Sorte):</p>
-                 <p className="text-xs text-green-200">{dataIA.alerta_geografico_luz}</p>
-            </div>
-        </div>
+        <p className="text-slate-400 text-sm mb-4 text-justify">{dataIA.alerta_geografico_sombra}</p>
       </section>
 
+       <section className="bg-sky-950/20 border border-sky-500/20 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-sky-500/50">
+        <BloqueioPremium pago={pago} aoClicar={aoClicar} />
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-2xl">🕊️</span>
+          <h3 className="font-bold text-sky-300 uppercase tracking-widest text-xs">Hierarquia da Luz</h3>
+        </div>
+        <p className="text-slate-400 text-sm mb-4 text-justify">{dataIA.alerta_geografico_luz}</p>
+      </section>
+
+
       {/* Bloco: Reflexão */}
-       <section className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-indigo-500/50">
+       <section className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl backdrop-blur-md relative transition-all hover:border-indigo-500/50 lg:col-start-1 lg:col-span-1">
         <BloqueioPremium pago={pago} aoClicar={aoClicar} />
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl">🧘</span>

@@ -78,10 +78,11 @@ export default function DashboardGuia() {
     if (data) {
       const parsedData = JSON.parse(data);
       setUserData(parsedData);
-      setLang(parsedData.idioma);
+      const userLang = parsedData.idioma || 'pt';
+      setLang(userLang);
       
-      if (translations[parsedData.idioma]) {
-        setT(translations[parsedData.idioma]);
+      if (translations[userLang]) {
+        setT(translations[userLang]);
       }
     }
     
@@ -95,35 +96,35 @@ export default function DashboardGuia() {
   }, []);
 
   const iaData = ultimaConsulta?.interpretation || {
-      perfil_do_mes: "Este é um mês de profunda reavaliação interna, onde a sua estrutura capricorniana será desafiada a encontrar novas formas de expressão emocional, impulsionada pela sua Lua em Escorpião. O Ascendente em Leão pede que você lidere essa mudança com coragem.",
+      perfil_do_mes: "Este é um mês de profunda reavaliação interna, onde a sua estrutura capricorniana será desafiada a encontrar novas formas de expressão emocional, impulsionada pela sua Lua em Escorpião. O Ascendente em Leão pede que você lidere essa mudança com coragem e autenticidade, transformando antigos medos em poder pessoal.",
       ciclo_lunar: {
-        analise: "A Lua Crescente em Touro ativa a sua Casa 4, pedindo foco no lar e na segurança emocional. Como Hécate, é tempo de olhar para dentro.",
-        solucao: "Priorize organizar seu espaço físico e passar tempo com a família. Evite decisões financeiras impulsivas hoje."
+        analise: "A Lua Crescente em Touro ativa a sua Casa 4, pedindo foco no lar e na segurança emocional. Como o arquétipo de Hécate, que guarda as encruzilhadas, é tempo de olhar para as fundações da sua vida e decidir que caminho nutre a sua alma. A energia é de construção lenta e sólida, não de impulsos.",
+        solucao: "Priorize organizar seu espaço físico e passar tempo de qualidade com a família. No campo material, é um excelente momento para plantar as sementes de um novo projeto financeiro, mas evite decisões de alto risco. A energia lunar favorece o crescimento estável."
       },
       pilares: {
           trabalho_e_financas: {
-              analise: "Com Saturno em trânsito pela sua casa 2, a prudência financeira é crucial. Espere uma reestruturação na forma como você gera valor.",
-              solucao: "Revise todos os seus investimentos e crie um orçamento de 3 meses. Evite grandes compras por impulso até a próxima Lua Nova."
+              analise: "Com Saturno em trânsito pela sua casa 2, a prudência financeira é a chave mestra. Este não é um período para gastos extravagantes, mas sim para construir uma estrutura sólida e duradoura. Você sentirá uma pressão para reavaliar o que realmente tem valor para si, e como o seu trabalho reflete isso. A energia é de um mestre construtor que verifica cada viga antes de subir um novo andar.",
+              solucao: "Ação Estratégica: Crie um 'Orçamento de Guerra' para os próximos 3 meses, cortando despesas supérfluas e direcionando capital para um fundo de emergência ou investimento de baixo risco. No trabalho, foque em entregar resultados impecáveis em vez de iniciar novos projetos. A sua reputação de confiança será o seu maior ativo."
           },
           amor_e_relacionamentos: {
-              analise: "Vênus transita sua casa 7, trazendo harmonia, mas também a necessidade de clareza em parcerias. Relações superficiais não se sustentarão.",
-              solucao: "Agende uma conversa honesta com seu parceiro sobre metas de longo prazo. Se solteiro, foque em definir o que você realmente busca."
+              analise: "Vênus, a deusa do amor e da beleza, transita a sua casa 7, trazendo uma aura de harmonia e diplomacia para as suas parcerias. No entanto, a sua presença aqui exige autenticidade. Relações superficiais ou baseadas em conveniência não se sustentarão. A beleza que Vênus procura é a da verdade e do compromisso mútuo.",
+              solucao: "Se está num relacionamento, agende uma conversa honesta e vulnerável com o seu parceiro sobre metas e valores de longo prazo. Se solteiro, o exercício é interno: escreva uma lista detalhada do que você 'requer' e do que você 'oferece' numa parceria. A clareza interna atrairá a pessoa certa."
           },
           saude_e_vitalidade: {
-              analise: "Marte em sua casa 6 sugere um excesso de energia mental que pode levar ao estresse. O risco de burnout é real.",
-              solucao: "Canalize a energia através de atividades físicas de alta intensidade (HIIT) 3x por semana. Desconecte de telas 1 hora antes de dormir."
+              analise: "Marte, o deus da guerra e da ação, energiza a sua casa 6, a casa da rotina e da saúde. Isso pode manifestar-se como um excesso de energia mental, levando a stress, ansiedade e um risco real de burnout. A sua mente estará a 200km/h, mas o seu corpo pode não aguentar o ritmo. A energia de Ares aqui pode ser destrutiva se não for canalizada.",
+              solucao: "Biohacking Astral: Canalize a energia marciana através de atividades físicas de alta intensidade (HIIT ou corrida) 3 vezes por semana, preferencialmente pela manhã. À noite, pratique o 'shutdown mental': desligue todos os ecrãs 1 hora antes de dormir e leia um livro de ficção para acalmar o cérebro. O metal de Marte é o Ferro; certifique-se de que a sua dieta é rica neste mineral."
           },
           reflexao_e_espiritualidade: {
-              analise: "Netuno na sua casa 12 aprofunda sua intuição, mas pode também trazer confusão e escapismo. Seus sonhos estarão mais vívidos.",
-              solucao: "Mantenha um diário de sonhos. Medite por 10 minutos todas as manhãs sobre o tema 'deixar ir o que não posso controlar'."
+              analise: "Netuno, o senhor dos oceanos e do inconsciente, aprofunda a sua intuição ao transitar a sua casa 12. Os véus entre os mundos estarão mais finos, e os seus sonhos, mais vívidos e proféticos. No entanto, a sombra de Netuno é a confusão, o escapismo e a autoilusão. Sentirá uma vontade de 'fugir' da realidade.",
+              solucao: "Tema de Meditação: Mantenha um 'Diário de Sonhos' ao lado da sua cama. Ao acordar, anote tudo o que se lembrar. Medite por 10 minutos todas as manhãs sobre o tema 'Clareza em meio ao nevoeiro' ou 'Deixar ir o que não posso controlar'. A sua bússola interna está a ser recalibrada; o silêncio é o seu melhor guia."
           }
       },
       fases_de_execucao: {
-          revisao: "PAUSE qualquer novo projeto de grande escala. O momento é de reavaliar as fundações do que já foi construído, especialmente na sua carreira. Analise o que está a drenar sua energia.",
-          acao: "COLOQUE FORÇA TOTAL na sua saúde física e mental. A disciplina que você implementar agora no seu bem-estar será o combustível para a expansão que virá no próximo ciclo."
+          revisao: "PAUSE qualquer novo projeto de grande escala ou parceria comercial. O momento é de reavaliar as fundações do que já foi construído. Analise contratos existentes, renegocie termos se necessário, e, acima de tudo, identifique e corte atividades ou relações que estão a drenar a sua energia vital sem retorno.",
+          acao: "COLOQUE FORÇA TOTAL na sua saúde física e mental. A disciplina que você implementar agora no seu bem-estar será o combustível para a expansão profissional e financeira que se aproxima no próximo ciclo lunar. Invista em terapia, exercício, alimentação e sono. Este é o seu 'treino de guerreiro' para a batalha que virá."
       },
-      alerta_geografico_sombra: "Risco de perdas financeiras e atrasos em projetos na sua localização atual devido a uma linha de Saturno.",
-      alerta_geografico_luz: "Oportunidades de networking e parcerias benéficas podem surgir em viagens para a Europa Ocidental (Linha de Vênus)."
+      alerta_geografico_sombra: "No estudo do ocultismo, cada planeta projeta uma sombra quando a sua energia é mal canalizada. Para o seu ciclo atual, a influência de Saturno na sua localização atual ressoa com a energia do demônio da Goécia, Asmodeus, que rege a avareza e os bloqueios materiais. Não veja isto como uma maldição, mas como o 'Chumbo' que a sua Alquimia pessoal deve transformar em Ouro. O metal de Saturno é o Chumbo, denso e pesado, simbolizando os fardos e as responsabilidades que você pode estar a sentir. O desafio é não sucumbir ao pessimismo ou à sensação de que 'nada avança'. A sombra de Saturno/Asmodeus manifesta-se como medo da escassez, o que pode levar a decisões financeiras baseadas no pânico, ou a uma rigidez que impede o fluxo da prosperidade. É o arquétipo do 'velho rei' que se recusa a morrer para que o novo possa nascer.",
+      alerta_geografico_luz: "O ponto de sorte na sua localização atual está sob a influência direta de Júpiter, o Grande Benéfico. Na hierarquia angelical, esta energia corresponde ao Arcanjo Sachiel, o anjo da abundância, da expansão e da caridade. O seu metal é o Estanho, flexível e protetor. Esta é a sua 'carta na manga' para este ciclo. A energia de Júpiter/Sachiel abre portas para o networking, para parcerias benéficas e para oportunidades de aprendizado que podem levar a um ganho financeiro inesperado. Aja com generosidade e otimismo, e o universo responderá na mesma moeda. O dia da semana para agir é a Quinta-feira. Use a cor azul real para atrair estas vibrações."
   };
   const nomeUsuario = ultimaConsulta?.chartData?.name || 'Viajante Cósmico';
 
