@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { translations } from '@/lib/translations'; 
 import { obterUltimaConsulta } from '@/lib/storage';
-import MapaAstral from '@/components/MapaAstral';
 import { ModalPagamento } from '@/components/ModalPagamento';
-import { BloqueioPremium } from '@/components/BloqueioPremium';
+import { GradePremium } from '@/components/GradePremium';
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
@@ -14,7 +13,7 @@ export default function DashboardGuia() {
   const [t, setT] = useState(translations.pt); 
   const [ultimaConsulta, setUltimaConsulta] = useState<any>(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const [pago, setPago] = useState(false); // Simulação de status de pagamento
+  const [pago] = useState(false); // Simulação de status de pagamento
 
   useEffect(() => {
     const data = localStorage.getItem('user_astral_data');
@@ -36,16 +35,33 @@ export default function DashboardGuia() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock de dados para a IA enquanto a API não está conectada
+  // Mock de dados para a IA com a nova estrutura de 6 pilares
   const mockIAData = {
-      analise_psicologica: "Sua essência capricorniana busca estrutura e segurança, mas sua Lua em Escorpião anseia por profundidade emocional. O Ascendente em Leão te dá uma máscara de confiança e carisma, mas por dentro, a batalha entre o dever e o desejo é constante.",
-      missao_vida: "Seu Nodo Norte em Peixes te chama para transcender o perfeccionismo virginiano (Nodo Sul). Sua missão é aprender a fluir, a confiar na intuição e a desenvolver a compaixão universal, saindo da lógica estrita para abraçar o mistério.",
-      alertas_astrocartografia: [
-          { tipo: "Luz/Prosperidade", local: "Europa Meridional (Linha de Vênus)", detalhe: "Relacionamentos, parcerias e ganhos financeiros são favorecidos aqui. Ótimo para networking ou encontrar harmonia." },
-          { tipo: "Sombra/Perigo", local: "América do Norte (Linha de Saturno)", detalhe: "Espere desafios estruturais e a necessidade de disciplina. Remédio: Encare como uma chance de construir resiliência e não como punição." }
-      ],
-      conselho_tarot: "A carta do Eremita, combinada com o trânsito de Saturno, pede um retiro estratégico. As respostas que você busca para sua carreira não estão no barulho externo, mas no silêncio da sua própria sabedoria. Medite antes de agir.",
-      probabilidades_30_dias: "Plutão continua a transformar sua casa das parcerias, exigindo autenticidade total ou o fim de ciclos. A Lua Nova no seu setor financeiro no dia 15 trará uma oportunidade inesperada de ganho. Esteja atento."
+      perfil_do_mes: "Este é um mês de profunda reavaliação interna, onde a sua estrutura capricorniana será desafiada a encontrar novas formas de expressão emocional, impulsionada pela sua Lua em Escorpião. O Ascendente em Leão pede que você lidere essa mudança com coragem.",
+      pilares: {
+          trabalho_e_financas: {
+              analise: "Com Saturno em trânsito pela sua casa 2, a prudência financeira é crucial. Espere uma reestruturação na forma como você gera valor.",
+              solucao: "Revise todos os seus investimentos e crie um orçamento de 3 meses. Evite grandes compras por impulso até a próxima Lua Nova."
+          },
+          amor_e_relacionamentos: {
+              analise: "Vênus transita sua casa 7, trazendo harmonia, mas também a necessidade de clareza em parcerias. Relações superficiais não se sustentarão.",
+              solucao: "Agende uma conversa honesta com seu parceiro sobre metas de longo prazo. Se solteiro, foque em definir o que você realmente busca."
+          },
+          saude_e_vitalidade: {
+              analise: "Marte em sua casa 6 sugere um excesso de energia mental que pode levar ao estresse. O risco de burnout é real.",
+              solucao: "Canalize a energia através de atividades físicas de alta intensidade (HIIT) 3x por semana. Desconecte de telas 1 hora antes de dormir."
+          },
+          reflexao_e_espiritualidade: {
+              analise: "Netuno na sua casa 12 aprofunda sua intuição, mas pode também trazer confusão e escapismo. Seus sonhos estarão mais vívidos.",
+              solucao: "Mantenha um diário de sonhos. Medite por 10 minutos todas as manhãs sobre o tema 'deixar ir o que não posso controlar'."
+          }
+      },
+      fases_de_execucao: {
+          revisao: "PAUSE qualquer novo projeto de grande escala. O momento é de reavaliar as fundações do que já foi construído, especialmente na sua carreira. Analise o que está a drenar sua energia.",
+          acao: "COLOQUE FORÇA TOTAL na sua saúde física e mental. A disciplina que você implementar agora no seu bem-estar será o combustível para a expansão que virá no próximo ciclo."
+      },
+      alerta_geografico_sombra: "Risco de perdas financeiras e atrasos em projetos na sua localização atual devido a uma linha de Saturno.",
+      alerta_geografico_luz: "Oportunidades de networking e parcerias benéficas podem surgir em viagens para a Europa Ocidental (Linha de Vênus)."
   };
 
   if (loading) {
@@ -57,96 +73,37 @@ export default function DashboardGuia() {
     );
   }
 
-  const iaData = mockIAData; // Em um cenário real, isso viria do estado após a chamada da API
+  const iaData = mockIAData;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-body">
       <Header />
       <ModalPagamento aberto={modalAberto} aoFechar={() => setModalAberto(false)} />
       
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-12">
-          <h2 className="text-3xl font-serif font-bold mb-2">{t.welcome}, {userData?.nome || 'Explorador'}</h2>
-          <p className="text-slate-400">{t.subtitle}</p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <header className="mb-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-headline font-bold mb-3 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Seu Plano de Ciclo de 30 Dias
+          </h1>
+          <p className="text-lg text-slate-400 max-w-3xl mx-auto">{iaData.perfil_do_mes}</p>
         </header>
 
         {ultimaConsulta && (
-          <div className="mb-8 p-4 bg-purple-900/20 border border-purple-500/30 rounded-2xl animate-in slide-in-from-top-5 duration-700">
-            <p className="text-sm text-purple-300">
+          <div className="mb-8 p-4 bg-purple-900/20 border border-purple-500/30 rounded-2xl animate-in slide-in-from-top-5 duration-700 max-w-3xl mx-auto">
+            <p className="text-sm text-purple-300 text-center">
               ✨ <strong>Memória do Guia:</strong> Na tua última visita ({new Date(ultimaConsulta.dataConsulta).toLocaleDateString()}), 
               a tua carta foi <strong>{ultimaConsulta.tarot.name}</strong>. 
-              Vejamos como as energias evoluíram para este novo ciclo de 30 dias.
+              Vejamos como as energias evoluíram para este novo ciclo.
             </p>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm md:col-span-2">
-            <h3 className="text-purple-400 uppercase text-xs font-bold tracking-widest mb-6">{t.essencia}</h3>
-            <p className="text-lg leading-relaxed text-slate-300 font-serif">
-              {iaData.analise_psicologica}
-            </p>
-          </section>
+        {/* Componente da Grade Premium */}
+        <GradePremium dataIA={iaData} pago={pago} aoClicar={() => setModalAberto(true)} />
 
-          <section className="bg-gradient-to-b from-indigo-900/20 to-slate-900/40 border border-indigo-500/20 p-6 rounded-3xl relative">
-             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
-            <h3 className="text-indigo-400 uppercase text-xs font-bold tracking-widest mb-6">{t.tarot}</h3>
-            <div className="text-center">
-               <div className="w-24 h-40 bg-indigo-950 border-2 border-indigo-400/50 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
-                 <span className="text-4xl">🔮</span>
-              </div>
-              <p className="text-sm text-slate-300 italic">"{iaData.conselho_tarot}"</p>
-            </div>
-          </section>
-          
-          <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl md:col-span-3">
-            <h3 className="text-amber-400 uppercase text-xs font-bold tracking-widest mb-6">{t.missao}</h3>
-            <p className="text-base leading-relaxed text-slate-300 font-serif">
-                {iaData.missao_vida}
-            </p>
-          </section>
-
-          <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl relative">
-             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
-            <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">{t.astro}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                {iaData.alertas_astrocartografia.map((alerta, index) => (
-                  <div key={index} className={`p-4 rounded-2xl border ${
-                    alerta.tipo === 'Sombra/Perigo' 
-                      ? 'bg-red-900/20 border-red-500/40' 
-                      : 'bg-green-900/20 border-green-500/40'
-                  }`}>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className={`text-2xl ${alerta.tipo === 'Sombra/Perigo' ? 'text-red-400' : 'text-green-400'}`}>
-                        {alerta.tipo === 'Sombra/Perigo' ? '⚠️' : '✨'}
-                      </span>
-                      <div>
-                          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
-                          {alerta.tipo}
-                          </p>
-                          <p className="font-bold text-slate-200">{alerta.local}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-300 pl-1">{alerta.detalhe}</p>
-                  </div>
-                ))}
-              </div>
-              <MapaAstral linhas={[]} />
-            </div>
-          </section>
-
-          <section className="md:col-span-3 bg-gradient-to-r from-purple-900/10 to-blue-900/10 border border-purple-500/20 p-8 rounded-3xl relative">
-             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
-            <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">{t.oraculo} - Próximos 30 dias</h3>
-            <p className="text-lg leading-relaxed text-slate-300 font-serif">
-               {iaData.probabilidades_30_dias}
-            </p>
-          </section>
-
-        </div>
       </main>
     </div>
   );
 }
+
+    
