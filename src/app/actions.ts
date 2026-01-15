@@ -15,7 +15,8 @@ export interface ChartGenerationInput {
 }
 
 export async function generateAstrologicalChart(
-  data: ChartGenerationInput
+  data: ChartGenerationInput,
+  lastConsultation?: any
 ) {
   console.log('Iniciando a geração do mapa para:', data.name || 'usuário');
   try {
@@ -56,6 +57,7 @@ export async function generateAstrologicalChart(
       },
       tarotCard: tarotCard.name,
       language: data.lang,
+      lastTarotCard: lastConsultation?.tarot?.name
     };
 
     const interpretation = await getOracleAnalysis(oracleInput);
@@ -82,7 +84,8 @@ export async function generateAstrologicalChart(
       chartData: {
         name: data.name || 'Viajante Cósmico',
         positions: positionsForUI
-      }
+      },
+      tarot: tarotCard,
     };
     
     return { success: true, data: finalOutput };

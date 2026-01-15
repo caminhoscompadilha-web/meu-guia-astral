@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { translations } from '@/lib/translations'; 
+import { obterUltimaConsulta } from '@/lib/storage';
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const [t, setT] = useState(translations.pt); 
+  const [ultimaConsulta, setUltimaConsulta] = useState<any>(null);
 
   useEffect(() => {
     const data = localStorage.getItem('user_astral_data');
@@ -18,6 +20,11 @@ export default function DashboardGuia() {
       if (translations[parsedData.idioma]) {
         setT(translations[parsedData.idioma]);
       }
+    }
+    
+    const passado = obterUltimaConsulta();
+    if (passado) {
+      setUltimaConsulta(passado);
     }
     
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -56,6 +63,16 @@ export default function DashboardGuia() {
           <h2 className="text-3xl font-serif font-bold mb-2">{t.welcome}, {userData?.nome || 'Explorador'}</h2>
           <p className="text-slate-400">{t.subtitle}</p>
         </header>
+
+        {ultimaConsulta && (
+          <div className="mb-8 p-4 bg-purple-900/20 border border-purple-500/30 rounded-2xl animate-in slide-in-from-top-5 duration-700">
+            <p className="text-sm text-purple-300">
+              ✨ <strong>Memória do Guia:</strong> Na tua última visita ({new Date(ultimaConsulta.dataConsulta).toLocaleDateString()}), 
+              a tua carta foi <strong>{ultimaConsulta.tarot.name}</strong>. 
+              Vejamos como as energias evoluíram para este novo ciclo de 30 dias.
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           

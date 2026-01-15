@@ -22,6 +22,7 @@ const InterpretNatalChartInputSchema = z.object({
   transits: z.any().describe("The current planetary positions, including nodes and lunar phase."),
   tarotCard: z.string().describe("The randomly drawn Tarot card for the day."),
   language: z.enum(['pt', 'en', 'es', 'it', 'fr']).describe("The language for the output."),
+  lastTarotCard: z.string().optional().describe("The Tarot card from the user's previous session, if available.")
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
@@ -44,10 +45,11 @@ PERSONA: Você é o 'Oráculo do Meu Guia Astrológico', um mestre em Astrologia
 OBJETIVO: Analisar o mapa natal e os trânsitos atuais para fornecer um guia de 30 dias.
 
 REGRAS DE INTERPRETAÇÃO:
-1. FOCO EM SOMBRA E LUZ: Para cada planeta, identifique o potencial positivo (Luz) e o desafio psicológico ou evento adverso (Sombra/Perigo). Para cada Sombra, ofereça uma solução prática ou mudança de perspectiva (o "remédio astrológico").
-2. ASTROCARTOGRAFIA: Se o usuário estiver sob uma linha de Saturno, Marte ou Plutão, emita um 'ALERTA DE PERIGO' geográfico no campo 'alertas_astrocartografia'. Se estiver sob Júpiter ou Vênus, emita um 'ALERTA DE PROSPERIDADE'.
-3. TOM DE VOZ: Místico, profundo, porém prático e acolhedor. Evite previsões deterministas negativas sem oferecer uma solução.
-4. IDIOMA: Responda estritamente no idioma solicitado pelo usuário.
+1.  FOCO EM SOMBRA E LUZ: Para cada planeta, identifique o potencial positivo (Luz) e o desafio psicológico ou evento adverso (Sombra/Perigo). Para cada Sombra, ofereça uma solução prática ou mudança de perspectiva (o "remédio astrológico").
+2.  ASTROCARTOGRAFIA: Se o usuário estiver sob uma linha de Saturno, Marte ou Plutão, emita um 'ALERTA DE PERIGO' geográfico no campo 'alertas_astrocartografia'. Se estiver sob Júpiter ou Vênus, emita um 'ALERTA DE PROSPERIDADE'.
+3.  EVOLUÇÃO DO TAROT: Se uma carta anterior ('lastTarotCard') for fornecida, inicie a análise do tarot reconhecendo a transição de energia da carta anterior para a atual. Explique como os temas evoluíram.
+4.  TOM DE VOZ: Místico, profundo, porém prático e acolhedor. Evite previsões deterministas negativas sem oferecer uma solução.
+5.  IDIOMA: Responda estritamente no idioma solicitado pelo usuário.
 
 ESTRUTURA DA RESPOSTA (JSON):
 Sempre retorne um JSON válido com a seguinte estrutura:
@@ -65,15 +67,24 @@ Sempre retorne um JSON válido com a seguinte estrutura:
 
 
 export async function getOracleAnalysis(input: InterpretNatalChartInput): Promise<InterpretNatalChartOutput> {
-  const response = await ai.generate({
-    model: 'googleai/gemini-1.5-flash',
-    system: SYSTEM_PROMPT,
-    prompt: `Analise os seguintes dados para ${input.userName} no idioma '${input.language}':
+  
+  let userPrompt = `Analise os seguintes dados para ${input.userName} no idioma '${input.language}':
 - Dados Natais: ${JSON.stringify(input.natalChart)}
 - Trânsitos de Hoje: ${JSON.stringify(input.transits)}
 - Tarot do Dia: ${input.tarotCard}
+`;
 
-Forneça uma análise detalhada e estruturada seguindo as REGRAS e a ESTRUTURA DE RESPOSTA (JSON).`,
+  if (input.lastTarotCard) {
+    userPrompt += `- Tarot do Mês Passado: ${input.lastTarotCard}\nTAREFA EVOLUTIVA: Comece a análise do tarot reconhecendo a transição da energia da carta anterior para a atual.`;
+  }
+
+  userPrompt += `\nForneça uma análise detalhada e estruturada seguindo as REGRAS e a ESTRUTURA DE RESPOSTA (JSON).`;
+
+
+  const response = await ai.generate({
+    model: 'googleai/gemini-1.5-flash',
+    system: SYSTEM_PROMPT,
+    prompt: userPrompt,
     output: {
       format: 'json',
       schema: InterpretNatalChartOutputSchema,
