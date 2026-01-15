@@ -23,7 +23,9 @@ const formSchema = z.object({
   birthMonth: z.string().min(1, 'Mês é obrigatório').max(2),
   birthYear: z.string().min(4, 'Ano é obrigatório').max(4),
   birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }),
-  birthLocation: z.string().min(2, "Local de nascimento é obrigatório."),
+  birthCity: z.string().min(2, "Cidade é obrigatória."),
+  birthState: z.string().min(2, "Estado é obrigatório."),
+  birthCountry: z.string().min(2, "País é obrigatório."),
 }).refine(data => {
     const day = parseInt(data.birthDay, 10);
     const month = parseInt(data.birthMonth, 10);
@@ -51,11 +53,13 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      birthLocation: "",
       name: "",
       birthDay: "",
       birthMonth: "",
       birthYear: "",
+      birthCity: "",
+      birthState: "",
+      birthCountry: "",
     },
   });
 
@@ -136,19 +140,48 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               )}
             />
             
-            <FormField
-              control={form.control}
-              name="birthLocation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Local de Nascimento</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ex: São Paulo, Brasil" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-2">
+              <FormLabel>Local de Nascimento</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="birthCity"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-1">
+                      <FormControl>
+                        <Input placeholder="Cidade" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="birthState"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-1">
+                      <FormControl>
+                        <Input placeholder="Estado" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="birthCountry"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-1">
+                      <FormControl>
+                        <Input placeholder="País" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={disabled} className="w-full text-lg py-6">

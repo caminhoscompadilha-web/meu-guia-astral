@@ -51,15 +51,16 @@ export default function Home() {
     try {
       const birthDate = `${data.birthYear}-${data.birthMonth.padStart(2, '0')}-${data.birthDay.padStart(2, '0')}`;
       const birthDateObj = new Date(`${birthDate}T${data.birthTime}`);
+      const birthLocation = `${data.birthCity}, ${data.birthState}, ${data.birthCountry}`;
       
       const [interpretation, transits] = await Promise.all([
         interpretNatalChart({
           birthDate: birthDate,
           birthTime: data.birthTime,
-          birthLocation: data.birthLocation,
+          birthLocation: birthLocation,
         }),
         analyzePlanetaryTransits({
-          natalChartData: JSON.stringify({ ...data, birthDate }),
+          natalChartData: JSON.stringify({ ...data, birthDate, birthLocation }),
           currentDate: new Date().toISOString().split('T')[0],
         })
       ]);

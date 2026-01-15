@@ -15,7 +15,7 @@ const InterpretNatalChartInputSchema = z.object({
     .string()
     .describe('A data de nascimento no formato ISO (AAAA-MM-DD).'),
   birthTime: z.string().describe('A hora de nascimento no formato HH:mm.'),
-  birthLocation: z.string().describe('O local de nascimento (cidade, país).'),
+  birthLocation: z.string().describe('O local de nascimento (cidade, estado, país).'),
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
