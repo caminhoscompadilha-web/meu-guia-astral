@@ -1,100 +1,110 @@
 'use client';
 import React, { useState } from 'react';
+import { generateAstrologicalChart, type ChartGenerationInput } from '@/app/actions';
+import type { InterpretNatalChartOutput } from '@/ai/flows/interpret-natal-chart';
+import { LoadingAnimation } from '@/components/cosmic/loading-animation';
+
+type Results = {
+  interpretation: InterpretNatalChartOutput;
+};
 
 export default function PaginaDeTeste() {
   const [loading, setLoading] = useState(false);
-  const [resultado, setResultado] = useState<any>(null);
+  const [resultado, setResultado] = useState<Results | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const executarTeste = async () => {
     setLoading(true);
+    setResultado(null);
+    setError(null);
     
-    // Simulação de chamada para o nosso motor (Engine + IA)
-    // Em um cenário real, aqui chamamos a Server Action
-    setTimeout(() => {
-      const mockDados = {
-        perfil: "Nascimento em São Paulo, 15/01/1990",
-        trindade: { sol: "Capricórnio ♑", lua: "Virgem ♍", as: "Touro ♉" },
-        nodos: { norte: "Aquário (Missão)", sul: "Leão (Sombra)" },
-        astrocartografia: [
-          { local: "Europa Ocidental", linha: "Vênus (Luz)", info: "Prosperidade e Amor" },
-          { local: "Sudeste Asiático", linha: "Saturno (Sombra)", info: "Desafios e Estrutura" }
-        ],
-        tarot: { carta: "O Mago", conselho: "Você tem todas as ferramentas para manifestar seu desejo hoje." },
-        ia_analise: "Sua essência capricorniana busca estrutura, enquanto sua missão em Aquário pede inovação. Hoje, o trânsito da Lua ativa sua área de comunicação..."
+    try {
+      const inputData: ChartGenerationInput = {
+        birthDate: '1990-01-15',
+        birthTime: '09:30',
+        lat: -23.5505, // São Paulo
+        lon: -46.6333,
+        name: 'Viajante de Teste',
+        lang: 'pt',
       };
-      setResultado(mockDados);
+      
+      const chartResults = await generateAstrologicalChart(inputData);
+
+      if (!chartResults.success || !chartResults.data) {
+        throw new Error(chartResults.error || 'A resposta do servidor está incompleta.');
+      }
+      
+      setResultado(chartResults.data);
+
+    } catch (e: any) {
+      console.error("Erro no painel de teste:", e);
+      setError(e.message || 'Ocorreu um erro inesperado ao se conectar com o Oráculo.');
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
+
+  const renderSection = (title: string, content: string | undefined) => (
+    <section className="bg-slate-900 p-6 rounded-xl border border-slate-800 transition-all duration-500 hover:border-purple-500/50">
+      <h3 className="text-purple-400 font-bold mb-3">{title}</h3>
+      <p className="leading-relaxed text-slate-300 whitespace-pre-line">{content || 'Aguardando análise...'}</p>
+    </section>
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-8 font-sans">
-      <header className="max-w-4xl mx-auto border-b border-purple-900/50 pb-6 mb-8">
+       {loading && <LoadingAnimation message="Conectando com o Oráculo Sistêmico..." />}
+      <header className="max-w-5xl mx-auto border-b border-purple-900/50 pb-6 mb-8">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-          Oráculo Astral - Painel de Teste Local
+          Oráculo Astral - Painel de Teste de Backend
         </h1>
-        <p className="text-slate-400 mt-2">Ambiente de validação (100% Gratuito - Sem Firebase)</p>
+        <p className="text-slate-400 mt-2">Ambiente de validação da Server Action, Efemérides e IA (Genkit).</p>
       </header>
 
-      <main className="max-w-4xl mx-auto">
+      <main className="max-w-5xl mx-auto">
         {!resultado ? (
           <div className="bg-slate-900 p-10 rounded-2xl border border-slate-800 text-center">
-            <h2 className="text-xl mb-4">Pronto para calcular seu destino?</h2>
+            <h2 className="text-xl mb-4">Pronto para invocar o Oráculo?</h2>
+            <p className="text-slate-500 mb-6 max-w-md mx-auto">
+                Isso executará a chamada real para a `generateAstrologicalChart` Server Action, que calculará o mapa e invocará o Gemini.
+            </p>
             <button 
               onClick={executarTeste}
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-500 px-8 py-3 rounded-full font-bold transition-all disabled:opacity-50"
+              className="bg-purple-600 hover:bg-purple-500 px-8 py-3 rounded-full font-bold transition-all disabled:opacity-50 disabled:cursor-wait"
             >
-              {loading ? "Calculando Efemérides..." : "Gerar Mapa de Teste"}
+              {loading ? "Calculando Efemérides e Invocando IA..." : "Executar Teste Real"}
             </button>
+             {error && (
+                <div className="mt-6 p-4 bg-red-900/50 border border-red-500/50 text-red-300 rounded-lg">
+                    <h3 className="font-bold">Erro na Conexão com o Oráculo</h3>
+                    <p>{error}</p>
+                </div>
+            )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-700">
-            {/* Bloco Sol/Lua/Asc */}
-            <section className="bg-slate-900 p-6 rounded-xl border border-slate-800">
-              <h3 className="text-purple-400 font-bold mb-3">Resumo Filosófico</h3>
-              <div className="space-y-2">
-                <p>🌞 Sol: {resultado.trindade.sol}</p>
-                <p>🌙 Lua: {resultado.trindade.lua}</p>
-                <p>⬆️ Ascendente: {resultado.trindade.as}</p>
-              </div>
+          <div className="space-y-6 animate-in fade-in duration-700">
+            {renderSection("🔮 Resumo Filosófico (Sol, Lua, Ascendente)", resultado.interpretation.philosophicalSummary)}
+            {renderSection("✨ Alma e Personalidade (Luz & Sombra)", resultado.interpretation.soulAndPersonality)}
+            {renderSection("🧭 Eixo do Destino (Nodos Lunares)", resultado.interpretation.destinyAxis)}
+            {renderSection("🪐 Ciclos Externos (Trânsitos Maiores)", resultado.interpretation.externalCycles)}
+            {renderSection("🌍 Astrocartografia Mundial", resultado.interpretation.astrocartographyAnalysis)}
+            {renderSection("🌙 Calendário Lunar", resultado.interpretation.lunarCalendar)}
+            {renderSection("🃏 Tarot do Dia", resultado.interpretation.tarotOfTheDay)}
+            
+            <section className="bg-purple-900/10 p-6 rounded-xl border border-purple-500/20 text-center">
+              <h3 className="text-purple-300 font-bold mb-3">🧘‍♀️ Reflexão Arquétipica</h3>
+              <p className="leading-relaxed text-slate-300 text-lg italic">"{resultado.interpretation.archetypalReflection}"</p>
             </section>
-
-            {/* Bloco Tarot */}
-            <section className="bg-slate-900 p-6 rounded-xl border border-pink-900/30">
-              <h3 className="text-pink-400 font-bold mb-3">Tarot do Dia</h3>
-              <p className="text-lg font-serif">🃏 {resultado.tarot.carta}</p>
-              <p className="text-sm text-slate-400 mt-2 italic">"{resultado.tarot.conselho}"</p>
-            </section>
-
-            {/* Bloco Astrocartografia */}
-            <section className="bg-slate-900 p-6 rounded-xl border border-slate-800 md:col-span-2">
-              <h3 className="text-blue-400 font-bold mb-3">📍 Astrocartografia (Probabilidades Mundiais)</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {resultado.astrocartografia.map((item: any, i: number) => (
-                  <div key={i} className="bg-slate-950 p-4 rounded border border-slate-800">
-                    <span className={`text-xs font-bold uppercase ${item.linha.includes('Luz') ? 'text-green-400' : 'text-red-400'}`}>
-                      {item.linha}
-                    </span>
-                    <p className="font-bold">{item.local}</p>
-                    <p className="text-sm text-slate-400">{item.info}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Bloco Análise IA */}
-            <section className="bg-purple-900/10 p-6 rounded-xl border border-purple-500/20 md:col-span-2">
-              <h3 className="text-purple-300 font-bold mb-3">Interpretador de Sombras e Luz (IA)</h3>
-              <p className="leading-relaxed text-slate-300">{resultado.ia_analise}</p>
-            </section>
-
-            <button 
-              onClick={() => setResultado(null)}
-              className="text-slate-500 underline text-sm hover:text-slate-300"
-            >
-              Limpar e Novo Teste
-            </button>
+            
+            <div className="text-center pt-4">
+                <button 
+                onClick={() => setResultado(null)}
+                className="text-slate-500 underline text-sm hover:text-slate-300"
+                >
+                Limpar e Novo Teste
+                </button>
+            </div>
           </div>
         )}
       </main>
