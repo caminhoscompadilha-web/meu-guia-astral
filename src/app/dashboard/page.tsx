@@ -2,15 +2,22 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
+import { translations } from '@/lib/translations'; // Importa as traduções
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
+  const [t, setT] = useState(translations.pt); // Estado inicial em PT
 
   useEffect(() => {
     const data = localStorage.getItem('user_astral_data');
     if (data) {
-      setUserData(JSON.parse(data));
+      const parsedData = JSON.parse(data);
+      setUserData(parsedData);
+      // Aqui acontece a mágica: seleciona o dicionário com base no idioma salvo
+      if (translations[parsedData.idioma]) {
+        setT(translations[parsedData.idioma]);
+      }
     }
     
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -33,34 +40,34 @@ export default function DashboardGuia() {
       <main className="max-w-6xl mx-auto px-6 py-10">
         {/* Saudação e Resumo do Dia */}
         <header className="mb-12">
-          <h2 className="text-3xl font-serif font-bold mb-2">Olá, {userData?.nome || 'Explorador Astral'}</h2>
-          <p className="text-slate-400">Este é o seu guia personalizado para os próximos 30 dias.</p>
+          <h2 className="text-3xl font-serif font-bold mb-2">{t.welcome}, {userData?.nome || 'Explorador'}</h2>
+          <p className="text-slate-400">{t.subtitle}</p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card 1: A Trindade (Sol, Lua, Ascendente) */}
           <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm">
-            <h3 className="text-purple-400 uppercase text-xs font-bold tracking-widest mb-6">Essência e Personalidade</h3>
+            <h3 className="text-purple-400 uppercase text-xs font-bold tracking-widest mb-6">{t.essencia}</h3>
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <span className="text-3xl">🌞</span>
                 <div>
-                  <p className="text-sm text-slate-500">Sol (Luz e Sombra)</p>
+                  <p className="text-sm text-slate-500">{t.sol}</p>
                   <p className="font-bold text-lg text-slate-200">Capricórnio ♑</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-3xl">🌙</span>
                 <div>
-                  <p className="text-sm text-slate-500">Lua (Emocional)</p>
+                  <p className="text-sm text-slate-500">{t.lua}</p>
                   <p className="font-bold text-lg text-slate-200">Escorpião ♏</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-3xl">⬆️</span>
                 <div>
-                  <p className="text-sm text-slate-500">Ascendente (Máscara Social)</p>
+                  <p className="text-sm text-slate-500">{t.asc}</p>
                   <p className="font-bold text-lg text-slate-200">Leão ♌</p>
                 </div>
               </div>
@@ -69,7 +76,7 @@ export default function DashboardGuia() {
 
           {/* Card 2: Tarot do Dia e Arquetipo */}
           <section className="bg-gradient-to-b from-indigo-900/20 to-slate-900/40 border border-indigo-500/20 p-6 rounded-3xl">
-            <h3 className="text-indigo-400 uppercase text-xs font-bold tracking-widest mb-6">Sincronicidade do Dia</h3>
+            <h3 className="text-indigo-400 uppercase text-xs font-bold tracking-widest mb-6">{t.tarot}</h3>
             <div className="text-center">
               <div className="w-24 h-40 bg-indigo-950 border-2 border-indigo-400/50 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
                  <span className="text-4xl">🔮</span>
@@ -81,14 +88,14 @@ export default function DashboardGuia() {
 
           {/* Card 3: Nodos Lunares (Missão de Vida) */}
           <section className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl">
-            <h3 className="text-amber-400 uppercase text-xs font-bold tracking-widest mb-6">Eixo do Destino</h3>
+            <h3 className="text-amber-400 uppercase text-xs font-bold tracking-widest mb-6">{t.missao}</h3>
             <div className="space-y-4">
               <div className="p-3 bg-amber-900/10 border border-amber-900/30 rounded-xl">
-                <p className="text-xs text-amber-500 font-bold uppercase">Nodo Norte (Propósito)</p>
+                <p className="text-xs text-amber-500 font-bold uppercase">{t.norte}</p>
                 <p className="text-slate-200">Peixes: Desenvolver a compaixão e a espiritualidade.</p>
               </div>
               <div className="p-3 bg-slate-950/50 border border-slate-800 rounded-xl">
-                <p className="text-xs text-slate-500 font-bold uppercase">Nodo Sul (Sombra)</p>
+                <p className="text-xs text-slate-500 font-bold uppercase">{t.sul}</p>
                 <p className="text-slate-400">Virgem: Superar o perfeccionismo e a autocrítica.</p>
               </div>
             </div>
@@ -96,7 +103,7 @@ export default function DashboardGuia() {
 
           {/* Card 4: Astrocartografia Mundial (Full Width) */}
           <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
-            <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">📍 Geopolítica da Alma (Astrocartografia)</h3>
+            <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">{t.astro}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <div className="flex gap-4">
@@ -123,7 +130,7 @@ export default function DashboardGuia() {
 
           {/* Card 5: Análise Profunda da IA */}
           <section className="md:col-span-3 bg-gradient-to-r from-purple-900/10 to-blue-900/10 border border-purple-500/20 p-8 rounded-3xl">
-            <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">Aconselhamento do Oráculo (Gemini 1.5 Flash)</h3>
+            <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">{t.oraculo}</h3>
             <p className="text-lg leading-relaxed text-slate-300 font-serif">
                "Neste ciclo de 30 dias, sua essência capricorniana será desafiada pela fluidez do seu Nodo Norte em Peixes. 
                A carta do Eremita sugere que a resposta que você busca não está no mundo exterior, mas no silêncio. 
