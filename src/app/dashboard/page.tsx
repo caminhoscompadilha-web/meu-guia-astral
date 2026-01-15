@@ -5,12 +5,16 @@ import { Header } from '@/components/Header';
 import { translations } from '@/lib/translations'; 
 import { obterUltimaConsulta } from '@/lib/storage';
 import MapaAstral from '@/components/MapaAstral';
+import { ModalPagamento } from '@/components/ModalPagamento';
+import { BloqueioPremium } from '@/components/BloqueioPremium';
 
 export default function DashboardGuia() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const [t, setT] = useState(translations.pt); 
   const [ultimaConsulta, setUltimaConsulta] = useState<any>(null);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [pago, setPago] = useState(false); // Simulação de status de pagamento
 
   useEffect(() => {
     const data = localStorage.getItem('user_astral_data');
@@ -58,6 +62,7 @@ export default function DashboardGuia() {
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100">
       <Header />
+      <ModalPagamento aberto={modalAberto} aoFechar={() => setModalAberto(false)} />
       
       <main className="max-w-6xl mx-auto px-6 py-10">
         <header className="mb-12">
@@ -84,7 +89,8 @@ export default function DashboardGuia() {
             </p>
           </section>
 
-          <section className="bg-gradient-to-b from-indigo-900/20 to-slate-900/40 border border-indigo-500/20 p-6 rounded-3xl">
+          <section className="bg-gradient-to-b from-indigo-900/20 to-slate-900/40 border border-indigo-500/20 p-6 rounded-3xl relative">
+             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
             <h3 className="text-indigo-400 uppercase text-xs font-bold tracking-widest mb-6">{t.tarot}</h3>
             <div className="text-center">
                <div className="w-24 h-40 bg-indigo-950 border-2 border-indigo-400/50 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
@@ -101,7 +107,8 @@ export default function DashboardGuia() {
             </p>
           </section>
 
-          <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
+          <section className="md:col-span-3 bg-slate-900/40 border border-slate-800 p-8 rounded-3xl relative">
+             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
             <h3 className="text-blue-400 uppercase text-xs font-bold tracking-widest mb-6">{t.astro}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -130,7 +137,8 @@ export default function DashboardGuia() {
             </div>
           </section>
 
-          <section className="md:col-span-3 bg-gradient-to-r from-purple-900/10 to-blue-900/10 border border-purple-500/20 p-8 rounded-3xl">
+          <section className="md:col-span-3 bg-gradient-to-r from-purple-900/10 to-blue-900/10 border border-purple-500/20 p-8 rounded-3xl relative">
+             <BloqueioPremium pago={pago} aoClicar={() => setModalAberto(true)} />
             <h3 className="text-purple-300 uppercase text-xs font-bold tracking-widest mb-6">{t.oraculo} - Próximos 30 dias</h3>
             <p className="text-lg leading-relaxed text-slate-300 font-serif">
                {iaData.probabilidades_30_dias}
