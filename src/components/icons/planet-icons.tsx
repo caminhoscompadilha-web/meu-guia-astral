@@ -1,5 +1,4 @@
 
-import type { Planet } from '@/lib/types';
 import { Sun, Moon, Sunrise, CircleDot, ArrowUp, ArrowDown } from 'lucide-react';
 
 const icons: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {

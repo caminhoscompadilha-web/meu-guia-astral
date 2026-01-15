@@ -1,7 +1,7 @@
-import type { ZodiacSign } from '@/lib/types';
+
 import { CircleDot } from 'lucide-react';
 
-const icons: Record<ZodiacSign, React.FC<React.SVGProps<SVGSVGElement>>> = {
+const icons: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   Aries: (props) => (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v0" />
@@ -97,7 +97,7 @@ const icons: Record<ZodiacSign, React.FC<React.SVGProps<SVGSVGElement>>> = {
 };
 
 interface ZodiacIconProps extends React.SVGProps<SVGSVGElement> {
-  sign: ZodiacSign;
+  sign: string;
 }
 
 export const ZodiacIcon: React.FC<ZodiacIconProps> = ({ sign, ...props }) => {
