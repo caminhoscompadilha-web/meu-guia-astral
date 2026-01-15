@@ -1,6 +1,8 @@
+
 "use client";
 
 import type { NatalChartData } from '@/lib/types';
+import type { Translations } from '@/lib/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlanetIcon } from '@/components/icons/planet-icons';
 import { ZodiacIcon } from '@/components/icons/zodiac-icons';
@@ -8,9 +10,10 @@ import { ZODIAC_SIGNS } from '@/lib/constants';
 
 interface NatalChartDisplayProps {
   chartData: NatalChartData;
+  translations: Translations;
 }
 
-export function NatalChartDisplay({ chartData }: NatalChartDisplayProps) {
+export function NatalChartDisplay({ chartData, translations }: NatalChartDisplayProps) {
   const size = 300;
   const center = size / 2;
   const houseRadius = size / 2 - 10;
@@ -24,14 +27,18 @@ export function NatalChartDisplay({ chartData }: NatalChartDisplayProps) {
       y: center + radius * Math.sin(angle),
     };
   };
+  
+  const chartTitle = chartData.name 
+    ? `${translations.ui.natalChartOf} ${chartData.name}` 
+    : translations.ui.yourNatalChart;
 
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20 overflow-hidden">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">
-          {chartData.name ? `Mapa de ${chartData.name}` : "Seu Mapa Natal"}
+          {chartTitle}
         </CardTitle>
-        <CardDescription>Um retrato do cosmos no seu nascimento.</CardDescription>
+        <CardDescription>{translations.ui.chartDescription}</CardDescription>
       </CardHeader>
       <CardContent className="flex items-center justify-center p-0 pb-6">
         <div className="relative w-full aspect-square max-w-[300px]">

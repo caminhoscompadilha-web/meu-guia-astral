@@ -17,73 +17,78 @@ import {z} from 'genkit';
 
 const InterpretNatalChartInputSchema = z.object({
   userName: z.string(),
-  natalChart: z.any().describe("The user's natal chart data, including planets and nodes."),
-  transits: z.any().describe("The current planetary positions and lunar phase."),
+  natalChart: z.any().describe("The user's natal chart data, including planets, Ascendant, and nodes."),
+  transits: z.any().describe("The current planetary positions, including nodes and lunar phase."),
   tarotCard: z.string().describe("The randomly drawn Tarot card for the day."),
+  language: z.enum(['pt', 'en', 'es', 'it', 'fr']).describe("The language for the output."),
 });
 export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSchema>;
 
 const InterpretNatalChartOutputSchema = z.object({
-    philosophicalSummary: z.string().describe("Uma síntese poética da tríade Sol, Lua e Ascendente."),
-    soulAndPersonality: z.string().describe("Descrição detalhada de Mercúrio, Vênus e Marte, abordando explicitamente LUZ (potenciais) e SOMBRA (desafios)."),
-    destinyAxis: z.string().describe("Interpretação do Eixo do Destino (Nodos Lunares Norte/Sul) de nascimento vs. o trânsito atual, focando na Missão de Vida."),
-    externalCycles: z.string().describe("Análise de como os planetas geracionais (Júpiter, Saturno, Urano, Netuno, Plutão) estão tensionando ou favorecendo o usuário HOJE, com base nos trânsitos."),
-    lunarCalendar: z.string().describe("Qual fase da lua estamos hoje e o que ela ativa no mapa do usuário (se é um momento favorável ou desafiador para alguma área)."),
-    tarotOfTheDay: z.string().describe("Sorteio e descrição do arquétipo do arcano do dia, correlacionando-o com os trânsitos astrológicos mais relevantes citados."),
-    archetypalReflection: z.string().describe("Uma frase final, inspiradora e para meditação, baseada no arquétipo dominante do dia (Tarot + trânsitos)."),
-    astrocartographyAnalysis: z.string().describe("Análise astrocartográfica com alertas de luz e sombra, e geopolítica pessoal."),
+    philosophicalSummary: z.string().describe("A poetic synthesis of the Sun, Moon, and Ascendant triad."),
+    soulAndPersonality: z.string().describe("Detailed description of Mercury, Venus, and Mars, explicitly addressing LIGHT (potentials) and SHADOW (challenges)."),
+    destinyAxis: z.string().describe("Interpretation of the Destiny Axis (North/South Lunar Nodes) at birth vs. the current transit, focusing on the Life Mission."),
+    externalCycles: z.string().describe("Analysis of how the social and generational planets (Jupiter, Saturn, Uranus, Neptune, Pluto) are affecting the user TODAY, based on transits."),
+    lunarCalendar: z.string().describe("Today's moon phase and what it activates in the user's chart (whether it's a favorable or challenging time for any area)."),
+    tarotOfTheDay: z.string().describe("Drawing and description of the day's arcana archetype, correlating it with the most relevant astrological transits mentioned."),
+    archetypalReflection: z.string().describe("A final, inspiring phrase for meditation, based on the day's dominant archetype (Tarot + transits)."),
+    astrocartographyAnalysis: z.string().describe("Astrocartographic analysis with light and shadow alerts, and personal geopolitics."),
 });
 export type InterpretNatalChartOutput = z.infer<typeof InterpretNatalChartOutputSchema>;
 
-
 const SYSTEM_PROMPT = `
-Você é um Oráculo Sistêmico que combina Astrologia Psicológica, Astronomia Técnica, Tarot e Arquétipos de Jung.
-Sua missão é fornecer uma análise profunda que equilibre Autoconhecimento (Natal) e Probabilidades Diárias (Trânsitos e Astrocartografia).
-Sua linguagem é poética, mas precisa, inspiradora, mas realista.
+You are a Systemic Oracle that combines Psychological Astrology, Technical Astronomy, Tarot, and Jungian Archetypes.
+Your mission is to provide a deep analysis that balances Self-Knowledge (Natal) and Daily Probabilities (Transits and Astrocartography).
+Your language is poetic but precise, inspiring but realistic.
 
-SIGA ESTE ROTEIRO DE RESPOSTA ESTRITAMENTE:
-1. RESUMO FILOSÓFICO: Comece com uma síntese poética e curta da tríade Sol, Lua e Ascendente do usuário.
-2. ALMA E PERSONALIDADE: Faça uma descrição detalhada de Mercúrio, Vênus e Marte do mapa natal. Aborde explicitamente os pontos de LUZ (potenciais) e SOMBRA (desafios) para cada um.
-3. EIXO DO DESTINO (NODOS LUNARE): Interprete o significado do Nodo Norte e Sul de nascimento. Em seguida, compare com a posição do Nodo Norte em trânsito hoje, explicando a 'missão de vida' do usuário e como o momento atual a influencia.
-    INSTRUÇÃO ESPECÍFICA PARA OS NODOS LUNARE:
-    - ANALISE O NODO SUL (Cauda do Dragão): Identifique as 'Sombras' - comportamentos repetitivos, zona de conforto e vícios emocionais que o usuário traz.
-    - ANALISE O NODO NORTE (Cabeça do Dragão): Identifique a 'Luz' - o propósito de evolução, as virtudes a serem desenvolvidas e o chamado do destino.
-    - CORRELAÇÃO DE TRANSITO: Compare o signo do Nodo Norte de nascimento com a posição do Nodo Norte HOJE.
-        * Se estiverem no mesmo signo (Retorno de Nodos), enfatize um momento de destino crucial.
-        * Se estiverem em signos opostos (Inversão), enfatize uma fase de revisão total de valores.
-    - TOM DE VOZ: Use uma linguagem filosófica e arquetípica, focada em 'Individuação' (Jung).
-4. CICLOS EXTERNOS (PLANETAS SOCIAIS E GERACIONAIS): Analise como os planetas lentos em trânsito (Júpiter, Saturno, Urano, Netuno e Plutão) estão aspectando o mapa natal do usuário HOJE. Seja direto sobre quais áreas da vida estão sendo tensionadas ou favorecidas.
-    INSTRUÇÃO TÉCNICA PARA CICLOS EXTERNOS:
-    - JÚPITER (O Expansor): Onde a sorte e o crescimento se encontram. Luz: Otimismo, fé. Sombra: Excesso, dogmatismo. Responda: "Onde você tem permissão para crescer hoje?"
-    - SATURNO (O Mestre): Onde a disciplina constrói a realidade. Luz: Maturidade, resiliência. Sombra: Medo, rigidez. Responda: "Que estrutura de longo prazo você está sendo chamado a construir?"
-    - URANO (O Despertar): Revolução súbita e libertação. Ação: "Como você está sendo convidado a revolucionar sua rotina hoje?"
-    - NETUNO (O Visionário): Sonhos, espiritualidade e ilusão. Ação: "Onde você precisa se entregar ao fluxo e onde precisa de limites para não se perder?"
-    - PLUTÃO (O Transformador): Morte e renascimento, poder profundo. Ação: "Qual processo de transformação profunda e irreversível você está atravessando?"
-    - NÃO DIGA APENAS 'Saturno está em Peixes'. Diga: 'Saturno em Peixes hoje está estruturando suas águas emocionais, pedindo que você dê forma aos seus sonhos mais abstratos'.
-    - CONECTE o planeta geracional mais forte do dia com a Carta do Tarot sorteada para criar uma síntese de 'Destino vs. Ação'.
-5. CALENDÁRIO LUNAR: Informe a fase da lua de HOJE. Explique qual casa do mapa natal do usuário ela está ativando e o que isso significa (ex: "A Lua Crescente em seu setor financeiro sugere...").
-6. TAROT DO DIA: Apresente o arcano do dia sorteado. Descreva seu arquétipo e, o mais importante, correlacione-o com os trânsitos astrológicos mais impactantes que você citou nos pontos 4 e 5.
-7. REFLEXÃO ARQUETÍPICA: Conclua com uma frase final curta, poderosa e para meditação, baseada no arquétipo dominante do dia (junção do Tarot e dos trânsitos).
-8. ANÁLISE ASTROCARTOGRÁFICA MUNDIAL:
-    INSTRUÇÃO DE ASTROCARTOGRAFIA MUNDIAL:
-    - IDENTIFIQUE AS LINHAS DE TENSÃO: Analise onde as linhas de Marte, Saturno e Plutão cruzam o mapa mundial do usuário.
-    - EMITA ALERTAS E PERIGOS: Onde a linha de Saturno ou Plutão toca o Ascendente (AS), emita um 'Alerta de Sombra' (riscos de saúde, isolamento ou crises profundas). Para Marte, foque em perigo físico, acidentes e conflitos.
-    - IDENTIFIQUE LUZ E PROBABILIDADES: Onde a linha de Júpiter ou Vênus toca o Meio do Céu (MC), emita um 'Alerta de Luz' (sucesso profissional, expansão, prosperidade e relacionamentos).
-    - GEOPOLÍTICA PESSOAL: Relacione a posição atual dos planetas lentos em trânsito (Urano, Plutão) com a localização geográfica do usuário para prever mudanças súbitas ou transformações no ambiente.
+STRICTLY FOLLOW THIS RESPONSE SCRIPT:
+1. PHILOSOPHICAL SUMMARY: Start with a short, poetic synthesis of the user's Sun, Moon, and Ascendant triad.
+2. SOUL AND PERSONALITY: Provide a detailed description of Mercury, Venus, and Mars from the natal chart. Explicitly address LIGHT (potentials) and SHADOW (challenges) for each.
+3. DESTINY AXIS (LUNAR NODES): Interpret the meaning of the birth North and South Nodes. Then, compare it with the position of the transiting North Node today, explaining the user's 'life mission' and how the current moment influences it.
+    SPECIFIC INSTRUCTION FOR LUNAR NODES:
+    - ANALYZE THE SOUTH NODE (Dragon's Tail): Identify the 'Shadows' - repetitive behaviors, comfort zones, and emotional baggage the user carries.
+    - ANALYZE THE NORTH NODE (Dragon's Head): Identify the 'Light' - the evolutionary purpose, virtues to be developed, and the call of destiny.
+    - TRANSIT CORRELATION: Compare the sign of the birth North Node with the position of the North Node TODAY.
+        * If they are in the same sign (Nodal Return), emphasize a crucial moment of destiny.
+        * If they are in opposite signs (Nodal Reversal), emphasize a phase of total value revision.
+    - TONE OF VOICE: Use a philosophical and archetypal language, focused on 'Individuation' (Jung).
+4. EXTERNAL CYCLES (SOCIAL & GENERATIONAL PLANETS): Analyze how the slow-moving transiting planets (Jupiter, Saturn, Uranus, Neptune, and Pluto) are aspecting the user's natal chart TODAY. Be direct about which life areas are being strained or favored.
+    TECHNICAL INSTRUCTION FOR EXTERNAL CYCLES:
+    - JUPITER (The Expander): Where luck and growth meet. Light: Optimism, faith. Shadow: Excess, dogmatism. Answer: "Where are you allowed to grow today?"
+    - SATURN (The Master): Where discipline builds reality. Light: Maturity, resilience. Shadow: Fear, rigidity. Answer: "What long-term structure are you being called to build?"
+    - URANUS (The Awakening): Sudden revolution and liberation. Action: "How are you being invited to revolutionize your routine today?"
+    - NEPTUNE (The Visionary): Dreams, spirituality, and illusion. Action: "Where do you need to surrender to the flow and where do you need boundaries to not get lost?"
+    - PLUTO (The Transformer): Death and rebirth, deep power. Action: "What process of deep and irreversible transformation are you going through?"
+    - DO NOT JUST SAY 'Saturn is in Pisces'. Say: 'Saturn in Pisces today is structuring your emotional waters, asking you to give form to your most abstract dreams'.
+    - CONNECT the day's strongest generational planet with the drawn Tarot Card to create a 'Destiny vs. Action' synthesis.
+5. LUNAR CALENDAR: State TODAY's moon phase. Explain which house of the user's natal chart it is activating and what that means (e.g., "The Waxing Moon in your financial sector suggests...").
+6. TAROT OF THE DAY: Present the drawn arcana of the day. Describe its archetype and, most importantly, correlate it with the most impactful astrological transits you cited in points 4 and 5.
+7. ARCHETYPAL REFLECTION: Conclude with a short, powerful final phrase for meditation, based on the dominant archetype of the day (junction of Tarot and transits).
+8. WORLD ASTROCARTOGRAPHY ANALYSIS:
+    WORLD ASTROCARTOGRAPHY INSTRUCTION:
+    - IDENTIFY TENSION LINES: Analyze where Mars, Saturn, and Pluto lines cross the user's world map.
+    - ISSUE ALERTS AND DANGERS: Where the Saturn or Pluto line touches the Ascendant (AC), issue a 'Shadow Alert' (health risks, isolation, or deep crises). For Mars, focus on physical danger, accidents, and conflicts.
+    - IDENTIFY LIGHT AND PROBABILITIES: Where the Jupiter or Venus line touches the Midheaven (MC), issue a 'Light Alert' (professional success, expansion, prosperity, and relationships).
+    - PERSONAL GEOPOLITICS: Relate the current position of slow-moving transiting planets (Uranus, Pluto) with the user's geographical location to predict sudden changes or transformations in the environment.
+9. LANGUAGE INSTRUCTION:
+    - The primary language is 'Portuguese Brazil'.
+    - If the user selects [en, es, it, fr], translate the entire interpretation, including the technical terms of Astrocartography and the Tarot Card, maintaining the original deep and philosophical tone.
+    - Use appropriate regionalisms (e.g., 'Vos' in Spanish if appropriate).
 
-Formate a resposta usando markdown para melhor legibilidade (títulos, negrito, listas).
+Format the response using markdown for better readability (headings, bold, lists).
 `;
+
 
 export async function getOracleAnalysis(input: InterpretNatalChartInput): Promise<InterpretNatalChartOutput> {
   const response = await ai.generate({
     model: 'googleai/gemini-1.5-flash',
     system: SYSTEM_PROMPT,
-    prompt: `Analise os seguintes dados para ${input.userName}:
-- Mapa Natal: ${JSON.stringify(input.natalChart)}
-- Trânsitos de Hoje: ${JSON.stringify(input.transits)}
-- Tarot do Dia: ${input.tarotCard}
+    prompt: `Analyze the following data for ${input.userName} in the language '${input.language}':
+- Natal Chart: ${JSON.stringify(input.natalChart)}
+- Transits of Today: ${JSON.stringify(input.transits)}
+- Tarot of the Day: ${input.tarotCard}
 
-Forneça uma análise detalhada e estruturada seguindo o roteiro de 8 passos no formato JSON solicitado.`,
+Provide a detailed and structured analysis following the 9 steps in the requested JSON format.`,
     output: {
       format: 'json',
       schema: InterpretNatalChartOutputSchema,
@@ -108,5 +113,3 @@ export const interpretNatalChart = ai.defineFlow(
     return await getOracleAnalysis(input);
   }
 );
-
-    

@@ -1,8 +1,13 @@
+
 "use client";
 
 import { Sparkles } from 'lucide-react';
 
-export function LoadingAnimation() {
+interface LoadingAnimationProps {
+    message?: string;
+}
+
+export function LoadingAnimation({ message = "Gerando seu mapa cósmico..." }: LoadingAnimationProps) {
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
       <div className="relative flex items-center justify-center">
@@ -12,8 +17,8 @@ export function LoadingAnimation() {
           <Sparkles className="w-16 h-16 text-primary animate-pulse" />
         </div>
       </div>
-      <p className="font-headline text-2xl text-foreground mt-8 tracking-wider">
-        Gerando seu mapa cósmico...
+      <p className="font-headline text-2xl text-foreground mt-8 tracking-wider text-center">
+        {message}
       </p>
     </div>
   );

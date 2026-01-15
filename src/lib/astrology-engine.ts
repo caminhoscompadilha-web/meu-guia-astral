@@ -1,6 +1,24 @@
 
 import { swisseph } from 'swisseph';
 
+// Helper function to get the correct celestial body ID, including nodes
+const getBodyId = (name: string): number => {
+    switch (name.toLowerCase()) {
+        case 'sol': return swisseph.SE_SUN;
+        case 'lua': return swisseph.SE_MOON;
+        case 'mercúrio': return swisseph.SE_MERCURY;
+        case 'vênus': return swisseph.SE_VENUS;
+        case 'marte': return swisseph.SE_MARS;
+        case 'júpiter': return swisseph.SE_JUPITER;
+        case 'saturno': return swisseph.SE_SATURN;
+        case 'urano': return swisseph.SE_URANUS;
+        case 'netuno': return swisseph.SE_NEPTUNE;
+        case 'plutão': return swisseph.SE_PLUTO;
+        case 'nodo norte': return swisseph.SE_TRUE_NODE;
+        default: return -1;
+    }
+}
+
 const CELESTIAL_BODIES = [
     { id: swisseph.SE_SUN, name: 'Sol' },
     { id: swisseph.SE_MOON, name: 'Lua' },
@@ -112,12 +130,31 @@ export function getCurrentTransits() {
 export const getHouseForPlanet = (degree: number, houseCusps: number[]): number => {
     // A primeira cúspide (Ascendente) é a casa 1.
     const ascendant = houseCusps[0];
-    
-    // Normaliza os graus para lidar com a passagem por Áries (0/360)
-    const normalizedDegree = (degree - ascendant + 360) % 360;
+    const normalizedAscendant = ascendant;
 
-    // Cada casa tem 30 graus
-    const house = Math.floor(normalizedDegree / 30) + 1;
+    // Normaliza os graus dos planetas e das cúspides em relação ao ascendente
+    const normalizedDegree = (degree - normalizedAscendant + 360) % 360;
     
-    return house;
+    const normalizedCusps = houseCusps.map(cusp => (cusp - normalizedAscendant + 360) % 360);
+    // Adiciona o ponto final do círculo para fechar a casa 12
+    const extendedCusps = [...normalizedCusps, 360];
+
+    for (let i = 0; i < 12; i++) {
+        const startCusp = extendedCusps[i];
+        const endCusp = extendedCusps[i+1];
+        
+        // Lida com o caso em que a cúspide final é menor que a inicial (ex: a cúspide da casa 12 para a 1)
+        if (endCusp < startCusp) {
+           if (normalizedDegree >= startCusp || normalizedDegree < endCusp) {
+               return i + 1;
+           }
+        } else {
+            if (normalizedDegree >= startCusp && normalizedDegree < endCusp) {
+                return i + 1;
+            }
+        }
+    }
+    
+    // Fallback para caso algo dê errado, embora não deva acontecer
+    return 12;
 };

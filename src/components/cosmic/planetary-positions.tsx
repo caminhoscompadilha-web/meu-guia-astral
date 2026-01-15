@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -10,25 +11,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import type { PlanetPosition } from "@/lib/types";
 import { PlanetIcon } from '@/components/icons/planet-icons';
 import { ZodiacIcon } from '@/components/icons/zodiac-icons';
+import type { Translations } from "@/lib/i18n";
 
 interface PlanetaryPositionsProps {
   positions: PlanetPosition[];
+  translations: Translations;
 }
 
-export function PlanetaryPositions({ positions }: PlanetaryPositionsProps) {
+export function PlanetaryPositions({ positions, translations }: PlanetaryPositionsProps) {
+  const t = translations.ui;
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Posições Planetárias</CardTitle>
-        <CardDescription>Os corpos celestes e seus posicionamentos.</CardDescription>
+        <CardTitle className="font-headline text-2xl">{t.planetaryPositions}</CardTitle>
+        <CardDescription>{t.planetaryPositionsDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Planeta</TableHead>
-              <TableHead>Signo</TableHead>
-              <TableHead className="text-right">Casa</TableHead>
+              <TableHead>{t.planet}</TableHead>
+              <TableHead>{t.sign}</TableHead>
+              <TableHead className="text-right">{t.house}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

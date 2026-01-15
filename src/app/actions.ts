@@ -1,7 +1,7 @@
 
 "use server";
 
-import { interpretNatalChart } from '@/ai/flows/interpret-natal-chart';
+import { getOracleAnalysis, type InterpretNatalChartInput } from '@/ai/flows/interpret-natal-chart';
 import { getPlanetaryPositions, getCurrentTransits, getHouseForPlanet } from '@/lib/astrology-engine';
 import { drawTarotCard } from '@/lib/tarot';
 
@@ -11,6 +11,7 @@ export interface ChartGenerationInput {
   birthTime: string; // HH:MM
   lat: number;
   lon: number;
+  lang: 'pt' | 'en' | 'es' | 'it' | 'fr';
 }
 
 export async function generateAstrologicalChart(
@@ -52,7 +53,7 @@ export async function generateAstrologicalChart(
     const tarotCard = drawTarotCard();
 
     // 3. Monta o input para o "Oráculo Sistêmico"
-    const oracleInput = {
+    const oracleInput: InterpretNatalChartInput = {
       userName: data.name || 'Viajante Cósmico',
       natalChart: fullNatalChart,
       transits: {
@@ -60,19 +61,30 @@ export async function generateAstrologicalChart(
         faseDaLua: transits.lunarPhase,
       },
       tarotCard: tarotCard.name,
+      language: data.lang,
     };
 
     // 4. Chama a IA com o contexto completo
-    const interpretation = await interpretNatalChart(oracleInput);
+    const interpretation = await getOracleAnalysis(oracleInput);
 
     // 5. Monta a estrutura de posições para a UI
     const positionsForUI = Object.entries(fullNatalChart)
-        .filter(([planet, planetData]) => planetData.casa !== null) // Filtra planetas que têm casa
+        .filter(([planet, planetData]) => planetData.casa !== null && planet !== 'ascendente') // Filtra planetas que têm casa e não é o ascendente
         .map(([planet, planetData]) => ({
             planet: planet.charAt(0).toUpperCase() + planet.slice(1),
             sign: planetData.signo,
             house: planetData.casa,
         }));
+        
+    // Adiciona o ascendente manualmente se ele existir
+    if (fullNatalChart.ascendente) {
+        positionsForUI.unshift({
+            planet: 'Ascendente',
+            sign: fullNatalChart.ascendente.signo,
+            house: 1
+        });
+    }
+
 
     const finalOutput = {
       interpretation,

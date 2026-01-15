@@ -17,43 +17,44 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import type { Translations } from "@/lib/i18n";
 
-const formSchema = z.object({
-  name: z.string().optional(),
-  birthDay: z.string().min(1, 'Dia é obrigatório').max(2),
-  birthMonth: z.string().min(1, 'Mês é obrigatório').max(2),
-  birthYear: z.string().min(4, 'Ano é obrigatório').max(4),
-  birthTime: z.string({ required_error: "Hora de nascimento é obrigatória." }).min(1, "Hora de nascimento é obrigatória."),
-  // Campos de localização removidos para simplificação inicial
-  // birthCity: z.string().min(2, "Cidade é obrigatória."),
-  // birthState: z.string().min(2, "Estado é obrigatório."),
-  // birthCountry: z.string().min(2, "País é obrigatório."),
-}).refine(data => {
-    const day = parseInt(data.birthDay, 10);
-    const month = parseInt(data.birthMonth, 10);
-    const year = parseInt(data.birthYear, 10);
-    if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
-    
-    if (year < 1900 || year > new Date().getUTCFullYear()) return false;
-    if (month < 1 || month > 12) return false;
-    if (day < 1 || day > 31) return false;
-
-    const date = new Date(Date.UTC(year, month - 1, day));
-    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-}, {
-    message: "Data de nascimento inválida.",
-    path: ["birthDay"], 
-});
-
-
-export type FormData = z.infer<typeof formSchema>;
 
 interface NatalChartFormProps {
   onSubmit: (data: FormData) => void;
   disabled: boolean;
+  translations: Translations;
 }
 
-export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
+export function NatalChartForm({ onSubmit, disabled, translations }: NatalChartFormProps) {
+  
+  const t = translations.form;
+
+  const formSchema = z.object({
+    name: z.string().optional(),
+    birthDay: z.string().min(1, t.dayRequired).max(2),
+    birthMonth: z.string().min(1, t.monthRequired).max(2),
+    birthYear: z.string().min(4, t.yearRequired).max(4),
+    birthTime: z.string({ required_error: t.timeRequired }).min(1, t.timeRequired),
+  }).refine(data => {
+      const day = parseInt(data.birthDay, 10);
+      const month = parseInt(data.birthMonth, 10);
+      const year = parseInt(data.birthYear, 10);
+      if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+      
+      if (year < 1900 || year > new Date().getUTCFullYear()) return false;
+      if (month < 1 || month > 12) return false;
+      if (day < 1 || day > 31) return false;
+
+      const date = new Date(Date.UTC(year, month - 1, day));
+      return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+  }, {
+      message: t.invalidDate,
+      path: ["birthDay"], 
+  });
+
+  type FormData = z.infer<typeof formSchema>;
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,8 +69,8 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
   return (
     <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Insira Seus Dados de Nascimento</CardTitle>
-        <CardDescription>Para gerar seu mapa, precisamos de alguns dados. A localização será fixada em São Paulo, Brasil, para esta demonstração.</CardDescription>
+        <CardTitle className="font-headline text-2xl">{t.title}</CardTitle>
+        <CardDescription>{t.description}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -79,9 +80,9 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome (Opcional)</FormLabel>
+                  <FormLabel>{t.nameLabel}</FormLabel>
                   <FormControl>
-                    <Input placeholder="ex: Maria Silva" {...field} />
+                    <Input placeholder={t.namePlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,7 +90,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
             />
 
             <div className="space-y-2">
-              <FormLabel>Data de Nascimento</FormLabel>
+              <FormLabel>{t.dateLabel}</FormLabel>
               <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
@@ -97,7 +98,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Dia" {...field} />
+                        <Input placeholder={t.dayPlaceholder} {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -108,7 +109,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Mês" {...field} />
+                        <Input placeholder={t.monthPlaceholder} {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -119,7 +120,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Ano" {...field} />
+                        <Input placeholder={t.yearPlaceholder} {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -133,7 +134,7 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               name="birthTime"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hora de Nascimento</FormLabel>
+                  <FormLabel>{t.timeLabel}</FormLabel>
                   <FormControl>
                     <Input type="time" {...field} />
                   </FormControl>
@@ -147,10 +148,10 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
               {disabled ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Gerando...
+                  {t.generatingButton}
                 </>
               ) : (
-                "Gerar Mapa Natal"
+                t.submitButton
               )}
             </Button>
           </CardFooter>
@@ -159,3 +160,6 @@ export function NatalChartForm({ onSubmit, disabled }: NatalChartFormProps) {
     </Card>
   );
 }
+
+// Re-export FormData if it's used elsewhere
+export type { FormData } from './natal-chart-form';

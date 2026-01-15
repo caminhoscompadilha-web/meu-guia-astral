@@ -2,15 +2,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Moon, Telescope, Wand2, Star } from 'lucide-react';
 import type { InterpretNatalChartOutput } from "@/ai/flows/interpret-natal-chart";
+import type { Translations } from "@/lib/i18n";
 
 interface TransitAnalysisDisplayProps {
   transits: InterpretNatalChartOutput; 
+  translations: Translations;
 }
 
-export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps) {
+export function TransitAnalysisDisplay({ transits, translations }: TransitAnalysisDisplayProps) {
   if (!transits) {
-    return <p>Aguardando análise dos trânsitos...</p>;
+    return <p>{translations.ui.waitingForAnalysis}</p>;
   }
+
+  const t = translations.analysis;
 
   return (
     <div className="space-y-6">
@@ -18,9 +22,9 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
         <CardHeader>
           <CardTitle className="font-headline text-2xl flex items-center">
             <Telescope className="mr-3 h-6 w-6" />
-            Ciclos Externos
+            {t.externalCycles}
           </CardTitle>
-          <CardDescription>Como os grandes planetas movimentam sua energia hoje.</CardDescription>
+          <CardDescription>{t.externalCyclesDescription}</CardDescription>
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
           {transits.externalCycles}
@@ -31,9 +35,9 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
         <CardHeader>
           <CardTitle className="font-headline text-2xl flex items-center">
              <Moon className="mr-3 h-6 w-6" />
-            Calendário Lunar
+             {t.lunarCalendar}
           </CardTitle>
-          <CardDescription>A influência da fase lunar atual no seu mapa.</CardDescription>
+          <CardDescription>{t.lunarCalendarDescription}</CardDescription>
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
           {transits.lunarCalendar}
@@ -44,9 +48,9 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
         <CardHeader>
           <CardTitle className="font-headline text-2xl flex items-center">
             <Wand2 className="mr-3 h-6 w-6" />
-            Tarot do Dia
+            {t.tarotOfTheDay}
           </CardTitle>
-          <CardDescription>O arquétipo que guia seu dia, em sintonia com os astros.</CardDescription>
+          <CardDescription>{t.tarotOfTheDayDescription}</CardDescription>
         </CardHeader>
         <CardContent className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
           {transits.tarotOfTheDay}
@@ -57,7 +61,7 @@ export function TransitAnalysisDisplay({ transits }: TransitAnalysisDisplayProps
         <CardHeader>
         <CardTitle className="font-headline text-lg flex items-center">
             <Star className="mr-2 h-5 w-5 text-primary" />
-            Reflexão Arquetípica do Dia
+            {t.archetypalReflection}
         </CardTitle>
         </CardHeader>
         <CardContent>
