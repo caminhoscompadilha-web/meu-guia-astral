@@ -28,6 +28,10 @@ export type InterpretNatalChartInput = z.infer<typeof InterpretNatalChartInputSc
 
 const InterpretNatalChartOutputSchema = z.object({
   perfil_do_mes: z.string().describe("Uma síntese astrológica do clima geral para o utilizador"),
+  ciclo_lunar: z.object({
+    analise: z.string().describe("Análise da fase lunar atual e seu signo, em intersecção com o mapa do usuário."),
+    solucao: z.string().describe("Conselho prático e estratégico baseado no ciclo lunar.")
+  }),
   pilares: z.object({
     trabalho_e_financas: z.object({
       analise: z.string().describe("Análise dos trânsitos nas casas 2, 6 e 10."),
@@ -65,6 +69,10 @@ ESTRUTURA DE RESPOSTA OBRIGATÓRIA (JSON):
 Sempre retorne um JSON válido com a seguinte estrutura:
 {
   "perfil_do_mes": "Uma síntese astrológica do clima geral para o utilizador",
+  "ciclo_lunar": {
+      "analise": "Análise da fase e signo lunar atual, cruzando com o mapa do usuário e usando arquétipos mitológicos (Selene, Ártemis, Hécate) para dar profundidade.",
+      "solucao": "Conselho prático sobre onde focar a energia lunar hoje (trabalho, relações, etc.)"
+  },
   "pilares": {
     "trabalho_e_financas": {
       "analise": "Trânsitos em casas 2, 6 e 10",

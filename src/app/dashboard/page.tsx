@@ -6,6 +6,7 @@ import { translations } from '@/lib/translations';
 import { obterUltimaConsulta } from '@/lib/storage';
 import { ModalPagamento } from '@/components/ModalPagamento';
 import { GradePremium } from '@/components/GradePremium';
+import { WidgetCicloLunar } from '@/components/WidgetCicloLunar';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -95,6 +96,10 @@ export default function DashboardGuia() {
 
   const iaData = ultimaConsulta?.interpretation || {
       perfil_do_mes: "Este é um mês de profunda reavaliação interna, onde a sua estrutura capricorniana será desafiada a encontrar novas formas de expressão emocional, impulsionada pela sua Lua em Escorpião. O Ascendente em Leão pede que você lidere essa mudança com coragem.",
+      ciclo_lunar: {
+        analise: "A Lua Crescente em Touro ativa a sua Casa 4, pedindo foco no lar e na segurança emocional. Como Hécate, é tempo de olhar para dentro.",
+        solucao: "Priorize organizar seu espaço físico e passar tempo com a família. Evite decisões financeiras impulsivas hoje."
+      },
       pilares: {
           trabalho_e_financas: {
               analise: "Com Saturno em trânsito pela sua casa 2, a prudência financeira é crucial. Espere uma reestruturação na forma como você gera valor.",
@@ -154,6 +159,14 @@ export default function DashboardGuia() {
             </p>
           </div>
         )}
+
+        <div className="mb-10">
+          <WidgetCicloLunar 
+            fase={iaData.ciclo_lunar.analise.split(' em ')[0]} // Simples extração para exemplo
+            signo={iaData.ciclo_lunar.analise.split(' em ')[1]?.split(' ')[0] || 'Áries'}
+            conselho={iaData.ciclo_lunar.solucao}
+          />
+        </div>
 
         <GradePremium dataIA={iaData} pago={pago} aoClicar={() => setModalAberto(true)} />
 
