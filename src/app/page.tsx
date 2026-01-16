@@ -3,17 +3,17 @@ import React from 'react';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-10 font-serif">
-      <header className="mb-10 text-center">
-        <h1 className="text-sm uppercase tracking-[0.6em] text-primary">Portal Meu Guia Astral</h1>
-        <div className="mx-auto my-5 h-px w-12 bg-primary"></div>
-        <h2 className="text-3xl font-light text-card-foreground">Dossiê de Autoconhecimento</h2>
+    <div style={{ backgroundColor: '#050505', color: '#D4AF37', minHeight: '100vh', padding: '40px', fontFamily: 'serif', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <h1 style={{ letterSpacing: '0.6em', fontSize: '14px', margin: '0', color: '#D4AF37' }}>PORTAL MEU GUIA ASTRAL</h1>
+        <div style={{ width: '50px', height: '1px', backgroundColor: '#D4AF37', margin: '20px auto' }}></div>
+        <h2 style={{ color: 'white', fontSize: '32px', fontWeight: 'lighter' }}>Dossiê de Autoconhecimento</h2>
       </header>
-      <main className="w-full max-w-2xl rounded-lg border border-border bg-card p-10 text-center text-card-foreground">
-        <p className="mb-8 text-base leading-relaxed">
+      <main style={{ maxWidth: '600px', backgroundColor: '#0a0a0a', border: '1px solid #332b1a', padding: '40px', borderRadius: '4px', textAlign: 'center' }}>
+        <p style={{ color: '#ccc', lineHeight: '1.8', fontSize: '16px', marginBottom: '30px' }}>
           'O universo não fala por coincidências, mas por sinais. Sob a regência de Marte, sua vontade é forjada no ferro e no silêncio.'
         </p>
-        <button className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-10 py-4 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+        <button style={{ backgroundColor: '#D4AF37', color: 'black', padding: '15px 40px', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', borderRadius: '4px' }}>
           DESBLOQUEAR MEU CICLO (R$ 47,90)
         </button>
       </main>
