@@ -1,26 +1,18 @@
 {
-  "name": "portal-minimal",
+  "name": "portal-meu-guia-astral",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "tailwind-merge": "^2.5.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.0",
+    "lucide-react": "^0.475.0"
   }
 }
