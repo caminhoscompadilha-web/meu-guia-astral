@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body style={{ margin: 0 }}>{children}</body>
+      <body className="font-serif">{children}</body>
     </html>
   );
 }
