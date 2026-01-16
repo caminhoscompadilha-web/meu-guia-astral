@@ -1,13 +1,6 @@
 runConfig:
   cpu: 1
   memoryMiB: 512
-  maxInstances: 10
-  concurrency: 80
-
 scripts:
   buildCommand: npm run build
-  runCommand: npm start
-
-outputFiles:
-  serverApp:
-    include: [.]  # Garante que todos os arquivos necessários sejam mantidos
+  runCommand: node .next/standalone/server.js
