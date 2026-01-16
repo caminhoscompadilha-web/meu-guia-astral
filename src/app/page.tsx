@@ -7,7 +7,7 @@ export default function Home() {
       <header className="mb-10 text-center">
         <h1 className="text-sm uppercase tracking-[0.6em] text-primary">Portal Meu Guia Astral</h1>
         <div className="mx-auto my-5 h-px w-12 bg-primary"></div>
-        <h2 className="text-3xl font-light text-white">Dossiê de Autoconhecimento</h2>
+        <h2 className="text-3xl font-light text-card-foreground">Dossiê de Autoconhecimento</h2>
       </header>
       <main className="w-full max-w-2xl rounded-lg border border-border bg-card p-10 text-center text-card-foreground">
         <p className="mb-8 text-base leading-relaxed">
