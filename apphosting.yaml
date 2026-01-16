@@ -7,3 +7,7 @@ runConfig:
 scripts:
   buildCommand: npm run build
   runCommand: npm start
+
+outputFiles:
+  serverApp:
+    include: [.]  # Garante que todos os arquivos necessários sejam mantidos
