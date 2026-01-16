@@ -1,6 +1,8 @@
 runConfig:
   cpu: 1
   memoryMiB: 512
+  maxInstances: 10
+  concurrency: 80
 
 scripts:
   buildCommand: npm run build
