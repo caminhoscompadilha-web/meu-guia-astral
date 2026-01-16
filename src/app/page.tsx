@@ -3,17 +3,17 @@ import React from 'react';
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: '#050505', color: '#D4AF37', minHeight: '100vh', padding: '40px', fontFamily: 'serif', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ letterSpacing: '0.6em', fontSize: '14px', margin: '0', color: '#D4AF37' }}>PORTAL MEU GUIA ASTRAL</h1>
-        <div style={{ width: '50px', height: '1px', backgroundColor: '#D4AF37', margin: '20px auto' }}></div>
-        <h2 style={{ color: 'white', fontSize: '32px', fontWeight: 'lighter' }}>Dossiê de Autoconhecimento</h2>
+    <div className="bg-background text-primary min-h-screen p-10 font-serif flex flex-col items-center justify-center">
+      <header className="text-center mb-10">
+        <h1 className="tracking-[0.6em] text-sm m-0">PORTAL MEU GUIA ASTRAL</h1>
+        <div className="w-[50px] h-px bg-primary my-5 mx-auto"></div>
+        <h2 className="text-white text-3xl font-light">Dossiê de Autoconhecimento</h2>
       </header>
-      <main style={{ maxWidth: '600px', backgroundColor: '#0a0a0a', border: '1px solid #332b1a', padding: '40px', borderRadius: '4px', textAlign: 'center' }}>
-        <p style={{ color: '#ccc', lineHeight: '1.8', fontSize: '16px', marginBottom: '30px' }}>
+      <main className="max-w-2xl bg-card border border-border p-10 rounded text-center">
+        <p className="text-muted-foreground leading-[1.8] text-base mb-[30px]">
           'O universo não fala por coincidências, mas por sinais. Sob a regência de Marte, sua vontade é forjada no ferro e no silêncio.'
         </p>
-        <button style={{ backgroundColor: '#D4AF37', color: 'black', padding: '15px 40px', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', borderRadius: '4px' }}>
+        <button className="bg-primary text-primary-foreground py-[15px] px-10 font-bold cursor-pointer text-sm rounded">
           DESBLOQUEAR MEU CICLO (R$ 47,90)
         </button>
       </main>
