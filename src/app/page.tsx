@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -14,9 +15,11 @@ export default function Home() {
         <p className="text-card-foreground leading-[1.8] text-base mb-8">
           'O universo não fala por coincidências, mas por sinais. Sob a regência de Marte, sua vontade é forjada no ferro e no silêncio.'
         </p>
-        <Button size="lg" className="font-bold">
-          DESBLOQUEAR MEU CICLO (R$ 47,90)
-        </Button>
+        <Link href="/ciclo">
+          <Button size="lg" className="font-bold">
+            DESBLOQUEAR MEU CICLO (R$ 47,90)
+          </Button>
+        </Link>
       </main>
     </div>
   );
