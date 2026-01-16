@@ -10,10 +10,10 @@ export default function Home() {
         <h2 className="text-card-foreground text-3xl font-light">Dossiê de Autoconhecimento</h2>
       </header>
       <main className="max-w-2xl bg-card border border-border p-10 rounded text-center">
-        <p className="text-card-foreground leading-[1.8] text-base mb-[30px]">
+        <p className="text-card-foreground leading-[1.8] text-base mb-8">
           'O universo não fala por coincidências, mas por sinais. Sob a regência de Marte, sua vontade é forjada no ferro e no silêncio.'
         </p>
-        <button className="bg-primary text-primary-foreground py-[15px] px-10 font-bold cursor-pointer text-sm rounded">
+        <button className="bg-primary text-primary-foreground py-4 px-10 font-bold cursor-pointer text-sm rounded">
           DESBLOQUEAR MEU CICLO (R$ 47,90)
         </button>
       </main>
