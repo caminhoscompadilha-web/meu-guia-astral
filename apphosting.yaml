@@ -1,6 +1,10 @@
 runConfig:
   cpu: 1
   memoryMiB: 512
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "studio-9791381830-fb66c"
+    availability: ["BUILD", "RUNTIME"]
 scripts:
   buildCommand: npm run build
   runCommand: node .next/standalone/server.js
