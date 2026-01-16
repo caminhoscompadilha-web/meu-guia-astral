@@ -6,7 +6,7 @@ export default function Home() {
     <div className="bg-background text-primary min-h-screen p-10 font-serif flex flex-col items-center justify-center">
       <header className="text-center mb-10">
         <h1 className="tracking-[0.6em] text-sm m-0">PORTAL MEU GUIA ASTRAL</h1>
-        <div className="w-[50px] h-px bg-primary my-5 mx-auto"></div>
+        <div className="w-[50px] h-px bg-primary my-5 mx-auto" role="presentation"></div>
         <h2 className="text-card-foreground text-3xl font-light">Dossiê de Autoconhecimento</h2>
       </header>
       <main className="max-w-2xl bg-card border border-border p-10 rounded text-center">
