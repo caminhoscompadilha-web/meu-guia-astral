@@ -1,10 +1,9 @@
-
-import type {Metadata} from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Meu Guia Astrológico',
-  description: 'Desvende os segredos do seu mapa celestial.',
+  title: "Portal Meu Guia Astral",
+  description: "Dossiê de Autoconhecimento",
 };
 
 export default function RootLayout({
@@ -13,10 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" translate="no">
-      <body>
-          {children}
-      </body>
+    <html lang="pt-br">
+      <body>{children}</body>
     </html>
   );
 }
