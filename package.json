@@ -13,7 +13,8 @@
     "react-dom": "18.3.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.0",
-    "lucide-react": "^0.475.0"
+    "lucide-react": "^0.475.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "20.14.9",
