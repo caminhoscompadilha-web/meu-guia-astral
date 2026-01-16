@@ -1,62 +1,50 @@
-'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+'import React from 'react';
 
 export default function Home() {
-  const [nome, setNome] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
-  const router = useRouter();
-
-  const handleUnlock = () => {
-    if (nome && dataNascimento) {
-      const params = new URLSearchParams({ nome, dataNascimento });
-      router.push(`/ciclo?${params.toString()}`);
-    } else {
-      alert('Por favor, preencha seu nome e data de nascimento.');
-    }
-  };
-
   return (
-    <div className="bg-background text-primary min-h-screen p-10 font-serif flex flex-col items-center justify-center">
-      <header className="text-center mb-10">
-        <h1 className="tracking-[0.6em] text-sm m-0">PORTAL MEU GUIA ASTRAL</h1>
-        <div className="w-[50px] h-px bg-primary my-5 mx-auto" role="presentation" aria-hidden="true"></div>
-        <h2 className="text-card-foreground text-3xl font-light">Dossiê de Autoconhecimento</h2>
-      </header>
-      <main className="max-w-2xl w-full bg-card border border-border p-10 rounded text-center">
-        <p className="text-card-foreground leading-[1.8] text-base mb-8">
-          'O universo não fala por coincidências, mas por sinais. Descubra a mensagem que as estrelas têm para você.'
-        </p>
-        <div className="space-y-4 mb-8 text-left">
-          <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="nome" className="text-card-foreground">Nome Completo</Label>
-            <Input
-              id="nome"
-              type="text"
-              placeholder="Seu nome de batismo"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              className="bg-input text-card-foreground placeholder:text-muted-foreground"
-            />
-          </div>
-          <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="dataNascimento" className="text-card-foreground">Data de Nascimento</Label>
-            <Input
-              id="dataNascimento"
-              type="date"
-              value={dataNascimento}
-              onChange={(e) => setDataNascimento(e.target.value)}
-              className="bg-input text-card-foreground"
-            />
-          </div>
+    <main className="min-h-screen bg-noite-profunda text-white p-4">
+      <section className="bg-noite-profunda p-8 border border-dourado-luxo/30 rounded-lg shadow-2xl max-w-4xl mx-auto">
+        <h1 className="titulo-mistico text-2xl text-center mb-8 text-dourado-luxo">
+          O universo não fala por coincidências, mas por sinais. <br/>
+          Descubra a mensagem que o Céu e as Energias têm para você.
+        </h1>
+
+        <div className="bg-black/40 border border-dourado-luxo/20 p-8 rounded-xl shadow-2xl">
+          <h2 className="titulo-mistico text-xl mb-6 text-center text-dourado-luxo">Organizar o Céu de Nascimento</h2>
+          
+          <form className="space-y-4">
+            <div>
+              <label className="block text-dourado-luxo text-xs uppercase mb-1">Cidade e Estado</label>
+              <input type="text" placeholder="Ex: Belo Horizonte, MG" className="w-full bg-black/50 border border-dourado-luxo/20 p-3 text-white outline-none" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-dourado-luxo text-xs uppercase mb-1">Data</label>
+                <input type="date" className="w-full bg-black/50 border border-dourado-luxo/20 p-3 text-white" />
+              </div>
+              <div>
+                <label className="block text-dourado-luxo text-xs uppercase mb-1">Hora Exata (24h)</label>
+                <input type="time" className="w-full bg-black/50 border border-dourado-luxo/20 p-3 text-white" />
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 bg-roxo-místico/10 border border-roxo-místico/30 rounded text-left">
+              <input type="checkbox" className="mt-1" id="nao-sei-hora" />
+              <label htmlFor="nao-sei-hora" className="text-xs text-gray-400">
+                Não sei o meu horário de nascimento. <br/>
+                <span className="text-dourado-luxo/70 font-bold italic">
+                  * O sistema assumirá 12:00h e gerará um Mapa de Essência (Casas estimadas).
+                </span>
+              </label>
+            </div>
+
+            <button type="button" className="w-full mt-4 py-4 font-bold tracking-widest border border-dourado-luxo text-dourado-luxo hover:bg-dourado-luxo hover:text-black transition-all">
+              GERAR MAPA DE CONSCIÊNCIA
+            </button>
+          </form>
         </div>
-        <Button size="lg" className="font-bold" onClick={handleUnlock}>
-          DESBLOQUEAR MEU CICLO (R$ 47,90)
-        </Button>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
