@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const dados = await request.json();
-    const { lat, lng, date, time } = dados;
+    const { lat, lng, date, time } = await request.json();
 
-    // REFINAMENTO 1: Filtro de Segurança (Não aceita dados incompletos)
     if (!lat || !lng || !date || !time) {
       return NextResponse.json(
         { erro: 'Dados incompletos. O portal exige precisão total.' },
@@ -13,38 +11,45 @@ export async function POST(request: Request) {
       );
     }
 
-    // Preparação do tempo neutro
-    const tempoNeutro = new Date(`${date}T${time}:00Z`);
-    const marcadorSegundos = Math.floor(tempoNeutro.getTime() / 1000);
+    const localTimeAsUTC = new Date(`${date}T${time}:00Z`);
+    const timestamp = Math.floor(localTimeAsUTC.getTime() / 1000);
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${marcadorSegundos}&key=${apiKey}`;
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-    const resposta = await fetch(url);
-    const info = await resposta.json();
-
-    if (info.status !== 'OK') {
-      return NextResponse.json({ erro: 'Falha na comunicação com o mapa' }, { status: 500 });
+    if (!apiKey) {
+      return NextResponse.json(
+        { erro: 'A chave da API do Google Maps não foi configurada no servidor.' },
+        { status: 500 }
+      );
     }
 
-    const deslocamentoTotal = info.rawOffset + info.dstOffset;
-    const horarioUTC = new Date(tempoNeutro.getTime() - (deslocamentoTotal * 1000));
+    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${apiKey}`;
 
-    // REFINAMENTO 2: Flag de Precisão Ética
-    // Se o usuário deixou os minutos em "00", o sistema avisa que é uma estimativa
-    const nivelPrecisao = time.endsWith(':00') ? 'ESTIMADA' : 'EXATA';
+    const response = await fetch(url);
+    const timeZoneInfo = await response.json();
 
-    // Retorno Final Refinado
+    if (timeZoneInfo.status !== 'OK') {
+      return NextResponse.json(
+        { erro: 'Falha na comunicação com a API de Fuso Horário do Google.', details: timeZoneInfo.error_message || timeZoneInfo.status },
+        { status: 500 }
+      );
+    }
+
+    const totalOffsetInSeconds = timeZoneInfo.rawOffset + timeZoneInfo.dstOffset;
+    const utcDate = new Date(localTimeAsUTC.getTime() - (totalOffsetInSeconds * 1000));
+
+    const precisionLevel = time.endsWith(':00') ? 'ESTIMADA' : 'EXATA';
+
     return NextResponse.json({
-      fusoId: info.timeZoneId,
-      fusoNome: info.timeZoneName,
-      diferencaHoras: deslocamentoTotal / 3600,
-      utcFinal: horarioUTC.toISOString(),
-      precisao: nivelPrecisao, // Avisa se o cálculo é exato ou estimado
-      status: "TIME_SYNC_OK"  // Status padronizado para o sistema
+      fusoId: timeZoneInfo.timeZoneId,
+      fusoNome: timeZoneInfo.timeZoneName,
+      diferencaHoras: totalOffsetInSeconds / 3600,
+      utcFinal: utcDate.toISOString(),
+      precisao: precisionLevel,
+      status: "TIME_SYNC_OK"
     });
 
-  } catch (error) {
-    return NextResponse.json({ erro: 'Erro interno no motor' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ erro: 'Erro interno no servidor.', details: error.message }, { status: 500 });
   }
 }
